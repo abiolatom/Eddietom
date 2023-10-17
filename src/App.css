@@ -24,15 +24,34 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+
+.container {
+max-width: 800px;
+margin: 0 auto ;
+padding: 20px;
+background-color: #fff;
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+border-radius: 5px;
+};
+
+.addSalesForm-col {
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.paymentMethod .goodsStatus select {
+  width: 200px;
+  font-size: 16px;
+  border: 1px solid gray;
+}
+
+.paymentMethod select option {
+  padding: 5px;
+}
+
+.paymentMethod select option:hover {
+  background-color: lightgray;
 }
