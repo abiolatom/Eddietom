@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import ProductForm from './ProductForm';
 
 const AddSalesForm = () => {
   const [state, setState] = useState(0);
@@ -23,12 +22,11 @@ const AddSalesForm = () => {
           <button onClick={inc}>Add</button>
           <button onClick={dec}>Reduce</button>
           <button onClick={reset}>RESET COUNT</button>
-          
-          <ProductForm /> 
-          
+
+                
         </div>
         
   )
 }
 
-export default AddSalesForm
+export default AddSalesForm;
