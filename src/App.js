@@ -1,21 +1,17 @@
-import React from 'react';
-import { AppProvider } from './context/AppContext';
-import './App.css';
+import React from "react";
+import { AppProvider } from "./context/AppContext";
+import AddSalesForm from "./components/AddSalesForm";
+import "./App.css";
 
 const App = () => {
   return (
-  <AppProvider>
-  
-    
-    <div className="container">
-      <div className='App-header'>
+    <AppProvider>
+      <div className="container">
         <h1>Sales Form</h1>
-          
-        
-        </div>
-        </div>
-   </AppProvider>
+        <AddSalesForm/>
+      </div>
+    </AppProvider>
   );
-}
+};
 
 export default App;
