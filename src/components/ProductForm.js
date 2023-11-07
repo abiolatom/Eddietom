@@ -6,36 +6,45 @@ const products = [
   { id: 14, name: "car service", cost: 50 },
 ];
 
-const SearchBar = () => {
-    const [selectedProduct, setSelectedProduct] = useState("");
-    const [price, setPrice] = useState();
-
-    const handleSelectedProductChange = (e) => {
-        setSelectedProduct(e.target.value);
-    }
-
+const SearchBar = ({
+    filterText,
+    onFilterTextChange,
+    }) => {
+    
     const handlePriceChange = (e) => {
         const value = e.target.value;
         if (/^\d*\.?\d*$/.test(value)) {
             setPrice(value);
         }
-    };
+    }
+   
     return (
             <div>
             <form>
                 <label>Product </label>
-                <input value={selectedProduct} placeholder="Select Product..." className="select-field" onChange={handleSelectedProductChange} />
+                <input value={filterText} placeholder="Select Product..." className="select-field" onChange={onFilterTextChange} />
                 <input type="text" value={price} onChange={handlePriceChange} placeholder="Sales Price"></input>
                 <button>Add Product</button>
             </form>
 
-            <p>{selectedProduct }</p>
+            
             </div>
         );
 };
     
 
-    const selectedProductsTable = () => {
+const selectedProductsTable = ({products, filterText} ) => {
+    const rows = [];
+    let lastproduct = null;
+
+    products.forEach((product) => {
+        if (product.name.toLowerCase().indexOf(filterText.toLowerCase) !== -1) {
+            return products.name;
+        } else
+           { return ;}
+    });
+
+
         return (
             <div>
       
