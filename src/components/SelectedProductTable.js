@@ -10,9 +10,11 @@ export const SearchBar = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [price, setPrice] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   const handleSearchChange = (event) => {
-    setSearchText(event.target.value);
+    const searchText = event.target.value;
+    setSearchText(searchText);
     const filteredProductText = products.filter((product) => {
       return product.name.toLowerCase().includes(searchText.toLowerCase());
     });
@@ -27,8 +29,18 @@ export const SearchBar = () => {
   };
 
   const handleAddProduct = () => {
-    
-  }
+
+    if (searchText && price) {
+      const selectedProduct = products.find((product) =>
+        product.name.toLowerCase() === searchText.toLowerCase());
+      if (selectedProduct) {
+        setSelectedProducts([...selectedProducts, selectedProduct]);
+        setPrice("");
+        setSearchText("");
+      }
+    }
+  };
+  
 
   return (
     <form>
@@ -45,7 +57,7 @@ export const SearchBar = () => {
         placeholder="Enter Price"
       />
 
-      <button>Add Product</button>
+      <button onClick={handleAddProduct}>Add Product</button>
     </form>
   );
 };
