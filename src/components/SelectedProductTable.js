@@ -41,8 +41,14 @@ export const SearchBar = () => {
     }
   };
   
+  const calculateTotalPrice = () => {
+    return selectedProducts.reduce((total, product) => total + product.price, 0);
+  };
 
   return (
+    <div>
+
+   
     <form>
       <input
         type="text"
@@ -58,7 +64,29 @@ export const SearchBar = () => {
       />
 
       <button onClick={handleAddProduct}>Add Product</button>
-    </form>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+          </tr>
+          <tbody>
+            {selectedProducts.map((product) => (
+              <tr key={product.id}>
+                <td>{product.name}</td>
+                <td>{product.price}</td>
+
+              </tr>
+            )
+            )
+            }
+          </tbody>
+        </thead>
+      </table>
+      <p>Total Price: { calculateTotalPrice() }</p>
+    </div>
+    
   );
 };
 
