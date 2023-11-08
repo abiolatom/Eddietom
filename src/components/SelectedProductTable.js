@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 
-const SelectedProductTable = () => {
-  const products = [
-    { id: 12, name: "shopping", cost: 40 },
-    { id: 13, name: "holiday", cost: 400 },
-    { id: 14, name: "car service", cost: 50 },
-  ];
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [price, setPrice] = useState({});
+const products = [
+  { id: 12, name: "shopping", cost: 40 },
+  { id: 13, name: "holiday", cost: 400 },
+  { id: 14, name: "car service", cost: 50 },
+];
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().include(filteredText.toLowerCase())
-  );
+export const SearchBar = () => {
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [price, setPrice] = useState("");
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchText(event.target.value);
+    const filteredProductText = products.filter((product) => {
+      return product.name.toLowerCase().includes(searchText.toLowerCase());
+    });
+    setFilteredProducts(filteredProductText);
+  };
 
   const handlePriceChange = (event) => {
     const value = event.target.value;
@@ -19,39 +25,33 @@ const SelectedProductTable = () => {
       setPrice(value);
     }
   };
-  const handleProductChange = (event) => {
-    setSelectedProducts(event.target.value);
-  };
+
+  const handleAddProduct = () => {
+    
+  }
 
   return (
-    <div>
-      <label>Select a Product</label>
-      <select
+    <form>
+      <input
         type="text"
-        value={selectedProducts}
-        onChange={handleProductChange}
-      >
-        <option value="">Select a Product</option>
-        {filteredProducts.map((product) => (
-          <option key={product.id} value={product.name}>
-            {product.name}
-          </option>
-        ))}
-        ;
-      </select>
-      {selectedProducts && (
-        <div>
-          <label>Price: </label>
-          <input
-            type="text"
-            value={price}
-            onChange={handlePriceChange}
-            placeholder="Enter Price"
-          />
-        </div>
-      )}
-    </div>
+        value={searchText}
+        onChange={handleSearchChange}
+        placeholder="Search Product..."
+      />
+      <input
+        type="text"
+        value={price}
+        onChange={handlePriceChange}
+        placeholder="Enter Price"
+      />
+
+      <button>Add Product</button>
+    </form>
   );
+};
+
+const SelectedProductTable = () => {
+  return <div></div>;
 };
 
 export default SelectedProductTable;
