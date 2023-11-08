@@ -29,10 +29,10 @@ export const SearchBar = () => {
   };
 
   const handleAddProduct = () => {
-
     if (searchText && price) {
-      const selectedProduct = products.find((product) =>
-        product.name.toLowerCase() === searchText.toLowerCase());
+      const selectedProduct = products.find(
+        (product) => product.name.toLowerCase() === searchText.toLowerCase()
+      );
       if (selectedProduct) {
         setSelectedProducts([...selectedProducts, selectedProduct]);
         setPrice("");
@@ -40,30 +40,31 @@ export const SearchBar = () => {
       }
     }
   };
-  
+
   const calculateTotalPrice = () => {
-    return selectedProducts.reduce((total, product) => total + product.price, 0);
+    return selectedProducts.reduce(
+      (total, product) => total + product.price,
+      0
+    );
   };
 
   return (
     <div>
+      <form>
+        <input
+          type="text"
+          value={searchText}
+          onChange={handleSearchChange}
+          placeholder="Search Product..."
+        />
+        <input
+          type="text"
+          value={price}
+          onChange={handlePriceChange}
+          placeholder="Enter Price"
+        />
 
-   
-    <form>
-      <input
-        type="text"
-        value={searchText}
-        onChange={handleSearchChange}
-        placeholder="Search Product..."
-      />
-      <input
-        type="text"
-        value={price}
-        onChange={handlePriceChange}
-        placeholder="Enter Price"
-      />
-
-      <button onClick={handleAddProduct}>Add Product</button>
+        <button onClick={handleAddProduct}>Add Product</button>
       </form>
       <table>
         <thead>
@@ -71,22 +72,18 @@ export const SearchBar = () => {
             <th>Product Name</th>
             <th>Price</th>
           </tr>
-          <tbody>
-            {selectedProducts.map((product) => (
-              <tr key={product.id}>
-                <td>{product.name}</td>
-                <td>{product.price}</td>
-
-              </tr>
-            )
-            )
-            }
-          </tbody>
         </thead>
+        <tbody>
+          {selectedProducts.map((product) => (
+            <tr key={product.id}>
+              <td>{product.name}</td>
+              <td>{product.price}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
-      <p>Total Price: { calculateTotalPrice() }</p>
+      <p>Total Price: {calculateTotalPrice()}</p>
     </div>
-    
   );
 };
 
