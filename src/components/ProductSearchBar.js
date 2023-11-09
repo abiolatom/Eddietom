@@ -13,7 +13,7 @@ const items = [
   { id: 10, name: "Eggrow" },
 ];
 
-export const NewSearchBar = () => {
+export const ProductSearchBar = (onProductSearch) => {
   const [filteredItems, setFilteredItems] = useState(items);
   const [searchText, setSearchText] = useState();
   const [suggestion, setSuggestion] = useState([]);
@@ -26,15 +26,18 @@ export const NewSearchBar = () => {
       item.name.toLowerCase().includes(value)
     );
     setFilteredItems(filtered);
-    const filteredSuggestions = filteredItems.filter((item) => {
+
+    const filteredSuggestions = filtered.filter((item) => {
       return item.name.toLowerCase().startsWith(value);
     });
     setSuggestion(filteredSuggestions);
   };
 
   const handleSuggestionClick = (item) => {
+   
     setSearchText(item.name);
     setSuggestion([]);
+    onProductSearch(item.name);
   };
 
   return (
