@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const items = [
+ const items = [
   { id: 1, name: "Apple" },
   { id: 2, name: "Banana" },
   { id: 3, name: "Carrot" },
@@ -13,7 +13,7 @@ const items = [
   { id: 10, name: "Eggrow" },
 ];
 
-export const ProductSearchBar = (onProductSearch) => {
+export const ProductSearchBar = ({onProductSearch}) => {
   const [filteredItems, setFilteredItems] = useState(items);
   const [searchText, setSearchText] = useState();
   const [suggestion, setSuggestion] = useState([]);

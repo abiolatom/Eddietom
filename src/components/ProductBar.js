@@ -40,9 +40,7 @@ export const ProductBar = () => {
   return (
     <div>
       <form>
-        <ProductSearchBar
-          onProductSearch={handleProductSearch}
-        />
+        <ProductSearchBar onProductSearch={handleProductSearch} />
         <input
           type="text"
           value={price}
