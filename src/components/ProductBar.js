@@ -26,6 +26,10 @@ export const ProductBar = () => {
     }
   };
 
+  const handleProductSearch = (productName) => {
+    setSelectedProductName(productName);
+  };
+
   const calculateTotalPrice = () => {
     return selectedProducts.reduce(
       (total, product) => total + product.price,
@@ -37,7 +41,7 @@ export const ProductBar = () => {
     <div>
       <form>
         <ProductSearchBar
-          onProductSearch={(productName) => setSelectedProductName(productName)}
+          onProductSearch={handleProductSearch}
         />
         <input
           type="text"

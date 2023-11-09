@@ -38,6 +38,8 @@ export const ProductSearchBar = (onProductSearch) => {
     setSearchText(item.name);
     setSuggestion([]);
     onProductSearch(item.name);
+
+    
   };
 
   return (
