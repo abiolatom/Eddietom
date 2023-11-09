@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 
-const products = [
-  { id: 12, name: "shopping", cost: 40 },
-  { id: 13, name: "holiday", cost: 400 },
-  { id: 14, name: "car service", cost: 50 },
-];
-
 export const SearchBar = () => {
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const initialProducts = [
+    { id: 12, name: "shopping", cost: 40 },
+    { id: 13, name: "holiday", cost: 400 },
+    { id: 14, name: "car service", cost: 50 },
+  ];
+
   const [price, setPrice] = useState("");
+  const [products, setProducts] = useState([initialProducts]);
   const [searchText, setSearchText] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
 
@@ -75,7 +75,7 @@ export const SearchBar = () => {
         </thead>
         <tbody>
           {selectedProducts.map((product) => (
-            <tr key={product.id}>
+            <tr>
               <td>{product.name}</td>
               <td>{product.price}</td>
             </tr>
