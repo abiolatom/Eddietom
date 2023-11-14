@@ -33,20 +33,20 @@ const AddProduct = () => {
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchText(value);
-
     const filterProductList = products.filter((product) =>
       product.name.toLowerCase().includes(value)
     );
     setFilterProduct(filterProductList);
 
-    const suggestion = filterProduct.filter((suggestion) => {
+    const suggestion = filterProductList.filter((suggestion) => {
       return suggestion.name.toLowerCase().startsWith(value);
     });
-    setSuggestions({ name: suggestion.name });
+    setSuggestions(suggestion);
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setProductName(suggestion.name);
+  const handleSuggestionClick = (filterText) => {
+    setProductName(filterText.name);
+    setSearchText(filterText.name);
 
     setSuggestions([]);
   };
@@ -69,8 +69,9 @@ const AddProduct = () => {
       ...selectedProducts,
       { id: uuidv4(), productName: productName, productPrice: productPrice },
     ]);
-    setProductName({ name: "" });
+    setProductName("");
     setProductPrice("");
+    setSearchText("");
   };
 
   return (
