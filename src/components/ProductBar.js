@@ -13,7 +13,8 @@ export const ProductBar = () => {
     }
   };
 
-  const handleAddProduct = () => {
+  const handleAddProduct = (e) => {
+    e.preventDefault();
     if (selectedProductName && price !== "") {
       const newProduct = {
         name: selectedProductName,
@@ -23,9 +24,12 @@ export const ProductBar = () => {
       setSelectedProducts([...selectedProducts, newProduct]);
       setSelectedProductName("");
       setPrice("");
+      
+      
     }
   };
 
+ 
   const handleProductSearch = (productName) => {
     setSelectedProductName(productName);
   };
@@ -62,7 +66,7 @@ export const ProductBar = () => {
         <tbody>
           {selectedProducts.map((product, id) => (
             <tr key={product.id}>
-              <td>{product.name}</td>
+              <td >{product.name}</td>
               <td>{product.price}</td>
             </tr>
           ))}
