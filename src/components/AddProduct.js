@@ -60,8 +60,10 @@ const AddProduct = () => {
     if (/^\d*\.?\d*$/.test(value)) {
       setProductPrice(value);
     }
-    const subtotal = parseFloat(value) * parseFloat(productQuantity);
-    setProductSubtotal(subtotal.toFixed(2));
+    if (productQuantity !== null) {
+      const subtotal = parseFloat(value) * parseFloat(productQuantity);
+      setProductSubtotal(subtotal.toFixed(2));
+    }
   };
 
   const handleQuantityChange = (event) => {
@@ -69,9 +71,10 @@ const AddProduct = () => {
     if (/^\d*\.?\d*$/.test(value)) {
       setProductQuantity(value);
     }
-
-    const newSubtotal = parseFloat(productPrice) * parseFloat(value);
-    setProductSubtotal(newSubtotal);
+    if (productPrice !== "") {
+      const newSubtotal = parseFloat(productPrice) * parseFloat(value);
+      setProductSubtotal(newSubtotal);
+    }
   };
 
   const handleAddProduct = (event) => {
@@ -88,16 +91,13 @@ const AddProduct = () => {
 
     const newProduct = {
       id: uuidv4(),
-      productName: productName,
-      productPrice: productPrice,
-      productQuantity: productQuantity,
+      name: productName,
+      price: productPrice,
+      quantity: productQuantity,
       subtotal: productSubtotal,
     };
-      
-    setSelectedProducts([
-      ...selectedProducts,
-      newProduct
-    ]);
+
+    setSelectedProducts([...selectedProducts, newProduct]);
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
@@ -106,10 +106,10 @@ const AddProduct = () => {
 
   const handleUpdateProduct = (id) => {};
   const handleDeleteProduct = (product) => {
-   const delProduct= selectedProducts.filter(
+    const delProduct = selectedProducts.filter(
       (selectedProduct) => selectedProduct.id !== product.id
     );
-    setSelectedProducts(delProduct)
+    setSelectedProducts(delProduct);
   };
 
   return (
@@ -150,12 +150,13 @@ const AddProduct = () => {
         <button type="submit">Add Product</button>
       </form>
 
-      <div className="product-table">
+      {selectedProducts.length > 0 && (
         <table>
           <thead>
             <tr>
               <th> Product Name</th>
               <th>Price</th>
+              <th>Quantity</th>
               <th>SubTotal</th>
               <th>Actions</th>
             </tr>
@@ -164,9 +165,10 @@ const AddProduct = () => {
           <tbody>
             {selectedProducts.map((product) => (
               <tr key={product.id}>
-                <td> {product.productName}</td>
-                <td>{product.productPrice}</td>
-                <td>{product.productSubtotal}</td>
+                <td> {product.name}</td>
+                <td>{product.price}</td>
+                <td>{product.quantity}</td>
+                <td>{product.subtotal}</td>
                 <td>
                   <button onClick={() => handleUpdateProduct(product.id)}>
                     Update
@@ -177,7 +179,7 @@ const AddProduct = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      )}
     </div>
   );
 };
