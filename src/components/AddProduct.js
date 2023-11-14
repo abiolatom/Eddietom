@@ -16,9 +16,11 @@ const products = [
 
 const initialProduct = [
   {
-    id: 0,
+    id: "",
     name: "",
     price: "",
+    quantity: "",
+    subtotal: "",
   },
 ];
 
@@ -29,6 +31,8 @@ const AddProduct = () => {
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [filterProduct, setFilterProduct] = useState([]);
+  const [productQuantity, setProductQuantity] = useState("");
+  const [productSubtotal, setProductSubtotal] = useState("");
 
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
@@ -56,22 +60,56 @@ const AddProduct = () => {
     if (/^\d*\.?\d*$/.test(value)) {
       setProductPrice(value);
     }
+    const subtotal = parseFloat(value) * parseFloat(productQuantity);
+    setProductSubtotal(subtotal.toFixed(2));
+  };
+
+  const handleQuantityChange = (event) => {
+    const value = event.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setProductQuantity(value);
+    }
+
+    const newSubtotal = parseFloat(productPrice) * parseFloat(value);
+    setProductSubtotal(newSubtotal);
   };
 
   const handleAddProduct = (event) => {
     event.preventDefault();
-    if (!productName || !productPrice) {
-      alert("Please input a Product and Price");
+
+    if (!productName || !productPrice || !productQuantity) {
+      alert("Please input a Product, Price, and Price");
       return;
     }
+    /*const newSubtotal = () =>
+      parseFloat(selectedProducts.price) *
+      parseFloat(selectedProducts.quantity);
+    setProductSubtotal(newSubtotal);*/
 
+    const newProduct = {
+      id: uuidv4(),
+      productName: productName,
+      productPrice: productPrice,
+      productQuantity: productQuantity,
+      subtotal: productSubtotal,
+    };
+      
     setSelectedProducts([
       ...selectedProducts,
-      { id: uuidv4(), productName: productName, productPrice: productPrice },
+      newProduct
     ]);
     setProductName("");
     setProductPrice("");
+    setProductQuantity("");
     setSearchText("");
+  };
+
+  const handleUpdateProduct = (id) => {};
+  const handleDeleteProduct = (product) => {
+   const delProduct= selectedProducts.filter(
+      (selectedProduct) => selectedProduct.id !== product.id
+    );
+    setSelectedProducts(delProduct)
   };
 
   return (
@@ -101,14 +139,25 @@ const AddProduct = () => {
           placeholder="Enter Price"
           required
         />
+
+        <input
+          value={productQuantity}
+          type="text"
+          onChange={handleQuantityChange}
+          placeholder="Enter Quantity"
+          required
+        />
         <button type="submit">Add Product</button>
       </form>
+
       <div className="product-table">
         <table>
           <thead>
             <tr>
               <th> Product Name</th>
               <th>Price</th>
+              <th>SubTotal</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -117,6 +166,13 @@ const AddProduct = () => {
               <tr key={product.id}>
                 <td> {product.productName}</td>
                 <td>{product.productPrice}</td>
+                <td>{product.productSubtotal}</td>
+                <td>
+                  <button onClick={() => handleUpdateProduct(product.id)}>
+                    Update
+                  </button>
+                  <button onClick={handleDeleteProduct}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
