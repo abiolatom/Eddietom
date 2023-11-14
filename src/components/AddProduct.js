@@ -1,18 +1,62 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const intialProduct = [
+const products = [
+  { id: 1, name: "Apple" },
+  { id: 2, name: "Banana" },
+  { id: 3, name: "Carrot" },
+  { id: 4, name: "Date" },
+  { id: 5, name: "Eggplant" },
+  { id: 6, name: "Anoti" },
+  { id: 7, name: "Bonam" },
+  { id: 8, name: "Cague" },
+  { id: 9, name: "Datti" },
+  { id: 10, name: "Eggrow" },
+];
+
+const initialProduct = [
   {
-    id: 1,
+    id: 0,
     name: "",
     price: "",
   },
 ];
 
-const AddProduct = (name, price) => {
+const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState(intialProduct);
+  const [selectedProducts, setSelectedProducts] = useState(initialProduct);
+  const [searchText, setSearchText] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [filterProduct, setFilterProduct] = useState([]);
+
+  const filterText = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchText(value);
+
+    const filterProductList = products.filter((product) =>
+      product.name.toLowerCase().includes(value)
+    );
+    setFilterProduct(filterProductList);
+
+    const suggestion = filterProduct.filter((suggestion) => {
+      return suggestion.name.toLowerCase().startsWith(value);
+    });
+    setSuggestions({ name: suggestion.name });
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setProductName(suggestion.name);
+
+    setSuggestions([]);
+  };
+
+  const handlePriceChange = (event) => {
+    const value = event.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setProductPrice(value);
+    }
+  };
 
   const handleAddProduct = (event) => {
     event.preventDefault();
@@ -25,29 +69,38 @@ const AddProduct = (name, price) => {
       ...selectedProducts,
       { id: uuidv4(), productName: productName, productPrice: productPrice },
     ]);
-      setProductName("");
-      setProductPrice("");
-
+    setProductName({ name: "" });
+    setProductPrice("");
   };
 
   return (
     <div className="container">
-      <form>
+      <form onSubmit={handleAddProduct}>
         <input
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
+          type="text"
+          value={searchText}
+          onChange={filterText}
           placeholder="Add Product"
           required
         />
+        <ul>
+          {suggestions.map((suggestion) => (
+            <li
+              key={suggestion.id}
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              {suggestion.name}
+            </li>
+          ))}
+        </ul>
         <input
           value={productPrice}
-          onChange={(e) => setProductPrice(e.target.value)}
+          type="text"
+          onChange={handlePriceChange}
           placeholder="Enter Price"
           required
         />
-        <button type="submit" onClick={handleAddProduct}>
-          Add Product
-        </button>
+        <button type="submit">Add Product</button>
       </form>
       <div className="product-table">
         <table>
