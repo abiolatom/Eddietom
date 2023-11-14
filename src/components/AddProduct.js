@@ -14,20 +14,19 @@ const products = [
   { id: 10, name: "Eggrow" },
 ];
 
-const initialProduct = [
-  {
-    id: "",
-    name: "",
-    price: "",
-    quantity: "",
-    subtotal: "",
-  },
-];
+const initialProduct =
+{
+  id: "",
+  name: "",
+  price: "",
+  quantity: "",
+  subtotal: "",
+};
 
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState(initialProduct);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [filterProduct, setFilterProduct] = useState([]);
@@ -84,11 +83,7 @@ const AddProduct = () => {
       alert("Please input a Product, Price, and Price");
       return;
     }
-    /*const newSubtotal = () =>
-      parseFloat(selectedProducts.price) *
-      parseFloat(selectedProducts.quantity);
-    setProductSubtotal(newSubtotal);*/
-
+   
     const newProduct = {
       id: uuidv4(),
       name: productName,
