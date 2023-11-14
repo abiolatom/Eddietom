@@ -1,20 +1,33 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-let nextId = 0;
+const intialProduct = [
+  {
+    id: 1,
+    name: "",
+    price: "",
+  },
+];
 
 const AddProduct = (name, price) => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState(intialProduct);
 
   const handleAddProduct = (event) => {
     event.preventDefault();
+    if (!productName || !productPrice) {
+      alert("Please input a Product and Price");
+      return;
+    }
+
     setSelectedProducts([
       ...selectedProducts,
-      { id: nextId++, productName: name, productPrice: price },
+      { id: uuidv4(), productName: productName, productPrice: productPrice },
     ]);
-    setProductName("");
-    setProductPrice("");
+      setProductName("");
+      setProductPrice("");
+
   };
 
   return (
@@ -46,14 +59,12 @@ const AddProduct = (name, price) => {
           </thead>
 
           <tbody>
-            <tr>
-              {selectedProducts.map((product) => (
-                <>
-                  <td> {product.name}</td>
-                  <td>{product.price}</td>
-                </>
-              ))}
-            </tr>
+            {selectedProducts.map((product) => (
+              <tr key={product.id}>
+                <td> {product.productName}</td>
+                <td>{product.productPrice}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
