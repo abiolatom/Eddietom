@@ -31,7 +31,7 @@ const AddProduct = () => {
   const [filterProduct, setFilterProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
-  const [productDetails, setProductDetails] = useState([{id: "", name: "", price: "", quantity: "", }]);
+  const [productDetails, setProductDetails] = useState([selectedProducts]);
 
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
@@ -99,18 +99,19 @@ const AddProduct = () => {
     setSearchText("");
   };
 
-  const handleUpdateProduct = ( event, prodId) => {
-   event.preventDefault();
+  /* const handleUpdateProduct = (event, prodId) => {
+    event.preventDefault();
 
-    if (!selectedProducts) {
+    if (!selectedProducts || selectedProducts.length === 0) {
       return;
     }
 
     const updateSelProduct = {
-      id: selectedProducts.id,
+      id: prodId,
       name: productName,
       price: productPrice,
       quantity: productQuantity,
+      subtotal: productSubtotal,
     };
 
     const updateProduct = selectedProducts.map((selProduct) => {
@@ -122,10 +123,14 @@ const AddProduct = () => {
     });
 
     setSelectedProducts(updateProduct);
-    setProductName("");
+   setProductName("");
     setProductPrice("");
     setProductQuantity("");
-  };
+    setProductSubtotal("");
+  };  
+   <button onClick={(event) => handleUpdateProduct(event, product.id)}>
+                    Update
+                  </button>*/
 
   const handleDeleteProduct = (productId) => {
     const updateDelProduct = selectedProducts.filter(
@@ -192,9 +197,6 @@ const AddProduct = () => {
                 <td>{product.quantity}</td>
                 <td>{product.subtotal}</td>
                 <td>
-                  <button onClick={() => handleUpdateProduct(product.id)}>
-                    Update
-                  </button>
                   <button onClick={() => handleDeleteProduct(product.id)}>
                     Delete
                   </button>
