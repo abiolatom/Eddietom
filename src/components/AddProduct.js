@@ -31,7 +31,6 @@ const AddProduct = () => {
   const [filterProduct, setFilterProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
-  const [productDetails, setProductDetails] = useState([selectedProducts]);
 
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
@@ -132,6 +131,13 @@ const AddProduct = () => {
                     Update
                   </button>*/
 
+  const calculateTotalPrice = () => {
+    return selectedProducts.reduce(
+      (total, product) => total + product.subtotal,
+      0
+    );
+  };
+
   const handleDeleteProduct = (productId) => {
     const updateDelProduct = selectedProducts.filter(
       (prod) => prod.id !== productId
@@ -204,6 +210,7 @@ const AddProduct = () => {
               </tr>
             ))}
           </tbody>
+          <h1><em>Total price:</em> {calculateTotalPrice()} </h1>
         </table>
       )}
     </div>
