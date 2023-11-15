@@ -1,18 +1,50 @@
 import React, { useState } from "react";
 
 const PaymentMethod = () => {
-  const [selectedMethod, setSelectedMethod] = useState([
-    {
-      cash: "",
-      bankTransfer: "",
-      pos: "",
-    },
-  ]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [inputValues, setInputValues] = useState([]);
+
+  const handleOptionChange = (e) => {
+    const selectedOption = e.target.value;
+    const newSelectedOption = [...selectedOptions, { selectedOption }];
+    setSelectedOptions(newSelectedOption);
+
+    setInputValues({
+      ...inputValues,
+      [selectedOption]: "",
+    });
+  };
+
+  const handleInputChange = (e, selectedOption) => {
+    const value = e.target.value;
+
+    setInputValues({
+      ...inputValues,
+      [selectedOption]: value,
+    });
+  };
 
   return (
     <div>
       <h2>Payment Method</h2>
-      <input placeholder="Select Payment Method"></input>
+      <label>Select Payment Method</label>{" "}
+      <select multiple onChange={handleOptionChange}>
+        <option>Cash...</option>
+        <option>Bank Transfer...</option>
+        <option>POS...</option>
+      </select>
+      <div>
+        {selectedOptions.map((option) => (
+          <div key={option}>
+            <label>{option}:</label>
+            <input
+              type="text"
+              value={inputValues[option] || ""}
+              onChange={(e) => handleInputChange(e, option)}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
