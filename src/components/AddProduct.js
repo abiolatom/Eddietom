@@ -14,8 +14,7 @@ const products = [
   { id: 10, name: "Eggrow" },
 ];
 
-const initialProduct =
-{
+const initialProduct = {
   id: "",
   name: "",
   price: "",
@@ -32,6 +31,7 @@ const AddProduct = () => {
   const [filterProduct, setFilterProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
+  const [productDetails, setProductDetails] = useState([{id: "", name: "", price: "", quantity: "", }]);
 
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
@@ -83,7 +83,7 @@ const AddProduct = () => {
       alert("Please input a Product, Price, and Price");
       return;
     }
-   
+
     const newProduct = {
       id: uuidv4(),
       name: productName,
@@ -99,12 +99,39 @@ const AddProduct = () => {
     setSearchText("");
   };
 
-  const handleUpdateProduct = (id) => {};
-  const handleDeleteProduct = (product) => {
-    const delProduct = selectedProducts.filter(
-      (selectedProduct) => selectedProduct.id !== product.id
+  const handleUpdateProduct = ( event, prodId) => {
+   event.preventDefault();
+
+    if (!selectedProducts) {
+      return;
+    }
+
+    const updateSelProduct = {
+      id: selectedProducts.id,
+      name: productName,
+      price: productPrice,
+      quantity: productQuantity,
+    };
+
+    const updateProduct = selectedProducts.map((selProduct) => {
+      if (selProduct.id === prodId) {
+        return updateSelProduct;
+      } else {
+        return selProduct;
+      }
+    });
+
+    setSelectedProducts(updateProduct);
+    setProductName("");
+    setProductPrice("");
+    setProductQuantity("");
+  };
+
+  const handleDeleteProduct = (productId) => {
+    const updateDelProduct = selectedProducts.filter(
+      (prod) => prod.id !== productId
     );
-    setSelectedProducts(delProduct);
+    setSelectedProducts(updateDelProduct);
   };
 
   return (
@@ -168,7 +195,9 @@ const AddProduct = () => {
                   <button onClick={() => handleUpdateProduct(product.id)}>
                     Update
                   </button>
-                  <button onClick={handleDeleteProduct}>Delete</button>
+                  <button onClick={() => handleDeleteProduct(product.id)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
