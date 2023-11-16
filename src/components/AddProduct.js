@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ProductList as products } from "./ProductList";
 import { ProductContext } from "./ProductContext";
@@ -12,6 +12,7 @@ const AddProduct = () => {
   const [filterProduct, setFilterProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
+
 
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
@@ -95,7 +96,7 @@ const AddProduct = () => {
   };
 
   return (
-    <ProductContext.Provider value={{ totalPrice }}>
+    <ProductContext.Provider value={ {calculateTotalPrice} }>
       <div className="container">
         <form onSubmit={handleAddProduct}>
           <input
