@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ProductList as products } from "./ProductList";
 import { useProductContext } from "./ProductContext";

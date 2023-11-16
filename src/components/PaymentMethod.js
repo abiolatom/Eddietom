@@ -3,34 +3,51 @@ import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [inputValues, setInputValues] = useState([]);
   const { calculateTotalPrice } = useContext(ProductContext);
+  const options = [
+    { value: "cash", label: "cash" },
+    { value: "transfer", label: "Bank Transfer" },
+    { value: "pos", label: "POS" },
+  ];
 
-  const handleOptionChange = (option) => (e) => {
-    const isChecked = e.target.checked;
-
-    setSelectedOptions((prevSelectedOptions) => {
-      if (isChecked) {
-        return [...prevSelectedOptions, option];
-      } else {
-        const updatedOptions = prevSelectedOptions.filter(
-          (selectedOption) => selectedOption !== option
-        );
-        const { [option]: removedValue, ...remainingValues } = inputValues;
-        setInputValues(remainingValues);
-
-        return updatedOptions;
+  const handleOptionChange = (value) => {
+    const isSelected = selectedOptions.some((option) => option === value);
+    if (isSelected) {
+      setSelectedOptions(
+        selectedOptions.filter((option) => option.value !== value)
+      );
+    } else {
+      setSelectedOptions([...selectedOptions, value]);
+    }
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked) {
+        checkbox.checked = false;
       }
     });
   };
 
-  const handleInputChange = (option) => (e) => {
-    const newValue = e.target.value;
-
-    setInputValues((prevInputValues) => ({
-      ...prevInputValues,
-      [option]: newValue,
-    }));
+  const optionsRender = () => {
+    return options.map((option) => {
+      const isChecked = selectedOptions.includes(option.value);
+      return (
+        <div key={option.value}>
+          <input
+            type="checkbox"
+            checked={isChecked || false}
+            onChange={() => handleOptionChange(option.value)}
+            value={option.value}
+          />
+          <label>{option.label} </label>
+          {isChecked && (
+            <input
+              type="text"
+              placeholder={`Enter amount paid by ${option.label}`}
+            />
+          )}
+        </div>
+      );
+    });
   };
 
   return (
@@ -39,30 +56,8 @@ const PaymentMethod = () => {
       <p>
         <em>Amount to pay:</em> <b>{calculateTotalPrice().toFixed(2)}</b>
       </p>
-      <label>Select Payment Method</label>{" "}
-      <select
-        multiple
-        value={selectedOptions}
-        onChange={handleOptionChange}
-      >
-        <option value="Cash">Cash...</option>
-        <option value="Transfer">Bank Transfer...</option>
-        <option value="POS"> POS...</option>
-      </select>
-      <div>
-        {selectedOptions.map((option) => (
-          <div key={option}>
-            <label>
-              {option}:
-              <input
-                type="text"
-                value={inputValues[option] || ""}
-                onChange={handleInputChange(option)}
-              />
-            </label>
-          </div>
-        ))}
-      </div>
+      <label>Select Payment Method</label> {optionsRender()}
+      <p>Payment Options: {selectedOptions.join(", ")} </p>
     </div>
   );
 };
