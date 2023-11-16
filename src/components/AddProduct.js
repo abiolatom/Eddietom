@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ProductList as products } from "./ProductList";
-
+import { ProductContext } from "./ProductContext";
 
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
@@ -79,45 +79,13 @@ const AddProduct = () => {
     setSearchText("");
   };
 
-  /* const handleUpdateProduct = (event, prodId) => {
-    event.preventDefault();
-
-    if (!selectedProducts || selectedProducts.length === 0) {
-      return;
-    }
-
-    const updateSelProduct = {
-      id: prodId,
-      name: productName,
-      price: productPrice,
-      quantity: productQuantity,
-      subtotal: productSubtotal,
-    };
-
-    const updateProduct = selectedProducts.map((selProduct) => {
-      if (selProduct.id === prodId) {
-        return updateSelProduct;
-      } else {
-        return selProduct;
-      }
-    });
-
-    setSelectedProducts(updateProduct);
-   setProductName("");
-    setProductPrice("");
-    setProductQuantity("");
-    setProductSubtotal("");
-  };  
-   <button onClick={(event) => handleUpdateProduct(event, product.id)}>
-                    Update
-                  </button>*/
-
   const calculateTotalPrice = () => {
     return selectedProducts.reduce(
       (total, product) => total + product.subtotal,
       0
     );
   };
+  const totalPrice = calculateTotalPrice();
 
   const handleDeleteProduct = (productId) => {
     const updateDelProduct = selectedProducts.filter(
@@ -127,74 +95,81 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="container">
-      <form onSubmit={handleAddProduct}>
-        <input
-          type="text"
-          value={searchText}
-          onChange={filterText}
-          placeholder="Add Product"
-          required
-        />
-        <ul>
-          {suggestions.map((suggestion) => (
-            <li
-              key={suggestion.id}
-              onClick={() => handleSuggestionClick(suggestion)}
-            >
-              {suggestion.name}
-            </li>
-          ))}
-        </ul>
-        <input
-          value={productPrice}
-          type="text"
-          onChange={handlePriceChange}
-          placeholder="Enter Price"
-          required
-        />
+    <ProductContext.Provider value={{ totalPrice }}>
+      <div className="container">
+        <form onSubmit={handleAddProduct}>
+          <input
+            type="text"
+            value={searchText}
+            onChange={filterText}
+            placeholder="Add Product"
+            required
+          />
+          <ul>
+            {suggestions.map((suggestion) => (
+              <li
+                key={suggestion.id}
+                onClick={() => handleSuggestionClick(suggestion)}
+              >
+                {suggestion.name}
+              </li>
+            ))}
+          </ul>
+          <input
+            value={productPrice}
+            type="text"
+            onChange={handlePriceChange}
+            placeholder="Enter Price"
+            required
+          />
 
-        <input
-          value={productQuantity}
-          type="text"
-          onChange={handleQuantityChange}
-          placeholder="Enter Quantity"
-          required
-        />
-        <button type="submit">Add Product</button>
-      </form>
+          <input
+            value={productQuantity}
+            type="text"
+            onChange={handleQuantityChange}
+            placeholder="Enter Quantity"
+            required
+          />
+          <button type="submit">Add Product</button>
+        </form>
 
-      {selectedProducts.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th> Product Name</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>SubTotal</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        {selectedProducts.length > 0 && (
+          <table>
+            <thead>
+              <tr>
+                <th> Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>SubTotal</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {selectedProducts.map((product) => (
-              <tr key={product.id}>
-                <td> {product.name}</td>
-                <td>{product.price}</td>
-                <td>{product.quantity}</td>
-                <td>{product.subtotal}</td>
-                <td>
-                  <button onClick={() => handleDeleteProduct(product.id)}>
-                    Delete
-                  </button>
+            <tbody>
+              {selectedProducts.map((product) => (
+                <tr key={product.id}>
+                  <td> {product.name}</td>
+                  <td>{product.price}</td>
+                  <td>{product.quantity}</td>
+                  <td>{product.subtotal}</td>
+                  <td>
+                    <button onClick={() => handleDeleteProduct(product.id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan="3">Total Price:</td>
+                <td colSpan="2">
+                  <b>{totalPrice}</b>
                 </td>
               </tr>
-            ))}
-          </tbody>
-          <h1><em>Total price:</em> {calculateTotalPrice()} </h1>
-        </table>
-      )}
-    </div>
+            </tbody>
+          </table>
+        )}
+      </div>
+    </ProductContext.Provider>
   );
 };
 
