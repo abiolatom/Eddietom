@@ -41,17 +41,13 @@ const PaymentMethod = () => {
       </p>
       <label>Select Payment Method</label>{" "}
       <select
-        multiple={true}
+        multiple
         value={selectedOptions}
-        onChange={(e) =>
-          setSelectedOptions(
-            Array.from(e.target.selectedOptions, (option) => option.value)
-          )
-        }
+        onChange={handleOptionChange}
       >
-        <option>Cash...</option>
-        <option>Bank Transfer...</option>
-        <option>POS...</option>
+        <option value="Cash">Cash...</option>
+        <option value="Transfer">Bank Transfer...</option>
+        <option value="POS"> POS...</option>
       </select>
       <div>
         {selectedOptions.map((option) => (
