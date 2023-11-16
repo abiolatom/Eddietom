@@ -7,7 +7,7 @@ export const ProductProvider = ({ children }) => {
     const [selectedProducts, setSelectedProducts] = useState([]);
 
     const calculateTotalPrice = () => {
-        return selectedProducts.reduce((total, product) => total + parseFloat(product.subtotal), 0).toFixed(2);
+        return selectedProducts.reduce((total, product) => total + parseFloat(product.subtotal), 0);
     };
 
     return (
@@ -18,5 +18,5 @@ export const ProductProvider = ({ children }) => {
 };
 
 export const useProductContext = () => {
-    return useState(ProductContext);
+    return useContext(ProductContext);
 }

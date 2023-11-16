@@ -8,7 +8,6 @@ const AddProduct = () => {
   const [productPrice, setProductPrice] = useState("");
   const { selectedProducts, setSelectedProducts, calculateTotalPrice } =
     useProductContext();
-  // const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [filterProduct, setFilterProduct] = useState([]);
@@ -80,14 +79,6 @@ const AddProduct = () => {
     setProductQuantity("");
     setSearchText("");
   };
-
-  /*const calculateTotalPrice = () => {
-    return selectedProducts.reduce(
-      (total, product) => total + product.subtotal,
-      0
-    );
-  };
-  const totalPrice = calculateTotalPrice();*/
 
   const handleDeleteProduct = (productId) => {
     const updateDelProduct = selectedProducts.filter(
@@ -161,9 +152,11 @@ const AddProduct = () => {
               </tr>
             ))}
             <tr>
-              <td colSpan="3">Total Price:</td>
+              <td colSpan="3">
+                <b>Total Price: </b>
+              </td>
               <td colSpan="2">
-                <b>{calculateTotalPrice}</b>
+                <b>{Number(calculateTotalPrice())} </b>
               </td>
             </tr>
           </tbody>

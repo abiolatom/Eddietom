@@ -4,7 +4,7 @@ import { ProductContext } from "./ProductContext";
 const PaymentMethod = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [inputValues, setInputValues] = useState([]);
-  const {calculateTotalPrize} = useContext(ProductContext);
+  const {calculateTotalPrice} = useContext(ProductContext);
 
   const handleOptionChange = (e) => {
     const selectedOption = e.target.value;
@@ -26,10 +26,11 @@ const PaymentMethod = () => {
     });
   };
 
+  
   return (
     <div>
       <h1>Payment Information</h1>
-      <p>Total Price: {calculateTotalPrize}</p>
+      <p><em>Amount to pay:</em> <b>{calculateTotalPrice().toFixed(2)}</b></p>
       <label>Select Payment Method</label>{" "}
       <select multiple onChange={handleOptionChange}>
         <option>Cash...</option>
