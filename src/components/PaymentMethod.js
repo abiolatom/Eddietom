@@ -4,7 +4,6 @@ import { ProductContext } from "./ProductContext";
 const PaymentMethod = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const { calculateTotalPrice } = useContext(ProductContext);
-  const checkboxRefs = {};
 
   const options = [
     { value: "cash", label: "Cash" },
@@ -26,9 +25,6 @@ const PaymentMethod = () => {
         <div key={option.value}>
           <input
             type="checkbox"
-            ref={(ref) => {
-              checkboxRefs[option.value] = ref;
-            }}
             checked={isChecked}
             onChange={() => handleOptionChange(option.value)}
             value={option.value}
