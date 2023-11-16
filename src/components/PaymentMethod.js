@@ -4,27 +4,19 @@ import { ProductContext } from "./ProductContext";
 const PaymentMethod = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const { calculateTotalPrice } = useContext(ProductContext);
+  const checkboxRefs = {};
+
   const options = [
-    { value: "cash", label: "cash" },
+    { value: "cash", label: "Cash" },
     { value: "transfer", label: "Bank Transfer" },
     { value: "pos", label: "POS" },
   ];
 
   const handleOptionChange = (value) => {
-    const isSelected = selectedOptions.some((option) => option === value);
-    if (isSelected) {
-      setSelectedOptions(
-        selectedOptions.filter((option) => option.value !== value)
-      );
-    } else {
-      setSelectedOptions([...selectedOptions, value]);
-    }
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach((checkbox) => {
-      if (checkbox.checked) {
-        checkbox.checked = false;
-      }
-    });
+    const newSelectedOptions = selectedOptions.includes(value)
+      ? selectedOptions.filter((option) => option.value !== value)
+      : [...selectedOptions, value];
+    setSelectedOptions(newSelectedOptions);
   };
 
   const optionsRender = () => {
@@ -34,14 +26,17 @@ const PaymentMethod = () => {
         <div key={option.value}>
           <input
             type="checkbox"
-            checked={isChecked || false}
+            ref={(ref) => {
+              checkboxRefs[option.value] = ref;
+            }}
+            checked={isChecked}
             onChange={() => handleOptionChange(option.value)}
             value={option.value}
           />
           <label>{option.label} </label>
           {isChecked && (
             <input
-              type="text"
+              type="number"
               placeholder={`Enter amount paid by ${option.label}`}
             />
           )}
