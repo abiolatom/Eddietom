@@ -1,7 +1,6 @@
 import React from "react";
-import AddProduct from "./components/AddProduct";
 import "./App.css";
-import PaymentMethod from "./components/PaymentMethod";
+import AddSalesForm from "./components/AddSalesForm";
 
 
 const App = () => {
@@ -9,8 +8,7 @@ const App = () => {
   return (
     <div className="container">
       <h1>Sales Form</h1>
-      <AddProduct />
-      <PaymentMethod />
+    <AddSalesForm/>
      
     </div>
   );
