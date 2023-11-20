@@ -6,7 +6,7 @@ import { useProductContext } from "./ProductContext";
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const { selectedProducts, setSelectedProducts, calculateTotalPrice } =
+  const { selectedProducts, setSelectedProducts, calculateTotalPrice, selectedProduct, setSelectedProduct } =
     useProductContext();
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -16,6 +16,7 @@ const AddProduct = () => {
 
   const filterText = (e) => {
     const value = e.target.value.toLowerCase();
+
     setSearchText(value);
     const filterProductList = products.filter((product) =>
       product.name.toLowerCase().includes(value)
@@ -65,19 +66,58 @@ const AddProduct = () => {
       return;
     }
 
-    const newProduct = {
-      id: uuidv4(),
-      name: productName,
-      price: productPrice,
-      quantity: productQuantity,
-      subtotal: productSubtotal,
+    const existingProduct = selectedProducts.find(
+      (p) => p.name === productName
+    );
+    if (existingProduct) {
+      alert(`Product ${existingProduct.name} already exist. Update it instead`);
+    } else {
+      const newProduct = {
+        id: uuidv4(),
+        name: productName,
+        price: productPrice,
+        quantity: productQuantity,
+        subtotal: productSubtotal,
+      };
+
+      setSelectedProducts([...selectedProducts, newProduct]);
+      setProductName("");
+      setProductPrice("");
+      setProductQuantity("");
+      setSearchText("");
+    }
+  };
+
+  const handleUpdateProductClick = (product) => {
+    setSelectedProduct(product);
+    setSearchText(product.name);
+    setProductPrice(product.price);
+    setProductQuantity(product.quantity);
+  };
+
+  const handleUpdateSelectedProduct = (e) => {
+    e.preventDefault();
+    if (!selectedProduct) {
+      return;
+    }
+    const updatedProduct = {
+      id: selectedProduct.id,
+      name: selectedProduct.name,
+      price: selectedProduct.price,
+      quantity: selectedProduct.quantity,
     };
 
-    setSelectedProducts([...selectedProducts, newProduct]);
+    const updatedProductsList = selectedProducts.map((selectedProductId) =>
+      selectedProductId === selectedProduct.id
+        ? updatedProduct
+        : selectedProduct
+    );
+    setSelectedProducts(updatedProductsList);
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
     setSearchText("");
+    setSelectedProduct(null);
   };
 
   const handleDeleteProduct = (productId) => {
@@ -145,6 +185,9 @@ const AddProduct = () => {
                 <td>{product.quantity}</td>
                 <td>{product.subtotal}</td>
                 <td>
+                  <button onClick={() => handleUpdateProductClick(product)}>
+                    Update
+                  </button>
                   <button onClick={() => handleDeleteProduct(product.id)}>
                     Delete
                   </button>

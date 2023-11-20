@@ -1,5 +1,11 @@
 
-  /* const handleUpdateProduct = (event, prodId) => {
+  /* const handleUpdateProductClick = (selected produc => {
+    setSelectedProduct(selectedProduct);
+    setProductName(selectedProducts.productName);
+    setSearchText(selectedProducts.productName);
+    setProductPrice(selectedProducts.productPrice);
+    setProductQuantity(selectedProducts.productQuantity);
+
     event.preventDefault();
 
     if (!selectedProducts || selectedProducts.length === 0) {
