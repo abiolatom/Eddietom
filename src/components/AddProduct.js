@@ -6,8 +6,13 @@ import { useProductContext } from "./ProductContext";
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
-  const { selectedProducts, setSelectedProducts, calculateTotalPrice, selectedProduct, setSelectedProduct } =
-    useProductContext();
+  const {
+    selectedProducts,
+    setSelectedProducts,
+    calculateTotalPrice,
+    selectedProduct,
+    setSelectedProduct,
+  } = useProductContext();
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [filterProduct, setFilterProduct] = useState([]);
@@ -100,19 +105,26 @@ const AddProduct = () => {
     if (!selectedProduct) {
       return;
     }
-    const updatedProduct = {
+    const newProduct = {
       id: selectedProduct.id,
       name: selectedProduct.name,
       price: selectedProduct.price,
       quantity: selectedProduct.quantity,
+      subtotal: selectedProduct.subtotal,
     };
 
-    const updatedProductsList = selectedProducts.map((selectedProductId) =>
-      selectedProductId === selectedProduct.id
-        ? updatedProduct
-        : selectedProduct
+    const updatedProducts = selectedProducts.map((p) =>
+      p.id === selectedProduct.id ? newProduct : p
     );
-    setSelectedProducts(updatedProductsList);
+    setSelectedProducts(updatedProducts);
+    setProductName("");
+    setProductPrice("");
+    setProductQuantity("");
+    setSearchText("");
+    setSelectedProduct(null);
+  };
+
+  const handleCancelSelectedProduct = () => {
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
@@ -129,7 +141,13 @@ const AddProduct = () => {
 
   return (
     <div className="container">
-      <form onSubmit={handleAddProduct}>
+      <form
+        onSubmit={(event) =>
+          selectedProduct
+            ? handleUpdateSelectedProduct(event)
+            : handleAddProduct(event)
+        }
+      >
         <input
           type="text"
           value={searchText}
@@ -162,7 +180,14 @@ const AddProduct = () => {
           placeholder="Enter Quantity"
           required
         />
-        <button type="submit">Add Product</button>
+        {selectedProduct ? (
+          <div>
+            <button type="submit">Save</button>
+            <button onClick={handleCancelSelectedProduct}>Cancel</button>
+          </div>
+        ) : (
+          <button type="submit">Add Product</button>
+        )}
       </form>
 
       {selectedProducts.length > 0 && (
