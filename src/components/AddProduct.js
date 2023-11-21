@@ -98,6 +98,7 @@ const AddProduct = () => {
     setSearchText(product.name);
     setProductPrice(product.price);
     setProductQuantity(product.quantity);
+    setProductSubtotal(product.subtotal);
   };
 
   const handleUpdateSelectedProduct = (e) => {
