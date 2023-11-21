@@ -20,9 +20,14 @@ const PaymentMethod = () => {
 
   const handleOptionChange = (value) => {
     const newSelectedOptions = [...selectedOptions];
-    if (!newSelectedOptions.includes(value)) {
+    const index = newSelectedOptions.indexOf(value);
+
+    if (index !== -1) {
+      newSelectedOptions.splice(index, 1);
+    } else {
       newSelectedOptions.push(value);
     }
+    console.log("Updated selectedOptions:", newSelectedOptions, amounts);
 
     setSelectedOptions(newSelectedOptions);
   };
@@ -89,3 +94,4 @@ const PaymentMethod = () => {
 };
 
 export default PaymentMethod;
+
