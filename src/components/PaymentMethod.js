@@ -19,9 +19,11 @@ const PaymentMethod = () => {
   };
 
   const handleOptionChange = (value) => {
-    const newSelectedOptions = selectedOptions.includes(value)
-      ? selectedOptions.filter((option) => option.value !== value)
-      : [...selectedOptions, value];
+    const newSelectedOptions = [...selectedOptions];
+    if (!newSelectedOptions.includes(value)) {
+      newSelectedOptions.push(value);
+    }
+
     setSelectedOptions(newSelectedOptions);
   };
 
@@ -50,6 +52,7 @@ const PaymentMethod = () => {
           />
           <label>{option.label} </label>
           {paymentInput}
+          {isChecked && <span> (Paid: {amounts[option.value] || 0})</span>}
         </div>
       );
     });
