@@ -15,17 +15,25 @@ const PaymentMethod = () => {
   const handleAmountChange = (event, value) => {
     const newAmount = { ...amounts };
     newAmount[value] = event.target.value;
+
+    if (
+      !selectedOptions.some((option) => option.value === value) &&
+      (!event.target.value || parseFloat(event.target.value) === 0)
+    ) {
+      delete newAmount[value];
+    }
     setAmounts(newAmount);
   };
 
   const handleOptionChange = (value) => {
     const newSelectedOptions = [...selectedOptions];
-    const index = newSelectedOptions.indexOf(value);
+    const index = newSelectedOptions.findIndex((option) => option.value === value);
 
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
     } else {
-      newSelectedOptions.push(value);
+      const selectedOption = { value, amounts: 0 };
+      newSelectedOptions.push(selectedOption);
     }
     console.log("Updated selectedOptions:", newSelectedOptions, amounts);
 
@@ -33,34 +41,50 @@ const PaymentMethod = () => {
   };
 
   const optionsRender = () => {
-    const totalPayment = Object.values(amounts).reduce(
-      (acc, amount) => acc + parseFloat(amount) || 0,
-      0
+    return (
+      <div>
+        {options.map((option) => {
+          const isChecked = selectedOptions.some(
+            (selectedOption) => selectedOption.value === option.value
+          );
+          const paymentInput = isChecked ? (
+            <input
+              type="number"
+              placeholder={`Enter amount paid by ${option.label}`}
+              value={(
+                selectedOptions.find(
+                  (selectedOption) => selectedOption.value === option.value
+                )?.amount || 0
+              ).toFixed(2)}
+              onChange={(e) => handleAmountChange(e, option.value)}
+            />
+          ) : null;
+          return (
+            <div key={option.value}>
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={() => handleOptionChange(option.value)}
+                value={option.value}
+              />
+              <label>{option.label} </label>
+              {paymentInput}
+              {isChecked && (
+                <span>
+                  (Paid:
+                  {(
+                    selectedOptions.find(
+                      (selectedOption) => selectedOption.value === option.value
+                    )?.amount || 0
+                  ).toFixed(2)}
+                  )
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
     );
-    return options.map((option) => {
-      const isChecked = selectedOptions.includes(option.value);
-      const paymentInput = isChecked ? (
-        <input
-          type="number"
-          placeholder={`Enter amount paid by ${option.label}`}
-          value={amounts[option.value] || ""}
-          onChange={(e) => handleAmountChange(e, option.value)}
-        />
-      ) : null;
-      return (
-        <div key={option.value}>
-          <input
-            type="checkbox"
-            checked={isChecked}
-            onChange={() => handleOptionChange(option.value)}
-            value={option.value}
-          />
-          <label>{option.label} </label>
-          {paymentInput}
-          {isChecked && <span> (Paid: {amounts[option.value] || 0})</span>}
-        </div>
-      );
-    });
   };
 
   const paymentComparison = () => {
@@ -88,10 +112,12 @@ const PaymentMethod = () => {
       </p>
       <p>{paymentComparison()}</p>
       <label>Select Payment Method</label> {optionsRender()}
-      <p>Payment Options: {selectedOptions.join(", ")}</p>
+      <p>
+        Payment Options:
+        {selectedOptions.map((o) => o.value).join(", ")}
+      </p>
     </div>
   );
 };
 
 export default PaymentMethod;
-
