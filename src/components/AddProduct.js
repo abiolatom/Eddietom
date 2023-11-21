@@ -108,26 +108,29 @@ const AddProduct = () => {
     if (!selectedProduct) {
       return;
     }
-
-    const updatedProducts = selectedProducts.map((product) =>
-      product.id === selectedProduct.id
-        ? {
-            ...product,
-            name: product.name,
-            price: product.price,
-            quantity: product.quantity,
-            subtotal: product.subtotal,
-          }
-        : product
-    );
-    setSelectedProducts(updatedProducts);
+    const updatedProducts = [];
+    for (let i = 0; i < selectedProducts.length; i++) {
+      const product = selectedProducts[i];
+      if (product.id === selectedProduct.id) {
+        updatedProducts.push({
+          ...product,
+          name: product.name,
+          price: product.price,
+          quantity: product.quantity,
+          subtotal: product.subtotal,
+        });
+      } else {
+        updatedProducts.push(product);
+      }
+    }
+    setSelectedProducts([...selectedProducts]);
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
     setSearchText("");
     setSelectedProduct(null);
 
-    console.log("updatedProducts:", updatedProducts);
+    console.log("updatedProducts:", selectedProducts);
     console.log("selectedProducts after update:", selectedProducts);
   };
 
