@@ -103,19 +103,22 @@ const AddProduct = () => {
 
   const handleUpdateSelectedProduct = (e) => {
     e.preventDefault();
+    console.log("selectedProduct:", selectedProduct);
+    console.log("selectedProducts before update:", selectedProducts);
     if (!selectedProduct) {
       return;
     }
-    const newProduct = {
-      id: selectedProduct.id,
-      name: selectedProduct.name,
-      price: selectedProduct.price,
-      quantity: selectedProduct.quantity,
-      subtotal: selectedProduct.subtotal,
-    };
 
-    const updatedProducts = selectedProducts.map((p) =>
-      p.id === selectedProduct.id ? newProduct : p
+    const updatedProducts = selectedProducts.map((product) =>
+      product.id === selectedProduct.id
+        ? {
+            ...product,
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity,
+            subtotal: product.subtotal,
+          }
+        : product
     );
     setSelectedProducts(updatedProducts);
     setProductName("");
@@ -123,6 +126,9 @@ const AddProduct = () => {
     setProductQuantity("");
     setSearchText("");
     setSelectedProduct(null);
+
+    console.log("updatedProducts:", updatedProducts);
+    console.log("selectedProducts after update:", selectedProducts);
   };
 
   const handleCancelSelectedProduct = () => {

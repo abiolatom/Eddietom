@@ -4,7 +4,7 @@ export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const calculateTotalPrice = () => {
     return selectedProducts.reduce(
