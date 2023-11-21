@@ -17,10 +17,19 @@ const PaymentMethod = () => {
     newAmount[value] = event.target.value;
 
     if (
-      !selectedOptions.some((option) => option.value === value) &&
-      (!event.target.value || parseFloat(event.target.value) === 0)
+      selectedOptions.some((option) => option.value === value) &&
+      event.target.value &&
+      parseFloat(event.target.value) > 0
     ) {
-      delete newAmount[value];
+      const newSelectedOptions = [...selectedOptions];
+      const index = newSelectedOptions.findIndex(
+        (option) => option.value === value
+      );
+
+      if (index !== -1) {
+        newSelectedOptions[index].amounts = parseFloat(event.target.value);
+        setSelectedOptions(newSelectedOptions);
+      }
     }
     setAmounts(newAmount);
   };
@@ -33,6 +42,10 @@ const PaymentMethod = () => {
 
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
+      const newAmounts = { ...amounts };
+      delete newAmounts[value];
+
+      setAmounts(newAmounts);
     } else {
       const selectedOption = { value, amounts: 0 };
       newSelectedOptions.push(selectedOption);
@@ -82,12 +95,17 @@ const PaymentMethod = () => {
   };
 
   const paymentComparison = () => {
+    const remainingAmount = calculateTotalPrice() - totalPayment;
     if (totalPayment === calculateTotalPrice()) {
       return "Total payment matches required amount.";
     } else if (totalPayment > calculateTotalPrice()) {
-      return "Total payment is more than required amount.";
+      return `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
+        2
+      )}`;
     } else {
-      return "Total payment is less than required amount.";
+      return `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
+        2
+      )}`;
     }
   };
   const totalPayment = Object.values(amounts).reduce(
