@@ -27,7 +27,9 @@ const PaymentMethod = () => {
 
   const handleOptionChange = (value) => {
     const newSelectedOptions = [...selectedOptions];
-    const index = newSelectedOptions.findIndex((option) => option.value === value);
+    const index = newSelectedOptions.findIndex(
+      (option) => option.value === value
+    );
 
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
@@ -44,18 +46,15 @@ const PaymentMethod = () => {
     return (
       <div>
         {options.map((option) => {
-          const isChecked = selectedOptions.some(
+          const selectedOption = selectedOptions.find(
             (selectedOption) => selectedOption.value === option.value
           );
+          const isChecked = !!selectedOption;
           const paymentInput = isChecked ? (
             <input
               type="number"
               placeholder={`Enter amount paid by ${option.label}`}
-              value={(
-                selectedOptions.find(
-                  (selectedOption) => selectedOption.value === option.value
-                )?.amount || 0
-              ).toFixed(2)}
+              value={amounts[option.value] || ""}
               onChange={(e) => handleAmountChange(e, option.value)}
             />
           ) : null;
@@ -72,12 +71,7 @@ const PaymentMethod = () => {
               {isChecked && (
                 <span>
                   (Paid:
-                  {(
-                    selectedOptions.find(
-                      (selectedOption) => selectedOption.value === option.value
-                    )?.amount || 0
-                  ).toFixed(2)}
-                  )
+                  {amounts[option.value] || 0})
                 </span>
               )}
             </div>
@@ -110,12 +104,8 @@ const PaymentMethod = () => {
       <p>
         <em>Total paid:</em> <b>{totalPayment.toFixed(2)}</b>
       </p>
-      <p>{paymentComparison()}</p>
       <label>Select Payment Method</label> {optionsRender()}
-      <p>
-        Payment Options:
-        {selectedOptions.map((o) => o.value).join(", ")}
-      </p>
+      <p>{paymentComparison()}</p>
     </div>
   );
 };
