@@ -5,6 +5,8 @@ export const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [amounts, setAmounts] = useState({});
 
   const calculateTotalPrice = () => {
     return selectedProducts.reduce(
@@ -21,6 +23,10 @@ export const ProductProvider = ({ children }) => {
         selectedProduct,
         setSelectedProduct,
         calculateTotalPrice,
+        selectedOptions,
+        setSelectedOptions,
+        amounts,
+        setAmounts,
       }}
     >
       {children}

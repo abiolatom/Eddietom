@@ -1,10 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const { calculateTotalPrice } = useContext(ProductContext);
-  const [amounts, setAmounts] = useState({});
+  const {
+    calculateTotalPrice,
+    selectedOptions,
+    setSelectedOptions,
+    amounts,
+    setAmounts,
+  } = useContext(ProductContext);
 
   const options = [
     { value: "cash", label: "Cash" },
