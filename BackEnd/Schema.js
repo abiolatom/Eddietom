@@ -18,8 +18,8 @@ const productSchema = new mongoose.Schema({
   Other_Info: { type: String },
 });
 
-const Products = mongoose.model("User", productSchema);
+const Products = mongoose.model("Products", productSchema);
 
 module.exports = {
-  Products: Products,
+  Products,
 };
