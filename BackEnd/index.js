@@ -22,7 +22,7 @@ mongoose
 Router.get("/", async (req, res) => {
   const products = await Products.find();
   res.json(products);
-});
+}); 
 
 Router.post("/", async (req, res) => {
   try {
