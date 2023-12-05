@@ -1,33 +1,20 @@
-import mongoose from "mongoose";
-const { schema } = mongoose;
+const { MongoClient } = require("mongodb");
 
-const productSchema = new schema(
-  {
-    productName: String,
-    unitCost: Number,
-    quantity: Number,
-    transportCost: Number,
-    totalCost: Number,
-    purchaseDate: Date,
-    deliveryDate: Date,
-    sellerName: String,
-    sellerAddress: String,
-    paymentMethod: String,
-    paymentDate: String,
-    paymentInstallment: [
-      {
-        howMany: Number,
-        amount: Number,
-        secondInstallmentDate: Date,
-        secondAmount: Number,
-        paymentCompletionDate: Date,
-      },
-    ],
-    Other_Info: String,
+
+const MONGO_URI = process.env.DATABASE_URL;
+let dbConnection;
+
+module.exports = {
+  connectToDb: (cb) => {
+    MongoClient.connect(MONGO_URI)
+      .then((client) => {
+        dbConnection = client.db();
+        return cb();
+      })
+      .catch((err) => {
+        console.error(err);
+        return cb(err);
+      });
   },
-  { timestamps: true }
-);
-
-const products = mongoose.model('products', productSchema);
-
-export default products
+  getDb: () => dbConnection,
+};
