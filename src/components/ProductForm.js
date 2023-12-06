@@ -1,22 +1,45 @@
 import { useState } from "react";
-import { productTemplate } from "../utils/products";
 
 const ProductForm = () => {
   const [productData, setProductData] = useState({
-    productTemplate,
+    productName: "",
+    category: "",
+    unitCost: "",
+    quantity: "",
+    transportCost: "",
+    totalCost: "",
+    purchaseDate: "",
+    deliveryDate: "",
+    sellerName: "",
+    sellerAddress: "",
+    paymentMethod: "",
+    paymentDate: "",
+    paymentInstallment: {
+      howMany: 1,
+      amount: 0,
+      secondInstallmentDate: "",
+      secondAmount: 0,
+      paymentCompletionDate: "",
+    },
+
+    otherInfo: "",
   });
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, type } = event.target;
 
     // If the field is part of paymentInstallment, update it accordingly
-    if (name.startsWith("paymentInstallment.")) {
+    if (name.startsWith("paymentInstallment")) {
       const paymentField = name.split(".")[1];
+
+      // For date inputs, use valueAsDate
+      const updatedValue = type === "date" ? event.target.valueAsDate : value;
+
       setProductData((prevData) => ({
         ...prevData,
         paymentInstallment: {
           ...prevData.paymentInstallment,
-          [paymentField]: value,
+          [paymentField]: updatedValue,
         },
       }));
     } else {
@@ -27,9 +50,26 @@ const ProductForm = () => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Logic to handle form submission, e.g., calling an API
+    try {
+      const response = await fetch("http://localhost:3001/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productData),
+      });
+
+      if (response.ok) {
+        console.log("Product added successfully");
+        // Optionally, you can reset the form or navigate to a different page
+      } else {
+        console.error("Error adding product:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error adding product:", error.message);
+    }
   };
   return (
     <div>
@@ -41,7 +81,10 @@ const ProductForm = () => {
             <label htmlFor="productName">Product Name</label>
             <input
               id="productName"
+              name="productName"
               type="text"
+              value={productData.productName}
+              onChange={handleChange}
               placeholder="Product name"
               required
             />
@@ -50,7 +93,10 @@ const ProductForm = () => {
             <label htmlFor="category">Product Category</label>
             <input
               id="category"
+              name="category"
               type="text"
+              value={productData.category}
+              onChange={handleChange}
               placeholder="Product Category"
               required
             />
@@ -59,7 +105,10 @@ const ProductForm = () => {
             <label htmlFor="unitCost">Product Cost</label>
             <input
               id="unitCost"
+              name="unitCost"
               type="text"
+              value={productData.unitCost}
+              onChange={handleChange}
               placeholder="Cost Price"
               required
             />
@@ -68,7 +117,10 @@ const ProductForm = () => {
             <label htmlFor="quantity">Purchase Quantity</label>
             <input
               id="quantity"
+              name="quantity"
               type="text"
+              value={productData.quantity}
+              onChange={handleChange}
               placeholder="Product Quantity"
               required
             />
@@ -77,7 +129,10 @@ const ProductForm = () => {
             <label htmlFor="transportCost">Transport Cost</label>
             <input
               id="transportCost"
+              name="transportCost"
               type="text"
+              value={productData.transportCost}
+              onChange={handleChange}
               placeholder="Transport Price"
               required
             />
@@ -87,7 +142,10 @@ const ProductForm = () => {
             <label htmlFor="totalCost">Total Cost</label>
             <input
               id="totalCost"
+              name="totalCost"
               type="text"
+              value={productData.totalCost}
+              onChange={handleChange}
               placeholder="Total Cost"
               required
             />
@@ -100,21 +158,45 @@ const ProductForm = () => {
           </legend>
           <section>
             <label htmlFor="purchaseDate">Purchase Date</label>
-            <input id="purchaseDate" type="date" placeholder="Cost Price" />
+            <input
+              id="purchaseDate"
+              name="purchaseDate"
+              type="date"
+              value={productData.purchaseDate}
+              onChange={handleChange}
+              placeholder="Cost Price"
+            />
           </section>
           <section>
             <label htmlFor="deliveryDate">Delivery Date</label>
-            <input id="deliveryDate" type="date" placeholder="Cost Price" />
+            <input
+              id="deliveryDate"
+              name="deliveryDate"
+              value={productData.deliveryDate}
+              onChange={handleChange}
+              type="date"
+              placeholder="Cost Price"
+            />
           </section>
 
           <section>
             <label htmlFor="sellerName">Seller Name</label>
-            <input id="sellerName" type="text" placeholder='Seller Name"s' />
+            <input
+              id="sellerName"
+              name="sellerName"
+              type="text"
+              value={productData.sellerName}
+              onChange={handleChange}
+              placeholder='Seller Name"s'
+            />
           </section>
           <section>
             <label htmlFor="sellerAddress">Seller's Address</label>
             <input
               id="sellerAddress"
+              name="sellerAddress"
+              value={productData.sellerAddress}
+              onChange={handleChange}
               type="text"
               placeholder='Seller"s Address'
             />
@@ -123,89 +205,93 @@ const ProductForm = () => {
             <label htmlFor="paymentMethod">Payment Method</label>
             <input
               id="paymentMethod"
+              name="paymentMethod"
               type="text"
+              value={productData.paymentMethod}
+              onChange={handleChange}
               placeholder="Mode of Payment"
             />
           </section>
           <section>
             <label htmlFor="paymentDate">Payment Date</label>
-            <input id="paymentDate" type="date" />
+            <input
+              id="paymentDate"
+              value={productData.paymentDate}
+              onChange={handleChange}
+              name="paymentDate"
+              type="date"
+            />
           </section>
 
           <section>
             <label htmlFor="paymentInstallment">Payment Installment</label>
-            <input
-              id="paymentInstallment"
-              type="number"
-              placeholder="Payment Installment"
-            />
-          </section>
 
-          <section>
-            <label htmlFor="paymentInstallment.howMany">
-              Number of Installments
-            </label>
-            <input
-              type="number"
-              id="paymentInstallment.howMany"
-              name="paymentInstallment.howMany"
-              value={productData.paymentInstallment.howMany}
-              onChange={handleChange}
-            />
+            <section>
+              <label htmlFor="paymentInstallment.howMany">
+                Number of Installments
+              </label>
+              <input
+                type="number"
+                name="howMany"
+                id="paymentInstallment.howMany"
+                value={productData.paymentInstallment.howMany}
+                onChange={handleChange}
+              />
+            </section>
+            <section>
+              <label htmlFor="paymentInstallment.amount">
+                First Installment Amount
+              </label>
+              <input
+                type="number"
+                id="paymentInstallment.amount"
+                name="amount"
+                value={productData.paymentInstallment.amount}
+                onChange={handleChange}
+              />
+            </section>
+            <section>
+              <label htmlFor="paymentInstallment.secondInstallmentDate">
+                Second Installment Date
+              </label>
+              <input
+                type="date"
+                id="paymentInstallment.secondInstallmentDate"
+                name="secondInstallmentDate"
+                value={productData.paymentInstallment.secondInstallmentDate}
+                onChange={handleChange}
+              />
+            </section>
+            <section>
+              <label htmlFor="paymentInstallment.secondAmount">
+                Second Installment Amount
+              </label>
+              <input
+                type="number"
+                id="paymentInstallment.secondAmount"
+                name="secondAmount"
+                value={productData.paymentInstallment.secondAmount}
+                onChange={handleChange}
+              />
+            </section>
+            <section>
+              <label htmlFor="paymentInstallment.paymentCompletionDate">
+                Payment Completion Date
+              </label>
+              <input
+                type="date"
+                id="paymentInstallment.paymentCompletionDate"
+                name="paymentCompletionDate"
+                value={productData.paymentInstallment.paymentCompletionDate}
+                onChange={handleChange}
+              />
+            </section>
           </section>
-          <section>
-            <label htmlFor="paymentInstallment.amount">
-              First Installment Amount
-            </label>
-            <input
-              type="number"
-              id="paymentInstallment.amount"
-              name="paymentInstallment.amount"
-              value={productData.paymentInstallment.amount}
-              onChange={handleChange}
-            />
-          </section>
-          <section>
-            <label htmlFor="paymentInstallment.secondInstallmentDate">
-              Second Installment Date
-            </label>
-            <input
-              type="date"
-              id="paymentInstallment.secondInstallmentDate"
-              name="paymentInstallment.secondInstallmentDate"
-              value={productData.paymentInstallment.secondInstallmentDate}
-              onChange={handleChange}
-            />
-          </section>
-          <section>
-            <label htmlFor="paymentInstallment.secondAmount">
-              Second Installment Amount
-            </label>
-            <input
-              type="number"
-              id="paymentInstallment.secondAmount"
-              name="paymentInstallment.secondAmount"
-              value={productData.paymentInstallment.secondAmount}
-              onChange={handleChange}
-            />
-          </section>
-          <section>
-            <label htmlFor="paymentInstallment.paymentCompletionDate">
-              Payment Completion Date
-            </label>
-            <input
-              type="date"
-              id="paymentInstallment.paymentCompletionDate"
-              name="paymentInstallment.paymentCompletionDate"
-              value={productData.paymentInstallment.paymentCompletionDate}
-              onChange={handleChange}
-            />
-          </section>
-
           <section>
             <label htmlFor="otherInfo">Other Info</label>
             <textarea
               id="otherInfo"
+              name="otherInfo"
               type="text"
               placeholder="Any other Info?"
             />

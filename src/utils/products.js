@@ -36,14 +36,13 @@ export const productTemplate = {
   sellerAddress: "",
   paymentMethod: "",
   paymentDate: "",
-  paymentInstallment: [
-    {
-      howMany: 1,
-      amount: 0,
-      secondInstallmentDate: "",
-      secondAmount: 0,
-      paymentCompletionDate: "",
-    },
-  ],
+  paymentInstallment: {
+    howMany: 1,
+    amount: 0,
+    secondInstallmentDate: "",
+    secondAmount: 0,
+    paymentCompletionDate: "",
+  },
+
   Other_Info: "",
 };
