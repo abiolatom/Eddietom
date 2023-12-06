@@ -8,9 +8,9 @@ const productSchema = new mongoose.Schema(
     quantity: { type: Number, required: true },
     transportCost: { type: Number, required: true },
     totalCost: { type: Number, required: true },
-    purchaseDate: { type: Date, required: true },
-    deliveryDate: { type: Date, required: true },
-    sellerName: { type: String, required: true },
+    purchaseDate: { type: Date, required: false },
+    deliveryDate: { type: Date, required: false },
+    sellerName: { type: String, required: false },
     sellerAddress: { type: String, required: true },
     paymentMethod: { type: String, required: false },
     paymentDate: { type: Date, required: false },
@@ -29,4 +29,4 @@ const productSchema = new mongoose.Schema(
 );
 
 const products = mongoose.model("products", productSchema);
-module.exports = products;
+module.exports = {products};

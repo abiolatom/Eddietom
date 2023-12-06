@@ -2,15 +2,20 @@ const express = require("express");
 require("dotenv").config();
 const PORT = process.env.PORT;
 const { connectToDb, getDb } = require("./db");
-
 const cors = require("cors");
-
 const { products } = require("./Models/ProductSchema");
-
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
+// Set CORS headers
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 //db connection
 let db;
 
