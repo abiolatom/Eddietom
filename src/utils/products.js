@@ -22,3 +22,28 @@ const dummyProduct = {
   ],
   Other_Info: "This is a dummy product for testing purposes.",
 };
+
+export const productTemplate = {
+  productName: "",
+  category: "",
+  unitCost: "",
+  quantity: "",
+  transportCost: "",
+  totalCost: "",
+  purchaseDate: "",
+  deliveryDate: "",
+  sellerName: "",
+  sellerAddress: "",
+  paymentMethod: "",
+  paymentDate: "",
+  paymentInstallment: [
+    {
+      howMany: 1,
+      amount: 0,
+      secondInstallmentDate: "",
+      secondAmount: 0,
+      paymentCompletionDate: "",
+    },
+  ],
+  Other_Info: "",
+};
