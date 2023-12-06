@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
         paymentCompletionDate: { type: Date, required: false },
       },
     ],
-    Other_Info: { type: String, required: false },
+    otherInfo: { type: String, required: false },
   },
   { timestamps: true }
 );

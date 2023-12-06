@@ -1,8 +1,8 @@
 const express = require("express");
+require("dotenv").config();
 const PORT = process.env.PORT;
 const { connectToDb, getDb } = require("./db");
 
-require("dotenv").config();
 const cors = require("cors");
 
 const { products } = require("./Models/ProductSchema");
@@ -16,10 +16,11 @@ let db;
 
 connectToDb((err) => {
   if (!err) {
-    app.listen(PORT, () => {
-      console.log("app listening on port 3001");
-    });
     db = getDb();
+    app.listen(PORT, () => {
+      console.log(`app listening on ${PORT}`);
+      console.log("Connected to database");
+    });
   }
 });
 
@@ -56,9 +57,9 @@ app.put("/products/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const updatedProduct = await products.findOneAndUpdate(
-      { _id: id }, // Filter by the document ID
-      { $set: req.body }, // Update with the request body
-      { new: true } // Return the updated document
+      { _id: id },
+      { $set: req.body },
+      { new: true }
     );
     if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found" });

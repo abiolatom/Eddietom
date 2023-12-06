@@ -99,3 +99,37 @@ res.status(500).json({ error: "Server error" });
 app.listen(3001, () => {
 console.log(`Server listening on port ${PORT}`);
 });
+
+
+const newProduct = new products({
+  productName: "Apple iPhone 13",
+  category: "Electronics",
+  unitCost: 999,
+  quantity: 10,
+  transportCost: 50,
+  totalCost: 10490,
+  purchaseDate: new Date(),
+  deliveryDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+  sellerName: "Apple Inc.",
+  sellerAddress: "1 Apple Park Way, Cupertino, CA 95014, United States",
+  paymentMethod: "Credit Card",
+  paymentDate: new Date(),
+  paymentInstallment: [
+    {
+      howMany: 2,
+      amount: 5245,
+      secondInstallmentDate: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000),
+      secondAmount: 5245,
+      paymentCompletionDate: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000),
+    },
+  ],
+  Other_Info: "This product comes with a 1-year warranty.",
+});
+
+newProduct.save((err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Product added successfully!");
+  }
+});
