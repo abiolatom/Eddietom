@@ -140,3 +140,9 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
+
+app.post("/products", async (req, res) => {
+  const newProducts = new products({ ...req.body });
+  const insertedProduct = await newProducts.save();
+  return res.status(200).json(insertedProduct);
+});
