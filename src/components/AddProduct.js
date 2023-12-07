@@ -192,7 +192,9 @@ const AddProduct = () => {
         />
         {selectedProduct ? (
           <div>
-            <button type="submit">Save</button>
+            <button type="submit" onClick={handleUpdateSelectedProduct()}>
+              Save
+            </button>
             <button onClick={handleCancelSelectedProduct}>Cancel</button>
           </div>
         ) : (

@@ -7,7 +7,7 @@ const ProductForm = () => {
     unitCost: "",
     quantity: "",
     transportCost: "",
-    //totalCost: "",
+    totalCost: "",
     purchaseDate: "",
     deliveryDate: "",
     sellerName: "",
@@ -16,9 +16,9 @@ const ProductForm = () => {
     paymentDate: "",
     paymentInstallment: {
       howMany: 1,
-      amount: 0,
+      amount: "",
       secondInstallmentDate: "",
-      secondAmount: 0,
+      secondAmount: "",
       paymentCompletionDate: "",
     },
 
@@ -59,10 +59,6 @@ const ProductForm = () => {
         [name]: value,
       }));
     }
-  };
-
-  const handleWheel = (event) => {
-    event.preventDefault();
   };
 
   const handleSubmit = async (event) => {
