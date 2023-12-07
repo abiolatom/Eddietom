@@ -94,11 +94,11 @@ const AddProduct = () => {
   };
 
   const handleUpdateProductClick = (product) => {
-    setSelectedProduct(product);
     setSearchText(product.name);
     setProductPrice(product.price);
     setProductQuantity(product.quantity);
     setProductSubtotal(product.subtotal);
+    setSelectedProduct(product);
   };
 
   const handleUpdateSelectedProduct = (e) => {
@@ -108,29 +108,26 @@ const AddProduct = () => {
     if (!selectedProduct) {
       return;
     }
-    const updatedProducts = [];
-    for (let i = 0; i < selectedProducts.length; i++) {
-      const product = selectedProducts[i];
-      if (product.id === selectedProduct.id) {
-        updatedProducts.push({
-          ...product,
-          name: product.name,
-          price: product.price,
-          quantity: product.quantity,
-          subtotal: product.subtotal,
-        });
-      } else {
-        updatedProducts.push(product);
-      }
-    }
-    setSelectedProducts([...selectedProducts]);
+    const updatedProduct = selectedProducts.map((product) =>
+      product.id === selectedProduct.id
+        ? {
+            ...product,
+            name: productName || searchText,
+            price: productPrice,
+            quantity: productQuantity,
+            subtotal: productSubtotal,
+          }
+        : product
+    );
+
+    setSelectedProducts(updatedProduct);
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
     setSearchText("");
     setSelectedProduct(null);
 
-    console.log("updatedProducts:", selectedProducts);
+    console.log("updatedProduct:", selectedProduct);
     console.log("selectedProducts after update:", selectedProducts);
   };
 
@@ -192,7 +189,7 @@ const AddProduct = () => {
         />
         {selectedProduct ? (
           <div>
-            <button type="submit" onClick={handleUpdateSelectedProduct()}>
+            <button type="submit" onClick={handleUpdateSelectedProduct}>
               Save
             </button>
             <button onClick={handleCancelSelectedProduct}>Cancel</button>
