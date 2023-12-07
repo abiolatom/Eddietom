@@ -3,6 +3,7 @@ import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
   const {
+    selectedProducts,
     calculateTotalPrice,
     selectedOptions,
     setSelectedOptions,
@@ -117,6 +118,16 @@ const PaymentMethod = () => {
     0
   );
 
+  const handleSubmission = () => {
+    // Gather the data to send to the backend
+    const dataToSend = {
+      selectedProducts,
+      amounts,
+      totalPayment
+    };
+    console.log(dataToSend);
+  }
+
   return (
     <div>
       <h1>Payment Information</h1>
@@ -127,7 +138,8 @@ const PaymentMethod = () => {
         <em>Total paid:</em> <b>{totalPayment.toFixed(2)}</b>
       </p>
       <label>Select Payment Method</label> {optionsRender()}
-      <p>{paymentComparison()}</p>
+      <p>{paymentComparison()}</p><br />
+      <button onClick={handleSubmission}>Submit</button>
     </div>
   );
 };
