@@ -28,10 +28,21 @@ const ProductForm = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setProductData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    if (name.startsWith("paymentInstallment")) {
+      const paymentField = name.split(".")[1];
+      setProductData((prevData) => ({
+        ...prevData,
+        paymentInstallment: {
+          ...prevData.paymentInstallment,
+          [paymentField]: value,
+        },
+      }));
+    } else {
+      setProductData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -217,7 +228,7 @@ const ProductForm = () => {
               </label>
               <input
                 type="number"
-                name="howMany"
+                name="paymentInstallment.howMany"
                 id="howMany"
                 value={productData.paymentInstallment.howMany}
                 onChange={handleChange}
@@ -230,7 +241,7 @@ const ProductForm = () => {
               <input
                 type="number"
                 id="amount"
-                name="amount"
+                name="paymentInstallment.amount"
                 value={productData.paymentInstallment.amount}
                 onChange={handleChange}
               />
@@ -242,7 +253,7 @@ const ProductForm = () => {
               <input
                 type="date"
                 id="secondInstallmentDate"
-                name="secondInstallmentDate"
+                name="paymentInstallment.secondInstallmentDate"
                 value={productData.paymentInstallment.secondInstallmentDate}
                 onChange={handleChange}
               />
@@ -254,7 +265,7 @@ const ProductForm = () => {
               <input
                 type="number"
                 id="secondAmount"
-                name="secondAmount"
+                name="paymentInstallment.secondAmount"
                 value={productData.paymentInstallment.secondAmount}
                 onChange={handleChange}
               />
@@ -266,7 +277,7 @@ const ProductForm = () => {
               <input
                 type="date"
                 id="paymentCompletionDate"
-                name="paymentCompletionDate"
+                name="paymentInstallment.paymentCompletionDate"
                 value={productData.paymentInstallment.paymentCompletionDate}
                 onChange={handleChange}
               />
