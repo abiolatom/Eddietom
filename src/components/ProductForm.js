@@ -26,28 +26,12 @@ const ProductForm = () => {
   });
 
   const handleChange = (event) => {
-    const { name, value, type } = event.target;
+    const { name, value } = event.target;
 
-    // If the field is part of paymentInstallment, update it accordingly
-    if (name.startsWith("paymentInstallment")) {
-      const paymentField = name.split(".")[1];
-
-      // For date inputs, use valueAsDate
-      const updatedValue = type === "date" ? event.target.valueAsDate : value;
-
-      setProductData((prevData) => ({
-        ...prevData,
-        paymentInstallment: {
-          ...prevData.paymentInstallment,
-          [paymentField]: updatedValue,
-        },
-      }));
-    } else {
-      setProductData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (event) => {
@@ -63,7 +47,6 @@ const ProductForm = () => {
 
       if (response.ok) {
         console.log("Product added successfully");
-        // Optionally, you can reset the form or navigate to a different page
       } else {
         console.error("Error adding product:", response.statusText);
       }
@@ -76,7 +59,9 @@ const ProductForm = () => {
       <h1>Product Form</h1>
       <form onSubmit={handleSubmit}>
         <fieldset>
-          <legend>Product Cost</legend>
+          <legend>
+            <h3>Cost Details</h3>
+          </legend>
           <section>
             <label htmlFor="productName">Product Name</label>
             <input
@@ -233,7 +218,7 @@ const ProductForm = () => {
               <input
                 type="number"
                 name="howMany"
-                id="paymentInstallment.howMany"
+                id="howMany"
                 value={productData.paymentInstallment.howMany}
                 onChange={handleChange}
               />
@@ -244,7 +229,7 @@ const ProductForm = () => {
               </label>
               <input
                 type="number"
-                id="paymentInstallment.amount"
+                id="amount"
                 name="amount"
                 value={productData.paymentInstallment.amount}
                 onChange={handleChange}
@@ -256,7 +241,7 @@ const ProductForm = () => {
               </label>
               <input
                 type="date"
-                id="paymentInstallment.secondInstallmentDate"
+                id="secondInstallmentDate"
                 name="secondInstallmentDate"
                 value={productData.paymentInstallment.secondInstallmentDate}
                 onChange={handleChange}
@@ -268,7 +253,7 @@ const ProductForm = () => {
               </label>
               <input
                 type="number"
-                id="paymentInstallment.secondAmount"
+                id="secondAmount"
                 name="secondAmount"
                 value={productData.paymentInstallment.secondAmount}
                 onChange={handleChange}
@@ -280,7 +265,7 @@ const ProductForm = () => {
               </label>
               <input
                 type="date"
-                id="paymentInstallment.paymentCompletionDate"
+                id="paymentCompletionDate"
                 name="paymentCompletionDate"
                 value={productData.paymentInstallment.paymentCompletionDate}
                 onChange={handleChange}
@@ -294,6 +279,8 @@ const ProductForm = () => {
               name="otherInfo"
               type="text"
               placeholder="Any other Info?"
+              value={productData.otherInfo}
+              onChange={handleChange}
             />
           </section>
         </fieldset>

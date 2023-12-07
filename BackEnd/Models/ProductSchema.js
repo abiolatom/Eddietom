@@ -28,5 +28,11 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Add a pre-save hook for logging
+productSchema.pre('save', function (next) {
+  console.log('Data before save:', this);
+  next();
+});
+
 const products = mongoose.model("products", productSchema);
 module.exports = {products};

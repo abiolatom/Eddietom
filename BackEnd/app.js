@@ -53,9 +53,15 @@ app.get("/products/:id", async (req, res) => {
 });
 
 app.post("/products", async (req, res) => {
-  const newProducts = new products({ ...req.body });
-  const insertedProduct = await newProducts.save();
-  return res.status(200).json(insertedProduct);
+  const newProduct = new products({ ...req.body });
+  if (typeof newProduct === "object") {
+    // If newProducts is an object, proceed with saving the product
+    const insertedProduct = await db.collection('products').insertOne(newProduct);
+    return res.status(200).json(insertedProduct);
+  } else {
+    // Handle the error case when newProducts is not an object
+    console.error("newProduct is not a valid MongoDB collection object");
+  }
 });
 
 app.put("/products/:id", async (req, res) => {
