@@ -108,28 +108,37 @@ const AddProduct = () => {
     if (!selectedProduct) {
       return;
     }
-    const updatedProduct = selectedProducts.map((product) =>
-      product.id === selectedProduct.id
-        ? {
-            ...product,
-            name: productName || searchText,
-            price: productPrice,
-            quantity: productQuantity,
-            subtotal: productSubtotal,
-          }
-        : product
-    );
-
-    setSelectedProducts(updatedProduct);
+  
+    const updatedProduct = selectedProduct;
+    updatedProduct.name = productName || searchText;
+    updatedProduct.price = productPrice;
+    updatedProduct.quantity = productQuantity;
+    updatedProduct.subtotal = productSubtotal;
+  
+    // Replace the existing product with the updated product
+    const updatedSelectedProducts = selectedProducts.map((product) => {
+      if (product.id === selectedProduct.id) {
+        return updatedProduct;
+      } else {
+        return product;
+      }
+    });
+  
+    // Set the updated `selectedProducts` state
+    setSelectedProducts(updatedSelectedProducts);
+  
+    // Clear the product form fields
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
     setSearchText("");
     setSelectedProduct(null);
-
-    console.log("updatedProduct:", selectedProduct);
-    console.log("selectedProducts after update:", selectedProducts);
+  
+    // Log the updated `selectedProduct` and `selectedProducts` arrays
+    console.log("updatedProduct:", updatedProduct);
+    console.log("selectedProducts after update:", updatedSelectedProducts);
   };
+  
 
   const handleCancelSelectedProduct = () => {
     setProductName("");
