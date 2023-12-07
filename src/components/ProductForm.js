@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ProductForm = () => {
   const [productData, setProductData] = useState({
@@ -7,7 +7,7 @@ const ProductForm = () => {
     unitCost: "",
     quantity: "",
     transportCost: "",
-    totalCost: "",
+    //totalCost: "",
     purchaseDate: "",
     deliveryDate: "",
     sellerName: "",
@@ -24,6 +24,22 @@ const ProductForm = () => {
 
     otherInfo: "",
   });
+
+  const [calculatedTotalCost, setCalculatedTotalCost] = useState(0);
+
+  useEffect(() => {
+    // Recalculate total cost whenever unitCost, quantity, or transportCost changes
+    const unitCost = parseFloat(productData.unitCost) || 0;
+    const quantity = parseFloat(productData.quantity) || 0;
+    const transportCost = parseFloat(productData.transportCost) || 0;
+
+    const newTotalCost = unitCost * quantity + transportCost;
+    setProductData((prevData) => ({
+      ...prevData,
+      totalCost: newTotalCost,
+    }));
+    setCalculatedTotalCost(newTotalCost);
+  }, [productData.unitCost, productData.quantity, productData.transportCost]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -43,6 +59,10 @@ const ProductForm = () => {
         [name]: value,
       }));
     }
+  };
+
+  const handleWheel = (event) => {
+    event.preventDefault();
   };
 
   const handleSubmit = async (event) => {
@@ -65,6 +85,7 @@ const ProductForm = () => {
       console.error("Error adding product:", error.message);
     }
   };
+
   return (
     <div>
       <h1>Product Form</h1>
@@ -102,7 +123,7 @@ const ProductForm = () => {
             <input
               id="unitCost"
               name="unitCost"
-              type="text"
+              type="number"
               value={productData.unitCost}
               onChange={handleChange}
               placeholder="Cost Price"
@@ -114,7 +135,7 @@ const ProductForm = () => {
             <input
               id="quantity"
               name="quantity"
-              type="text"
+              type="number"
               value={productData.quantity}
               onChange={handleChange}
               placeholder="Product Quantity"
@@ -126,7 +147,7 @@ const ProductForm = () => {
             <input
               id="transportCost"
               name="transportCost"
-              type="text"
+              type="number"
               value={productData.transportCost}
               onChange={handleChange}
               placeholder="Transport Price"
@@ -140,9 +161,11 @@ const ProductForm = () => {
               id="totalCost"
               name="totalCost"
               type="text"
-              value={productData.totalCost}
+              value={calculatedTotalCost.toFixed(2)}
               onChange={handleChange}
               placeholder="Total Cost"
+              readOnly
+              disabled
               required
             />
           </section>
