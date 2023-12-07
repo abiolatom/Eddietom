@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
@@ -10,6 +10,19 @@ const PaymentMethod = () => {
     amounts,
     setAmounts,
   } = useContext(ProductContext);
+
+  const [customerDetails, setCustomerDetails] = useState({
+    customerName: "",
+    customerNumber: "",
+  });
+
+  const handleCustomerDetailsChange = (e) => {
+    const { name, value } = e.target;
+    setCustomerDetails((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const options = [
     { value: "cash", label: "Cash" },
@@ -123,10 +136,11 @@ const PaymentMethod = () => {
     const dataToSend = {
       selectedProducts,
       amounts,
-      totalPayment
+      totalPayment,
+      customerDetails,
     };
     console.log(dataToSend);
-  }
+  };
 
   return (
     <div>
@@ -138,7 +152,32 @@ const PaymentMethod = () => {
         <em>Total paid:</em> <b>{totalPayment.toFixed(2)}</b>
       </p>
       <label>Select Payment Method</label> {optionsRender()}
-      <p>{paymentComparison()}</p><br />
+      <p>{paymentComparison()}</p>
+      <br />
+      <fieldset>
+        <legend>Customer Details</legend>
+        <section>
+          <input
+            type="text"
+            id="customerName"
+            name="customerName"
+            value={customerDetails.customerName}
+            onChange={handleCustomerDetailsChange}
+            placeholder="Customer Name"
+          />
+        </section>
+        <section>
+          <input
+            placeholder="Customer Number"
+            type="number"
+            id="customerNumber"
+            name="customerNumber"
+            value={customerDetails.customerNumber}
+            onChange={handleCustomerDetailsChange}
+          />
+        </section>
+      </fieldset>
+      <br />
       <button onClick={handleSubmission}>Submit</button>
     </div>
   );
