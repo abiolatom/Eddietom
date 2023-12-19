@@ -30,27 +30,7 @@ const PaymentMethod = () => {
     { value: "pos", label: "POS" },
   ];
 
-  const handleAmountChange = (event, value) => {
-    const newAmount = { ...amounts };
-    newAmount[value] = event.target.value;
 
-    if (
-      selectedOptions.some((option) => option.value === value) &&
-      event.target.value &&
-      parseFloat(event.target.value) > 0
-    ) {
-      const newSelectedOptions = [...selectedOptions];
-      const index = newSelectedOptions.findIndex(
-        (option) => option.value === value
-      );
-
-      if (index !== -1) {
-        newSelectedOptions[index].amounts = parseFloat(event.target.value);
-        setSelectedOptions(newSelectedOptions);
-      }
-    }
-    setAmounts(newAmount);
-  };
 
   const handleOptionChange = (value) => {
     const newSelectedOptions = [...selectedOptions];
@@ -62,10 +42,13 @@ const PaymentMethod = () => {
       newSelectedOptions.splice(index, 1);
       const newAmounts = { ...amounts };
       delete newAmounts[value];
-
       setAmounts(newAmounts);
     } else {
-      const selectedOption = { value, amounts: 0 };
+      const selectedOption = {
+        value,
+        amounts: { [value]: totalPayment },
+        totalPayment: totalPayment,
+      };
       newSelectedOptions.push(selectedOption);
     }
     console.log("Updated selectedOptions:", newSelectedOptions, amounts);
@@ -77,16 +60,17 @@ const PaymentMethod = () => {
     return (
       <div>
         {options.map((option) => {
-          const selectedOption = selectedOptions.find(
-            (selectedOption) => selectedOption.value === option.value
-          );
+          const selectedOption = selectedOptions[option.value];
+
           const isChecked = !!selectedOption;
           const paymentInput = isChecked ? (
             <input
+              id="checkedOptionValue"
               type="number"
+              name="checkedOptionValue"
               placeholder={`Enter amount paid by ${option.label}`}
               value={amounts[option.value] || ""}
-              onChange={(e) => handleAmountChange(e, option.value)}
+              onChange={""}
             />
           ) : null;
           return (
@@ -135,8 +119,7 @@ const PaymentMethod = () => {
     // Gather the data to send to the backend
     const dataToSend = {
       selectedProducts,
-      amounts,
-      totalPayment,
+      selectedOptions,
       customerDetails,
     };
     console.log(dataToSend);

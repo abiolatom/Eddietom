@@ -23,6 +23,7 @@ const ProductForm = () => {
     },
 
     otherInfo: "",
+    timestamps:""
   });
 
   const [calculatedTotalCost, setCalculatedTotalCost] = useState(0);
