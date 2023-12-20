@@ -2,22 +2,20 @@ import React from "react";
 import "./App.css";
 import AddSalesForm from "./components/AddSalesForm";
 import ProductForm from "./components/ProductForm";
+import AddExpenseForm from "./components/AddExpenseForm";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 
 const App = () => {
   return (
-    <div>
-      <Router>
-        
-        <Routes>
-
-        </Routes>
-     </Router>
-      <div className="container">
-        <h1>Sales Form</h1>
-      </div>
-    </div>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<AddSalesForm />} />
+        <Route path="/productform" element={<ProductForm />} />
+        <Route path="/addexpenseform" element={<AddExpenseForm />} />
+      </Routes>
+    </Router>
   );
 };
 
