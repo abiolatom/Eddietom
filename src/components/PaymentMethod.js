@@ -75,7 +75,7 @@ const PaymentMethod = () => {
 
   const optionsRender = () => {
     return (
-      <div>
+      <div className="mt-2">
         {options.map((option) => {
           const selectedOption = selectedOptions.find(
             (selectedOption) => selectedOption.value === option.value
@@ -89,20 +89,22 @@ const PaymentMethod = () => {
               placeholder={`Enter amount paid by ${option.label}`}
               value={amounts[option.value] || ""}
               onChange={(e) => handleAmountChange(e, option.value)}
+              className="w-full p-2 border rounded-md mt-1"
             />
           ) : null;
           return (
-            <div key={option.value}>
+            <div key={option.value} className="flex items-center mb-2">
               <input
                 type="checkbox"
                 checked={isChecked}
                 onChange={() => handleOptionChange(option.value)}
                 value={option.value}
+                className="mr-2"
               />
-              <label>{option.label} </label>
+              <label className="mr-3">{option.label} </label>
               {paymentInput}
               {isChecked && (
-                <span>
+                <span className="text-gray-600">
                   (Paid:
                   {amounts[option.value] || 0})
                 </span>
@@ -146,20 +148,20 @@ const PaymentMethod = () => {
   };
 
   return (
-    <div>
-      <h1>Payment Information</h1>
-      <p>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Payment Information</h1>
+      <p className="mb-2">
         <em>Amount to pay:</em> <b>{calculateTotalPrice().toFixed(2)}</b>
       </p>
-      <p>
+      <p className="mb-2">
         <em>Total paid:</em> <b>{totalPayment.toFixed(2)}</b>
       </p>
-      <label>Select Payment Method</label> {optionsRender()}
-      <p>{paymentComparison()}</p>
+      <label className="block text-sm font-semibold mb-2">Select Payment Method</label> {optionsRender()}
+      <p className="mb-2">{paymentComparison()}</p>
       <br />
-      <fieldset>
-        <legend>Customer Details</legend>
-        <section>
+      <fieldset className="border p-4 mb-4">
+        <legend className="text-lg font-semibold">Customer Details</legend>
+        <div className="mb-2">
           <input
             type="text"
             id="customerName"
@@ -167,21 +169,23 @@ const PaymentMethod = () => {
             value={customerDetails.customerName}
             onChange={handleCustomerDetailsChange}
             placeholder="Customer Name"
+            className="w-full p-2 border rounded-md"
           />
-        </section>
-        <section>
+        </div>
+        <div>
           <input
             placeholder="Customer Number"
+            className="w-full p-2 border rounded-md"
             type="number"
             id="customerNumber"
             name="customerNumber"
             value={customerDetails.customerNumber}
             onChange={handleCustomerDetailsChange}
           />
-        </section>
+        </div>
       </fieldset>
       <br />
-      <button onClick={handleSubmission}>Submit</button>
+      <button className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" onClick={handleSubmission}>Submit Sales Details</button>
     </div>
   );
 };

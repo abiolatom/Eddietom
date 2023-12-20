@@ -59,8 +59,8 @@ const ExpenseForm = ({ addExpense }) => {
             type="number"
             id="amount"
             name="amount"
-            // className="w-full border p-2 rounded-md"
-            className="w-full border p-2 rounded-md appearance-none focus:outline-none focus:border-blue-500"
+            className="w-full border p-2 rounded-md"
+            //className="w-full border p-2 rounded-md appearance-none focus:outline-none focus:border-blue-500"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
