@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import AddSalesForm from "./components/AddSalesForm";
 import ProductForm from "./components/ProductForm";
 import AddExpenseForm from "./components/AddExpenseForm";
