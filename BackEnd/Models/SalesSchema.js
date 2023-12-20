@@ -3,33 +3,34 @@ const mongoose = require("mongoose");
 const saleSchema = new mongoose.Schema({
   customerDetails: [
     {
-      customerName: String,
-      customerNumber: Number,
+      customerName: { type: String, required: false },
+      customerNumber: { type: Number, required: false },
     },
   ],
 
   selectedProducts: [
     {
-      id: String,
-      name: String,
-      price: Number,
-      quantity: Number,
-      subtotal: Number,
+      id: { type: String, required: true},
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      quantity: { type: Number, required: true },
+      subtotal: { type: Number, required: true },
     },
   ],
-  amounts: [
+  selectedOptions: [
     {
-      method: String,
-      amount: Number,
+      value: { type: String, required: true },
+      amounts: { type: Number, required: true },
+      totalPayment: { type: Number, required: true },
     },
   ],
-  totalPayment: Number,
+  totalPayment: { type: Number, required: true },
   timestamp: {
     type: Date,
     default: Date.now,
   },
 });
 
-const Sales = mongoose.model("Sales", saleSchema);
+const sales = mongoose.model("sales", saleSchema);
 
-module.exports = Sales;
+module.exports = sales;

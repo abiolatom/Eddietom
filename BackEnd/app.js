@@ -6,16 +6,9 @@ const cors = require("cors");
 const { products } = require("./Models/ProductSchema");
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-// Set CORS headers
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
 //db connection
 let db;
 
@@ -53,12 +46,15 @@ app.get("/products/:id", async (req, res) => {
 });
 
 app.post("/products", async (req, res) => {
-  
   const newProduct = new products({ ...req.body });
   if (typeof newProduct === "object") {
-    const insertedProduct = await db.collection('products').insertOne(newProduct);
+    // If newProducts is an object, proceed with saving the product
+    const insertedProduct = await db
+      .collection("products")
+      .insertOne(newProduct);
     return res.status(200).json(insertedProduct);
   } else {
+    // Handle the error case when newProducts is not an object
     console.error("newProduct is not a valid MongoDB collection object");
   }
 });

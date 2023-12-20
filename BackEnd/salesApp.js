@@ -3,19 +3,14 @@ require("dotenv").config();
 const PORT = process.env.PORT;
 const { connectToDb, getDb } = require("./db");
 const cors = require("cors");
-const { Sales } = require("./Models/SalesSchema");
+const { sales } = require("./Models/SalesSchema");
 const salesApp = express();
 
-salesApp.use(cors());
 salesApp.use(express.json());
+salesApp.use(cors());
 
-// Set CORS headers
-salesApp.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+
+
 //db connection
 let db;
 
@@ -31,15 +26,15 @@ connectToDb((err) => {
 
 salesApp.get("/sales", async (req, res) => {
   try {
-    let products = [];
+    let sales = [];
     await db
 
-      .collection("products")
+      .collection("sales")
       .find()
-      .sort({ productName: 1 })
-      .forEach((product) => products.push(product));
+      .sort({ timestamp: 1 })
+      .forEach((sale) => sales.push(sale));
 
-    res.status(200).json(products);
+    res.status(200).json(sales);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Could not fetch products" });
@@ -48,45 +43,19 @@ salesApp.get("/sales", async (req, res) => {
 
 salesApp.get("/sales/:id", async (req, res) => {
   const { id } = req.params;
-  const product = await products.findById(id);
-  return res.status(200).json(product);
+  const saleItem = await sales.findById(id);
+  return res.status(200).json(saleItem);
 });
 
-app.post("/products", async (req, res) => {
-  const newProduct = new products({ ...req.body });
-  if (typeof newProduct === "object") {
-    // If newProducts is an object, proceed with saving the product
-    const insertedProduct = await db
+salesApp.post("/products", async (req, res) => {
+  const newSale = new sales({ ...req.body });
+  if (typeof newSale === "object") {
+    const insertedSale = await db
       .collection("products")
-      .insertOne(newProduct);
-    return res.status(200).json(insertedProduct);
+      .insertOne(newSale);
+    return res.status(200).json(insertedSale);
   } else {
-    // Handle the error case when newProducts is not an object
-    console.error("newProduct is not a valid MongoDB collection object");
+    console.error("new Sales is not a valid MongoDB collection object");
   }
 });
 
-app.put("/products/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const updatedProduct = await products.findOneAndUpdate(
-      { _id: id },
-      { $set: req.body },
-      { new: true }
-    );
-    if (!updatedProduct) {
-      return res.status(404).json({ error: "Product not found" });
-    }
-
-    return res.status(200).json(updatedProduct);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.delete("/products/:id", async (req, res) => {
-  const { id } = req.params;
-  const deletedProduct = await products.findById(id);
-  return res.status(200).json(deletedProduct);
-});
