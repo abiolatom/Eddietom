@@ -25,7 +25,6 @@ const ExpenseForm = () => {
       datetime: new Date(),
     };
 
-    
     fetch("http://localhost:3001/expenses", {
       method: "POST",
       headers: {
@@ -36,14 +35,11 @@ const ExpenseForm = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Expense added successfully:", data);
-       
       })
       .catch((error) => {
         console.error("Error adding expense:", error);
-      
       });
 
-    // Clear the form fields
     setExpenseFormData({
       expenseItem: "",
       amount: "",
