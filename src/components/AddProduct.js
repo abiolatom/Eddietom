@@ -218,7 +218,7 @@ const AddProduct = () => {
           </div>
         ) : (
           <button
-            className="bg-green-500 mt-3 text-white px-4 py-2 rounded-md hover:bg-green-700"
+            className="bg-green-500 mt-3 ml-10 text-white px-4 py-2 rounded-md hover:bg-green-700"
             type="submit"
           >
             Add Product
@@ -246,10 +246,16 @@ const AddProduct = () => {
                 <td className="border p-2">{product.quantity}</td>
                 <td className="border p-2">{product.subtotal}</td>
                 <td className="border p-2">
-                  <button className="border bg-blue-500 text-white mx-3 px-2 py-1 rounded-md hover:bg-blue-600" onClick={() => handleUpdateProductClick(product)}>
+                  <button
+                    className="border bg-blue-500 text-white mx-3 px-2 py-1 rounded-md hover:bg-blue-600"
+                    onClick={() => handleUpdateProductClick(product)}
+                  >
                     Update
                   </button>
-                  <button className="border bg-red-500 text-white mx-3 px-2 py-1 rounded-md hover:bg-red-600 mx-4" onClick={() => handleDeleteProduct(product.id)}>
+                  <button
+                    className="border bg-red-500 text-white mx-3 px-2 py-1 rounded-md hover:bg-red-600 mx-4"
+                    onClick={() => handleDeleteProduct(product.id)}
+                  >
                     Delete
                   </button>
                 </td>
