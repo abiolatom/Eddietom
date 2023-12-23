@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
+  //const isInitialRender = useRef(true);
   const {
     selectedProducts,
     calculateTotalPrice,
@@ -10,6 +11,7 @@ const PaymentMethod = () => {
     amounts,
     setAmounts,
   } = useContext(ProductContext);
+  const [salesData, setSalesData] = useState({});
 
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
@@ -138,15 +140,40 @@ const PaymentMethod = () => {
   const handleSubmission = (e) => {
     e.preventDefault();
     // Gather the data to send to the backend
-    const dataToSend = {
-      selectedProducts,
-      amounts,
-      selectedOptions,
-      totalPayment,
-      customerDetails,
+
+    const newSaleData = {
+      selectedProducts: { ...selectedProducts },
+      customerDetails: { ...customerDetails },
+      selectedOptions: { ...selectedOptions },
+      totalPayment: totalPayment,
     };
-    console.log(dataToSend);
+
+    setSalesData(newSaleData);
+
+    fetch("http://localhost:3001/sales", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(salesData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Sales Data added successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error adding Sales Data:", error);
+      });
   };
+
+  /*useEffect(() => {
+    // Skip the initial render
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+    console.log(salesData);
+  }, [salesData]);*/
 
   return (
     <div className="container mx-auto p-4">
@@ -157,7 +184,10 @@ const PaymentMethod = () => {
       <p className="mb-2">
         <em>Total paid:</em> <b>{totalPayment.toFixed(2)}</b>
       </p>
-      <label className="block text-sm font-semibold mb-2">Select Payment Method</label> {optionsRender()}
+      <label className="block text-sm font-semibold mb-2">
+        Select Payment Method
+      </label>{" "}
+      {optionsRender()}
       <p className="mb-2">{paymentComparison()}</p>
       <br />
       <fieldset className="border p-4 mb-4">
@@ -186,7 +216,12 @@ const PaymentMethod = () => {
         </div>
       </fieldset>
       <br />
-      <button className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600" onClick={handleSubmission}>Submit Sales Details</button>
+      <button
+        className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+        onClick={handleSubmission}
+      >
+        Submit Sales Details
+      </button>
     </div>
   );
 };
