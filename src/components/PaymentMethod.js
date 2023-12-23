@@ -135,7 +135,8 @@ const PaymentMethod = () => {
     0
   );
 
-  const handleSubmission = () => {
+  const handleSubmission = (e) => {
+    e.preventDefault();
     // Gather the data to send to the backend
     const dataToSend = {
       selectedProducts,

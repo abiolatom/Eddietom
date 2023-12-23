@@ -19,10 +19,8 @@ const ExpenseForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Create a new expense object with a unique ID, current date, and time
     const newExpense = {
       ...expenseFormData,
-      datetime: new Date(),
     };
 
     fetch("http://localhost:3001/expenses", {

@@ -45,7 +45,7 @@ app.get("/expenses/:id", async (req, res) => {
   return res.status(200).json(expense);
 });
 
-app.post("/expenses", async (req, res) => {
+/* app.post("/expenses", async (req, res) => {
   const newExpense = new expenses({ ...req.body }); // Use the model to create a new expense
 
   try {
@@ -56,18 +56,16 @@ app.post("/expenses", async (req, res) => {
     res.status(500).json({ error: "Failed to create expense" });
   }
 });
+*/
 
-/* exApp.post("/expenses", async (req, res) => {
+app.post("/expenses", async (req, res) => {
   const newExpense = new expenses({ ...req.body });
   if (typeof newExpense === "object") {
-    
     const insertedExpense = await db
       .collection("expenses")
       .insertOne(newExpense);
     return res.status(200).json(insertedExpense);
   } else {
- 
     console.error("newProduct is not a valid MongoDB collection object");
   }
 });
-*/
