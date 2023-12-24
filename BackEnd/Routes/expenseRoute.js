@@ -1,35 +1,46 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-
 module.exports = (db) => {
-    router.get("/", async (req, res) => {
-        try {
-            let expenses = [];
-            await db
-  
-                .collection("expenses")
-                .find()
-                .sort({ expenseItem: 1 })
-                .forEach((expense) => expenses.push(expense));
-  
-            res.status(200).json(expenses);
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ error: "Could not fetch Expenses" });
-        }
-    });
+  router.get("/", async (req, res) => {
+    try {
+      let expenses = [];
+      await db
 
-  
+        .collection("expenses")
+        .find()
+        .sort({ expenseItem: 1 })
+        .forEach((expense) => expenses.push(expense));
+
+      res.status(200).json(expenses);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Could not fetch Expenses" });
+    }
+  });
+
   router.get("/:id", async (req, res) => {
     const { id } = req.params;
     const expense = await db.collection("expenses").findById(id);
     return res.status(200).json(expense);
   });
-  
+
+  router.post("/", async (req, res) => {
+    const newExpense = { ...req.body };
+    if (typeof newExpense === "object") {
+      const insertedExpenses = await db
+        .collection("expenses")
+        .insertOne(newExpense);
+      return res.status(200).json(insertedExpenses);
+    } else {
+      console.error("newProduct is not a valid MongoDB collection object");
+    }
+  });
+
+  /*
   router.post("/", async (req, res) => {
     try {
-      const newExpense = req.body; 
+      const newExpense = { ...req.body };
       const result = await db.collection("expenses").insertOne(newExpense);
       res.status(201).json(result.ops[0]);
     } catch (error) {
@@ -37,8 +48,8 @@ module.exports = (db) => {
       res.status(500).json({ error: "Could not add the expense" });
     }
   });
-    
-      // PUT (update) an existing expense
+*/
+  // PUT (update) an existing expense
   router.put("/:id", async (req, res) => {
     try {
       const expenseId = req.params.id;
@@ -62,7 +73,9 @@ module.exports = (db) => {
   router.delete("/:id", async (req, res) => {
     try {
       const expenseId = req.params.id;
-      const result = await db.collection("expenses").deleteOne({ _id: expenseId });
+      const result = await db
+        .collection("expenses")
+        .deleteOne({ _id: expenseId });
 
       if (result.deletedCount === 1) {
         res.status(200).json({ message: "Expense deleted successfully" });
@@ -76,4 +89,4 @@ module.exports = (db) => {
   });
 
   return router;
-}
+};
