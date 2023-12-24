@@ -142,10 +142,10 @@ const PaymentMethod = () => {
     // Gather the data to send to the backend
 
     const newSaleData = {
-      selectedProducts: [{ ...selectedProducts }],
+    
       customerDetails: { ...customerDetails },
-      selectedOptions: { ...selectedOptions },
-      totalPayment: totalPayment,
+      amounts: { ...amounts },
+      totalPayment,
     };
 
     setSalesData(newSaleData);
