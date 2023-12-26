@@ -156,11 +156,14 @@ const PaymentMethod = () => {
     setSelectedOptions([]);
     setAmounts({});
     setSelectedProducts([]);
-    setSubmissionSuccess(true);
+    setSalesData({});
+    setSubmissionSuccess(false);
   };
   useEffect(() => {
     const submitData = async () => {
       try {
+        console.log("Submitting Data:", salesData); // Add this line
+
         const response = await fetch("http://localhost:3001/sales", {
           method: "POST",
           headers: {
@@ -182,26 +185,26 @@ const PaymentMethod = () => {
       }
     };
 
-    if (Object.keys(salesData).length > 0) {
+    if (submissionSuccess && Object.keys(salesData).length > 0) {
       submitData();
     }
-  }, [salesData]);
+  }, [salesData, submissionSuccess]);
 
   const handleSubmission = async (e) => {
     e.preventDefault();
-    // Gather the data to send to the backend
 
     const newSaleData = {
       selectedProducts,
       customerDetails: { ...customerDetails },
       amounts: {
-        cash: parseFloat(amounts.cash), // Convert to number
-        transfer: parseFloat(amounts.transfer), // Convert to number
+        cash: parseFloat(amounts.cash), 
+        transfer: parseFloat(amounts.transfer), 
         pos: parseFloat(amounts.pos),
       },
       totalPayment,
     };
 
+    setSubmissionSuccess(true);
     setSalesData(newSaleData);
 
     console.log(newSaleData);
