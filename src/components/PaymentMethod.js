@@ -21,9 +21,19 @@ const PaymentMethod = () => {
 
   const handleCustomerDetailsChange = (e) => {
     const { name, value } = e.target;
+    let newValue = value;
+
+    if (name === "customerNumber") {
+      // Ensure the customerNumber is a number and has at most 11 digits
+      const numericValue = parseFloat(value);
+      newValue = isNaN(numericValue)
+        ? ""
+        : numericValue.toString().slice(0, 11);
+    }
+
     setCustomerDetails((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: newValue,
     }));
   };
 
@@ -184,14 +194,17 @@ const PaymentMethod = () => {
     const newSaleData = {
       selectedProducts,
       customerDetails: { ...customerDetails },
-      amounts: { ...amounts },
+      amounts: {
+        cash: parseFloat(amounts.cash), // Convert to number
+        transfer: parseFloat(amounts.transfer), // Convert to number
+        pos: parseFloat(amounts.pos),
+      },
       totalPayment,
     };
 
     setSalesData(newSaleData);
 
     console.log(newSaleData);
-    
   };
 
   return (
