@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
@@ -193,15 +193,24 @@ const PaymentMethod = () => {
   const handleSubmission = async (e) => {
     e.preventDefault();
 
+    const selectedProductsData = selectedProducts.map((product) => ({
+      ...product,
+      price: parseFloat(product.price),
+      quantity: parseInt(product.quantity, 10), // Assuming quantity is an integer
+    }));
+    const currentDateTime = new Date(); // Get the current date and time
+    const formattedDateTime = currentDateTime.toISOString(); // Convert to a string in ISO format
+
     const newSaleData = {
-      selectedProducts,
+      selectedProducts: selectedProductsData,
       customerDetails: { ...customerDetails },
       amounts: {
-        cash: parseFloat(amounts.cash), 
-        transfer: parseFloat(amounts.transfer), 
+        cash: parseFloat(amounts.cash),
+        transfer: parseFloat(amounts.transfer),
         pos: parseFloat(amounts.pos),
       },
       totalPayment,
+      timestamp: formattedDateTime, // Add the timestamp to the newSaleData object
     };
 
     setSubmissionSuccess(true);
