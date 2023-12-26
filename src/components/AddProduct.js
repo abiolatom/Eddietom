@@ -64,7 +64,7 @@ const AddProduct = () => {
   };
 
   const handleAddProduct = (event) => {
-    event.preventDefault();
+event.preventDefault();
 
     if (!productName || !productPrice || !productQuantity) {
       alert("Please input a Product, Price, and Price");
