@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
-  // const isInitialRender = useRef(true);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const {
     selectedProducts,
+    setSelectedProducts,
     calculateTotalPrice,
     selectedOptions,
     setSelectedOptions,
@@ -137,6 +138,16 @@ const PaymentMethod = () => {
     0
   );
 
+  const resetForm = () => {
+    setCustomerDetails({
+      customerName: "",
+      customerNumber: "",
+    });
+    setSelectedOptions([]);
+    setAmounts({});
+    setSelectedProducts([]);
+    setSubmissionSuccess(true);
+  };
   useEffect(() => {
     const submitData = async () => {
       try {
@@ -155,6 +166,7 @@ const PaymentMethod = () => {
         console.log("Raw Response:", response);
         const data = await response.json();
         console.log("Sales Data added successfully:", data);
+        resetForm();
       } catch (error) {
         console.error("Error adding Sales Data:", error);
       }
@@ -164,7 +176,7 @@ const PaymentMethod = () => {
       submitData();
     }
   }, [salesData]);
-  
+
   const handleSubmission = async (e) => {
     e.preventDefault();
     // Gather the data to send to the backend
@@ -179,28 +191,8 @@ const PaymentMethod = () => {
     setSalesData(newSaleData);
 
     console.log(newSaleData);
-
-    try {
-      const response = await fetch("http://localhost:3001/sales", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(salesData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      console.log("Raw Response:", response);
-      const data = await response.json();
-      console.log("Sales Data added successfully:", data);
-    } catch (error) {
-      console.error("Error adding Sales Data:", error);
-    }
+    
   };
-
-
 
   return (
     <div className="container mx-auto p-4">
@@ -249,6 +241,9 @@ const PaymentMethod = () => {
       >
         Submit Sales Details
       </button>
+      {submissionSuccess && (
+        <div className="text-green-600 mt-4">Form submitted successfully!</div>
+      )}
     </div>
   );
 };
