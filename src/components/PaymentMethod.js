@@ -24,11 +24,9 @@ const PaymentMethod = () => {
     let newValue = value;
 
     if (name === "customerNumber") {
-      // Ensure the customerNumber is a number and has at most 11 digits
-      const numericValue = parseFloat(value);
-      newValue = isNaN(numericValue)
-        ? ""
-        : numericValue.toString().slice(0, 11);
+      newValue = value.replace(/[^0-9]/g, "");
+
+      newValue = newValue.slice(0, 11);
     }
 
     setCustomerDetails((prevData) => ({
@@ -203,7 +201,10 @@ const PaymentMethod = () => {
 
     const newSaleData = {
       selectedProducts: selectedProductsData,
-      customerDetails: { ...customerDetails },
+      customerDetails: {
+        ...customerDetails,
+        customerNumber: parseFloat(customerDetails.customerNumber),
+      },
       amounts: {
         cash: parseFloat(amounts.cash),
         transfer: parseFloat(amounts.transfer),
@@ -251,12 +252,15 @@ const PaymentMethod = () => {
           <input
             placeholder="Customer Number"
             className="w-full p-2 border rounded-md"
-            type="number"
+            type="tel"
             id="customerNumber"
             name="customerNumber"
             value={customerDetails.customerNumber}
             onChange={handleCustomerDetailsChange}
           />
+          {isNaN(customerDetails.customerNumber) && (
+            <p className="text-red-500">Please enter a valid numeric value.</p>
+          )}
         </div>
       </fieldset>
       <br />
