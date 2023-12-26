@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { ProductList as products } from "./ProductList";
 import { useProductContext } from "./ProductContext";
 import axios from "axios";
 
@@ -21,24 +20,38 @@ const AddProduct = () => {
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
 
-  const filterText = (e) => {
+  useEffect(() => {
+    // Fetch products from the backend when the component mounts
+    fetchProducts();
+  }, []); // Empty dependency array ensures that this effect runs once when the component mounts
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/products");
+      const products = response.data;
+      setSuggestions(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  const filterText = async (e) => {
     const value = e.target.value.toLowerCase();
-
     setSearchText(value);
-    const filterProductList = products.filter((product) =>
-      product.name.toLowerCase().includes(value)
-    );
-    setFilterProduct(filterProductList);
 
-    const suggestion = filterProductList.filter((suggestion) => {
-      return suggestion.name.toLowerCase().startsWith(value);
-    });
-    setSuggestions(suggestion);
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/products?productName_like=${value}`
+      );
+      const filterProductList = response.data;
+      setSuggestions(filterProductList);
+    } catch (error) {
+      console.error("Error filtering products:", error);
+    }
   };
 
   const handleSuggestionClick = (filterText) => {
-    setProductName(filterText.name);
-    setSearchText(filterText.name);
+    setProductName(filterText.productName);
+    setSearchText(filterText.productName);
 
     setSuggestions([]);
   };
@@ -136,9 +149,7 @@ event.preventDefault();
     setSearchText("");
     setSelectedProduct(null);
 
-    // Log the updated `selectedProduct` and `selectedProducts` arrays
-    console.log("updatedProduct:", updatedProduct);
-    console.log("selectedProducts after update:", updatedSelectedProducts);
+   
   };
 
   const handleCancelSelectedProduct = () => {
@@ -178,10 +189,10 @@ event.preventDefault();
           {suggestions.map((suggestion) => (
             <li
               className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
-              key={suggestion.id}
+              key={suggestion._id}
               onClick={() => handleSuggestionClick(suggestion)}
             >
-              {suggestion.name}
+              {suggestion.productName}
             </li>
           ))}
         </ul>
@@ -243,7 +254,7 @@ event.preventDefault();
           <tbody>
             {selectedProducts.map((product) => (
               <tr key={product.id}>
-                <td className="border p-2"> {product.name}</td>
+                <td className="border p-2"> {product.productName}</td>
                 <td className="border p-2">{product.price}</td>
                 <td className="border p-2">{product.quantity}</td>
                 <td className="border p-2">{product.subtotal}</td>
