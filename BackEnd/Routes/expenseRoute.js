@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const express = require("express");
 const router = express.Router();
 
@@ -20,8 +21,8 @@ module.exports = (db) => {
   });
 
   router.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    const expense = await db.collection("expenses").findById(id);
+    const { id } = req.params.id;
+    const expense = await db.collection("expenses").findOne({ _id: ObjectId(id) });
     return res.status(200).json(expense);
   });
 

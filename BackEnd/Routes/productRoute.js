@@ -1,3 +1,4 @@
+const {ObjectId} = require("mongodb")
 const express = require("express");
 const router = express.Router();
 
@@ -56,8 +57,29 @@ module.exports = (db) => {
 
   router.delete("/:id", async (req, res) => {
     const { id } = req.params;
-    const deletedProduct = await db.collection("products").findById(id);
-    return res.status(200).json(deletedProduct);
+  
+    try {
+      // Find the sale by ID before deleting
+      const deletedSale = await db.collection("products").findOne({ _id: new ObjectId(id) });
+  
+      if (!deletedSale) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+  
+      // Perform the delete operation
+      const result = await db.collection("products").deleteOne({ _id: new ObjectId(id) });
+  
+      if (result.deletedCount === 1) {
+        // The sale was successfully deleted
+        return res.status(200).json({ message: "Product deleted successfully", deletedSale });
+      } else {
+        // If deletedCount is not 1, the delete operation didn't succeed
+        return res.status(500).json({ error: "Error deleting Product" });
+      }
+    } catch (error) {
+      console.error('Error deleting Product:', error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
   });
 
   return router;
