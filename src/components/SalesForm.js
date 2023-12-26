@@ -1,197 +1,124 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { ProductList as products } from "./ProductList";
-import { useProductContext } from "./ProductContext";
+import React, { useState, useEffect } from 'react';
 
-const AddProduct = () => {
-  const [productDetails, setProductDetails] = useState({
-    name: "",
-    price: "",
-    quantity: "",
-    subtotal: "",
-  });
+const SalesForm = () => {
+  const [searchText, setSearchText] = useState('');
+  const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [price, setPrice] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [salesData, setSalesData] = useState([]);
+  const [total, setTotal] = useState(0);
 
-  const {
-    selectedProducts,
-    setSelectedProducts,
-    calculateTotalPrice,
-    selectedProduct,
-    setSelectedProduct,
-  } = useProductContext();
+  // Fetch products based on the search text
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        // Replace with your actual API endpoint for fetching products
+        const response = await fetch(`/products?search=${searchText}`);
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
 
-  const [searchText, setSearchText] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+    fetchProducts();
+  }, [searchText]);
 
-  const filterText = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchText(value);
-
-    const filterProductList = products.filter((product) =>
-      product.name.toLowerCase().includes(value)
-    );
-    setSuggestions(filterProductList.filter((suggestion) =>
-      suggestion.name.toLowerCase().startsWith(value)
-    ));
+  // Update selected product when the user chooses one from the suggestions
+  const handleSelectProduct = (product) => {
+    setSelectedProduct(product);
+    setSearchText(product.name); // Populate search input with selected product name
   };
 
-  const handleSuggestionClick = (filterText) => {
-    setProductDetails((prevDetails) => ({
-      ...prevDetails,
-      name: filterText.name,
-    }));
-    setSearchText("");
-    setSuggestions([]);
-  };
-
-  const handleInputChange = (field, value) => {
-    setProductDetails((prevDetails) => ({
-      ...prevDetails,
-      [field]: /^\d*\.?\d*$/.test(value) ? value : prevDetails[field],
-    }));
-
-    if (field === "quantity" && productDetails.price !== "") {
-      const subtotal = parseFloat(productDetails.price) * parseFloat(value);
-      setProductDetails((prevDetails) => ({
-        ...prevDetails,
-        subtotal: subtotal.toFixed(2),
-      }));
-    } else if (field === "price" && productDetails.quantity !== "") {
-      const subtotal = parseFloat(value) * parseFloat(productDetails.quantity);
-      setProductDetails((prevDetails) => ({
-        ...prevDetails,
-        subtotal: subtotal.toFixed(2),
-      }));
-    }
-  };
-
-  const handleAddOrUpdateProduct = (event) => {
-    event.preventDefault();
-
-    if (!productDetails.name || !productDetails.price || !productDetails.quantity) {
-      alert("Please input a Product, Price, and Quantity");
-      return;
-    }
-
-    const existingProduct = selectedProducts.find(
-      (p) => p.name === productDetails.name
-    );
-
-    if (existingProduct) {
-      alert(`Product ${existingProduct.name} already exists. Update it instead`);
-    } else {
-      const newProduct = {
-        id: uuidv4(),
-        ...productDetails,
+  // Add selected product to the table
+  const handleAddToTable = () => {
+    if (selectedProduct && price && quantity) {
+      const subtotal = parseFloat(price) * parseInt(quantity, 10);
+      const newItem = {
+        productName: selectedProduct.name,
+        price: parseFloat(price),
+        quantity: parseInt(quantity, 10),
+        subtotal,
       };
 
-      setSelectedProducts([...selectedProducts, newProduct]);
-      setProductDetails({
-        name: "",
-        price: "",
-        quantity: "",
-        subtotal: "",
-      });
-      setSearchText("");
+      setSalesData([...salesData, newItem]);
+      setTotal(total + subtotal);
+
+      // Clear input fields
+      setSelectedProduct(null);
+      setPrice('');
+      setQuantity('');
+      setSearchText('');
     }
-  };
-
-  const handleUpdateProductClick = (product) => {
-    setProductDetails(product);
-    setSelectedProduct(product);
-  };
-
-  const handleCancelSelectedProduct = () => {
-    setProductDetails({
-      name: "",
-      price: "",
-      quantity: "",
-      subtotal: "",
-    });
-    setSearchText("");
-    setSelectedProduct(null);
-  };
-
-  const handleDeleteProduct = (productId) => {
-    const updatedSelectedProducts = selectedProducts.filter(
-      (prod) => prod.id !== productId
-    );
-    setSelectedProducts(updatedSelectedProducts);
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <form
-        className="mb-4"
-        onSubmit={handleAddOrUpdateProduct}
-      >
+    <div>
+      <div>
+        <label>Product Search:</label>
         <input
           type="text"
           value={searchText}
-          onChange={filterText}
-          placeholder="Add Product"
-          required
-          className="w-full p-2 border rounded-md font-semi-bold"
+          onChange={(e) => setSearchText(e.target.value)}
         />
-        <ul className="mt-2">
-          {suggestions.map((suggestion) => (
-            <li
-              className="cursor-pointer hover:bg-gray-200 p-2 rounded-md"
-              key={suggestion.id}
-              onClick={() => handleSuggestionClick(suggestion)}
-            >
-              {suggestion.name}
+        <ul>
+          {products.map((product) => (
+            <li key={product.id} onClick={() => handleSelectProduct(product)}>
+              {product.name}
             </li>
           ))}
         </ul>
-        <input
-          value={productDetails.price}
-          className="w-full mt-2 p-2 border rounded-md font-semibold"
-          type="text"
-          onChange={(e) => handleInputChange("price", e.target.value)}
-          placeholder="Enter Price"
-          required
-        />
+      </div>
 
+      <div>
+        <label>Price:</label>
         <input
-          value={productDetails.quantity}
           type="text"
-          onChange={(e) => handleInputChange("quantity", e.target.value)}
-          className="w-full mt-2 p-2 border rounded-md font-semibold"
-          placeholder="Enter Quantity"
-          required
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
         />
-        {selectedProduct ? (
-          <div>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 mx-4 rounded-md hover:bg-blue-600"
-              type="submit"
-            >
-              Save
-            </button>
-            <button
-              className="bg-red-400 text-gray-700 px-4 py-2 my-4 mx-4 rounded-md hover:bg-red-700"
-              onClick={handleCancelSelectedProduct}
-            >
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <button
-            className="bg-green-500 mt-3 ml-10 text-white px-4 py-2 rounded-md hover:bg-green-700"
-            type="submit"
-          >
-            Add Product
-          </button>
-        )}
-      </form>
+      </div>
 
-      {selectedProducts.length > 0 && (
-        <table className="w-full border-collapse border mt-4">
-          {/* ... (remaining code remains the same) */}
-        </table>
-      )}
+      <div>
+        <label>Quantity:</label>
+        <input
+          type="text"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+        />
+      </div>
+
+      <button onClick={handleAddToTable}>Add to Table</button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>SubTotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {salesData.map((item, index) => (
+            <tr key={index}>
+              <td>{item.productName}</td>
+              <td>{item.price}</td>
+              <td>{item.quantity}</td>
+              <td>{item.subtotal}</td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="3">Total:</td>
+            <td>{total}</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 };
 
-export default AddProduct;
+export default SalesForm;

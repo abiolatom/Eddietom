@@ -137,6 +137,34 @@ const PaymentMethod = () => {
     0
   );
 
+  useEffect(() => {
+    const submitData = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/sales", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(salesData),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        console.log("Raw Response:", response);
+        const data = await response.json();
+        console.log("Sales Data added successfully:", data);
+      } catch (error) {
+        console.error("Error adding Sales Data:", error);
+      }
+    };
+
+    if (Object.keys(salesData).length > 0) {
+      submitData();
+    }
+  }, [salesData]);
+  
   const handleSubmission = async (e) => {
     e.preventDefault();
     // Gather the data to send to the backend
@@ -172,14 +200,7 @@ const PaymentMethod = () => {
     }
   };
 
-  /*  useEffect(() => {
-    // Skip the initial render
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      return;
-    }
-    console.log(selectedProducts);
-  }, [selectedProducts]); */
+
 
   return (
     <div className="container mx-auto p-4">
