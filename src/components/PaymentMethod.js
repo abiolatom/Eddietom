@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { ProductContext } from "./ProductContext";
 
 const PaymentMethod = () => {
-  //const isInitialRender = useRef(true);
+  // const isInitialRender = useRef(true);
   const {
     selectedProducts,
     calculateTotalPrice,
@@ -137,12 +137,12 @@ const PaymentMethod = () => {
     0
   );
 
-  const handleSubmission = (e) => {
+  const handleSubmission = async (e) => {
     e.preventDefault();
     // Gather the data to send to the backend
 
     const newSaleData = {
-      salesProducts: [...selectedProducts],
+      selectedProducts,
       customerDetails: { ...customerDetails },
       amounts: { ...amounts },
       totalPayment,
@@ -150,30 +150,36 @@ const PaymentMethod = () => {
 
     setSalesData(newSaleData);
 
-    fetch("http://localhost:3001/sales", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(salesData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Sales Data added successfully:", data);
-      })
-      .catch((error) => {
-        console.error("Error adding Sales Data:", error);
+    console.log(newSaleData);
+
+    try {
+      const response = await fetch("http://localhost:3001/sales", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(salesData),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      console.log("Raw Response:", response);
+      const data = await response.json();
+      console.log("Sales Data added successfully:", data);
+    } catch (error) {
+      console.error("Error adding Sales Data:", error);
+    }
   };
 
-  /*useEffect(() => {
+  /*  useEffect(() => {
     // Skip the initial render
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;
     }
-    console.log(salesData);
-  }, [salesData]);*/
+    console.log(selectedProducts);
+  }, [selectedProducts]); */
 
   return (
     <div className="container mx-auto p-4">
