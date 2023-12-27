@@ -13,27 +13,30 @@ const AddProduct = () => {
     selectedProduct,
     setSelectedProduct,
   } = useProductContext();
+
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  //const [filterProduct, setFilterProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
 
   useEffect(() => {
-    const filteredSuggestions = searchText.trim() !== "" ? filterText() : [];
-    setSuggestions(filteredSuggestions);
+    if (searchText.trim() !== "") {
+      fetchProducts();
+    } else {
+      setSuggestions([]);
+    }
   }, [searchText]);
 
-  const [initialRender, setInitialRender] = useState(true);
-
-  useEffect(() => {
-    // Fetch products from the backend only on initial render
-    if (initialRender) {
-      //fetchProducts();
-      setInitialRender(false);
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/products");
+      const products = response.data;
+      //setSuggestions(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
     }
-  }, [initialRender]);
-  
+  };
+
   const filterText = async (e) => {
     const value = e.target.value.toLowerCase();
     setSearchText(value);
@@ -43,8 +46,8 @@ const AddProduct = () => {
         const response = await axios.get(
           `http://localhost:3001/products?productName_like=${value}`
         );
-        const filterProductList = response.data;
 
+        const filterProductList = response.data;
         const filteredSuggestions = filterProductList.filter((suggestion) =>
           suggestion.productName.toLowerCase().includes(value)
         );
@@ -58,35 +61,39 @@ const AddProduct = () => {
     }
   };
 
-  const handleSuggestionClick = (filterText) => {
-    setProductName(filterText.productName);
-    setSearchText(filterText.productName);
-
-    setSuggestions([]);
+  const handleSuggestionClick = (selectedProduct) => {
+    setProductName(selectedProduct.productName);
+    setSearchText(selectedProduct.productName);
+    setSuggestions([]); // Clear suggestions array
   };
 
   const handlePriceChange = (event) => {
     const value = event.target.value;
+
     if (/^\d*\.?\d*$/.test(value)) {
       setProductPrice(value);
     }
+
     if (productQuantity !== null) {
       const subtotal = parseFloat(value) * parseFloat(productQuantity);
+
       setProductSubtotal(subtotal.toFixed(2));
     }
   };
 
   const handleQuantityChange = (event) => {
     const value = event.target.value;
+
     if (/^\d*\.?\d*$/.test(value)) {
       setProductQuantity(value);
     }
+
     if (productPrice !== "") {
       const newSubtotal = parseFloat(productPrice) * parseFloat(value);
+
       setProductSubtotal(newSubtotal);
     }
   };
-
   const handleAddProduct = (event) => {
     event.preventDefault();
 
@@ -94,10 +101,10 @@ const AddProduct = () => {
       alert("Please input a Product, Price, and Price");
       return;
     }
-
     const existingProduct = selectedProducts.find(
       (p) => p.productName === productName
     );
+
     if (existingProduct) {
       alert(
         `Product ${existingProduct.productName} already exist. Update it instead`
@@ -133,7 +140,6 @@ const AddProduct = () => {
     if (!selectedProduct) {
       return;
     }
-
     const updatedProduct = selectedProduct;
     updatedProduct.name = productName || searchText;
     updatedProduct.price = productPrice;
@@ -141,6 +147,7 @@ const AddProduct = () => {
     updatedProduct.subtotal = productSubtotal;
 
     // Replace the existing product with the updated product
+
     const updatedSelectedProducts = selectedProducts.map((product) => {
       if (product.id === selectedProduct.id) {
         return updatedProduct;
@@ -149,10 +156,7 @@ const AddProduct = () => {
       }
     });
 
-    // Set the updated `selectedProducts` state
     setSelectedProducts(updatedSelectedProducts);
-
-    // Clear the product form fields
     setProductName("");
     setProductPrice("");
     setProductQuantity("");
@@ -172,6 +176,7 @@ const AddProduct = () => {
     const updateDelProduct = selectedProducts.filter(
       (prod) => prod.id !== productId
     );
+
     setSelectedProducts(updateDelProduct);
   };
 
@@ -188,11 +193,12 @@ const AddProduct = () => {
         <input
           type="text"
           value={searchText}
-          onChange={(e) => filterText(e.target.value)}
+          onChange={(e) => filterText(e)}
           placeholder="Add Product"
           required
           className="w-full p-2 border rounded-md font-semi-bold"
         />
+
         <ul className="mt-2">
           {suggestions.map((suggestion) => (
             <li
@@ -204,6 +210,7 @@ const AddProduct = () => {
             </li>
           ))}
         </ul>
+
         <input
           value={productPrice}
           className="w-full mt-2 p-2 border rounded-md font-semibold"
@@ -221,6 +228,7 @@ const AddProduct = () => {
           placeholder="Enter Quantity"
           required
         />
+
         {selectedProduct ? (
           <div>
             <button
@@ -230,6 +238,7 @@ const AddProduct = () => {
             >
               Save
             </button>
+
             <button
               className="bg-red-400 text-gray-700 px-4 py-2 my-4 mx-4 rounded-md hover:bg-red-700"
               onClick={handleCancelSelectedProduct}
@@ -273,6 +282,7 @@ const AddProduct = () => {
                   >
                     Update
                   </button>
+
                   <button
                     className="border bg-red-500 text-white mx-3 px-2 py-1 rounded-md hover:bg-red-600 mx-4"
                     onClick={() => handleDeleteProduct(product.id)}
@@ -282,10 +292,12 @@ const AddProduct = () => {
                 </td>
               </tr>
             ))}
+
             <tr>
               <td colSpan="3" className="border p-2">
                 <b>Total Price: </b>
               </td>
+
               <td colSpan="2" className="border p-2">
                 <b>{Number(calculateTotalPrice())} </b>
               </td>
