@@ -8,19 +8,18 @@ const saleSchema = new mongoose.Schema({
 
   selectedProducts: [
     {
-      id: { type: String, required: false },
-      name: { type: String, required: false },
-      price: { type: Number, required: false },
-      quantity: { type: Number, required: false },
-      subtotal: { type: Number, required: false },
+      id: { type: String, required: true },
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      quantity: { type: Number, required: true },
+      subtotal: { type: Number, required: true },
     },
   ],
-  selectedOptions: [
+  amounts: [
     {
-      value: { type: String, required: false },
-      amounts: { type: Number, required: false },
-      totalPayment: { type: Number, required: false },
-    },
+      value: { type: String, required: true },
+      amounts: { type: Number, required: true },
+      },
   ],
 
   totalPayment: { type: Number, required: false },

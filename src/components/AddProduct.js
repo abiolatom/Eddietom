@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import { useProductContext } from "./ProductContext";
 import axios from "axios";
 
-
 const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -16,36 +15,46 @@ const AddProduct = () => {
   } = useProductContext();
   const [searchText, setSearchText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [filterProduct, setFilterProduct] = useState([]);
+  //const [filterProduct, setFilterProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState("");
   const [productSubtotal, setProductSubtotal] = useState("");
 
   useEffect(() => {
-    // Fetch products from the backend when the component mounts
-    fetchProducts();
-  }, []); // Empty dependency array ensures that this effect runs once when the component mounts
+    const filteredSuggestions = searchText.trim() !== "" ? filterText() : [];
+    setSuggestions(filteredSuggestions);
+  }, [searchText]);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/products");
-      const products = response.data;
-      setSuggestions(products);
-    } catch (error) {
-      console.error("Error fetching products:", error);
+  const [initialRender, setInitialRender] = useState(true);
+
+  useEffect(() => {
+    // Fetch products from the backend only on initial render
+    if (initialRender) {
+      //fetchProducts();
+      setInitialRender(false);
     }
-  };
+  }, [initialRender]);
+  
   const filterText = async (e) => {
     const value = e.target.value.toLowerCase();
     setSearchText(value);
 
-    try {
-      const response = await axios.get(
-        `http://localhost:3001/products?productName_like=${value}`
-      );
-      const filterProductList = response.data;
-      setSuggestions(filterProductList);
-    } catch (error) {
-      console.error("Error filtering products:", error);
+    if (value.trim() !== "") {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/products?productName_like=${value}`
+        );
+        const filterProductList = response.data;
+
+        const filteredSuggestions = filterProductList.filter((suggestion) =>
+          suggestion.productName.toLowerCase().includes(value)
+        );
+
+        setSuggestions(filteredSuggestions);
+      } catch (error) {
+        console.error("Error filtering products:", error);
+      }
+    } else {
+      setSuggestions([]);
     }
   };
 
@@ -79,7 +88,7 @@ const AddProduct = () => {
   };
 
   const handleAddProduct = (event) => {
-event.preventDefault();
+    event.preventDefault();
 
     if (!productName || !productPrice || !productQuantity) {
       alert("Please input a Product, Price, and Price");
@@ -87,14 +96,16 @@ event.preventDefault();
     }
 
     const existingProduct = selectedProducts.find(
-      (p) => p.name === productName
+      (p) => p.productName === productName
     );
     if (existingProduct) {
-      alert(`Product ${existingProduct.name} already exist. Update it instead`);
+      alert(
+        `Product ${existingProduct.productName} already exist. Update it instead`
+      );
     } else {
       const newProduct = {
         id: uuidv4(),
-        name: productName,
+        productName: productName,
         price: productPrice,
         quantity: productQuantity,
         subtotal: productSubtotal,
@@ -118,8 +129,7 @@ event.preventDefault();
 
   const handleUpdateSelectedProduct = (e) => {
     e.preventDefault();
-    console.log("selectedProduct:", selectedProduct);
-    console.log("selectedProducts before update:", selectedProducts);
+
     if (!selectedProduct) {
       return;
     }
@@ -148,8 +158,6 @@ event.preventDefault();
     setProductQuantity("");
     setSearchText("");
     setSelectedProduct(null);
-
-   
   };
 
   const handleCancelSelectedProduct = () => {
@@ -180,7 +188,7 @@ event.preventDefault();
         <input
           type="text"
           value={searchText}
-          onChange={filterText}
+          onChange={(e) => filterText(e.target.value)}
           placeholder="Add Product"
           required
           className="w-full p-2 border rounded-md font-semi-bold"
