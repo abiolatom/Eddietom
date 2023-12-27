@@ -63,17 +63,63 @@ const ProductForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const productDataWithTimestamp = {
+      ...productData,
+      submissionTimestamp: new Date().toISOString(),
+    };
+
+    const parsedUnitCost = parseFloat(productDataWithTimestamp.unitCost);
+    const parsedQuantity = parseFloat(productDataWithTimestamp.quantity);
+    const parsedTransportCost = parseFloat(
+      productDataWithTimestamp.transportCost
+    );
+
+    // Check if the conversion is successful and update the productData
+    if (
+      !isNaN(parsedUnitCost) &&
+      !isNaN(parsedQuantity) &&
+      !isNaN(parsedTransportCost)
+    ) {
+      productDataWithTimestamp.unitCost = parsedUnitCost;
+      productDataWithTimestamp.quantity = parsedQuantity;
+      productDataWithTimestamp.transportCost = parsedTransportCost;
+    }
     try {
       const response = await fetch("http://localhost:3001/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(productDataWithTimestamp),
       });
 
       if (response.ok) {
-        console.log("Product added successfully");
+        setProductData({
+          productName: "",
+          category: "",
+          unitCost: "",
+          quantity: "",
+          transportCost: "",
+          totalCost: "",
+          purchaseDate: "",
+          deliveryDate: "",
+          sellerName: "",
+          sellerAddress: "",
+          paymentMethod: "",
+          paymentDate: "",
+          paymentInstallment: {
+            howMany: 1,
+            amount: "",
+            secondInstallmentDate: "",
+            secondAmount: "",
+            paymentCompletionDate: "",
+          },
+          otherInfo: "",
+        });
+
+        // Show success message (you can use an alert or a component)
+        alert("Product added successfully");
       } else {
         console.error("Error adding product:", response.statusText);
       }

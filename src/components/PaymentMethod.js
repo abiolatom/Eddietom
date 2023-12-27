@@ -217,7 +217,7 @@ const PaymentMethod = () => {
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
 
-    console.log(newSaleData);
+  
   };
 
   return (
