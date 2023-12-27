@@ -216,12 +216,13 @@ const PaymentMethod = () => {
 
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
-
-  
   };
 
   return (
     <div className="container mx-auto p-4">
+      {submissionSuccess && (
+        <div className="text-green-600 mt-4">Form submitted successfully!</div>
+      )}
       <h1 className="text-2xl font-bold mb-4">Payment Information</h1>
       <p className="mb-2">
         <em>Amount to pay:</em> <b>{calculateTotalPrice().toFixed(2)}</b>
@@ -270,9 +271,6 @@ const PaymentMethod = () => {
       >
         Submit Sales Details
       </button>
-      {submissionSuccess && (
-        <div className="text-green-600 mt-4">Form submitted successfully!</div>
-      )}
     </div>
   );
 };

@@ -60,9 +60,9 @@ module.exports = (db) => {
   
     try {
       // Find the sale by ID before deleting
-      const deletedSale = await db.collection("products").findOne({ _id: new ObjectId(id) });
+      const deletedProduct = await db.collection("products").findOne({ _id: new ObjectId(id) });
   
-      if (!deletedSale) {
+      if (!deletedProduct) {
         return res.status(404).json({ error: "Product not found" });
       }
   
@@ -71,7 +71,7 @@ module.exports = (db) => {
   
       if (result.deletedCount === 1) {
         // The sale was successfully deleted
-        return res.status(200).json({ message: "Product deleted successfully", deletedSale });
+        return res.status(200).json({ message: "Product deleted successfully", deletedProduct });
       } else {
         // If deletedCount is not 1, the delete operation didn't succeed
         return res.status(500).json({ error: "Error deleting Product" });

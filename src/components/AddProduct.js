@@ -127,7 +127,7 @@ const AddProduct = () => {
   };
 
   const handleUpdateProductClick = (product) => {
-    setSearchText(product.name);
+    setSearchText(product.productName);
     setProductPrice(product.price);
     setProductQuantity(product.quantity);
     setProductSubtotal(product.subtotal);

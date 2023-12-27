@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const ProductForm = () => {
   const [productData, setProductData] = useState({
     productName: "",
-    category: "",
+    category: "Rice",
     unitCost: "",
     quantity: "",
     transportCost: "",
@@ -97,7 +97,7 @@ const ProductForm = () => {
       if (response.ok) {
         setProductData({
           productName: "",
-          category: "",
+          category: "Rice",
           unitCost: "",
           quantity: "",
           transportCost: "",
@@ -214,7 +214,6 @@ const ProductForm = () => {
                 value={productData.transportCost}
                 onChange={handleChange}
                 placeholder="Transport Price"
-                required
                 className="w-full border p-2 rounded-md"
               />
             </div>
