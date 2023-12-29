@@ -5,8 +5,7 @@ import Payments from "./Payments";
 const DebtSales = () => {
   return (
     <div>
-      <AddProduct />
-      <Payments />
+     Debt Saales
     </div>
   );
 };

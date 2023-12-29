@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
 import { useNavigate } from "react-router-dom";
+import DebtSales from "./DebtSales";
+import SalesDeposit from "./SalesDeposit";
 
 const Payments = () => {
   const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
@@ -202,7 +204,7 @@ const Payments = () => {
         shouldRedirect: false,
       };
     } else if (totalPayment > calculateTotalPrice()) {
-      setRedirectPath("/deposit"); // Set the redirect path in the state
+      setRedirectPath("/SalesDeposit"); 
       return {
         message: `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
           2
@@ -210,7 +212,7 @@ const Payments = () => {
         shouldRedirect: true,
       };
     } else {
-      setRedirectPath("/DebtSales"); // Set the redirect path in the state
+      setRedirectPath("/DebtSales"); 
       return {
         message: `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
           2
@@ -280,8 +282,13 @@ const Payments = () => {
     setShowModal(false);
 
     if (shouldRedirect) {
-      navigate(redirectPath);
-      console.log("Redirecting to:", redirectPath);
+      const confirmed = window.confirm(
+        "Do you want to proceed with the redirection?"
+      );
+      if (confirmed) {
+        navigate(redirectPath);
+        console.log("Redirecting to:", redirectPath);
+      }
     }
   };
 
@@ -338,13 +345,25 @@ const Payments = () => {
       </button>
 
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>{redirectMessage}</p>
-            <button onClick={() => handleRedirectionLogic(false)}>
-              Cancel
-            </button>
-            <button onClick={handleRedirectionLogic(true)}>Continue</button>
+        <div className="fixed inset-0 z-10 flex items-center justify-center overflow-x-hidden overflow-y-auto">
+          <div className="relative w-auto max-w-sm mx-auto my-6 p-4 bg-white rounded-md shadow-lg">
+            <div className="modal-content">
+              <p>{redirectMessage}</p>
+              <div className="mt-4 flex justify-end">
+                <button
+                  className="px-4 py-2 mr-2 text-white bg-gray-500 rounded-md hover:bg-gray-600"
+                  onClick={() => handleRedirectionLogic(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+                  onClick={() => handleRedirectionLogic(true)}
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

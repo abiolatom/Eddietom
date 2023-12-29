@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const NavBar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav className="bg-gray-800">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
@@ -9,13 +15,14 @@ const NavBar = () => {
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <button
               type="button"
+              onClick={toggleMobileMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               aria-controls="mobile-menu"
-              aria-expanded="false"
+              aria-expanded={isMobileMenuOpen}
             >
               <span className="sr-only">Open main menu</span>
               <svg
-                className="block h-6 w-6"
+                className={`block h-6 w-6 ${isMobileMenuOpen ? "hidden" : ""}`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -30,7 +37,7 @@ const NavBar = () => {
                 />
               </svg>
               <svg
-                className="hidden h-6 w-6"
+                className={`hidden h-6 w-6 ${isMobileMenuOpen ? "block" : ""}`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -83,25 +90,28 @@ const NavBar = () => {
             </div>
           </div>
         </div>
-        <div className="sm:hidden" id="mobile-menu">
+        <div
+          className={`sm:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}
+          id="mobile-menu"
+        >
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/"
               className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
             >
-              Home
+              Add Sales
             </Link>
             <Link
               to="/productForm"
               className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
             >
-              ProductForm
+              Add New Stock
             </Link>
             <Link
               to="/addexpenseform"
               className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
             >
-              Expense
+              Add Expense
             </Link>
           </div>
         </div>
@@ -109,4 +119,5 @@ const NavBar = () => {
     </nav>
   );
 };
+
 export default NavBar;
