@@ -182,6 +182,7 @@ const Payments = () => {
         const data = await response.json();
         console.log("Sales Data added successfully:", data);
         resetForm();
+        navigate("/");
       } catch (error) {
         console.error("Error adding Sales Data:", error);
       }
@@ -271,11 +272,6 @@ const Payments = () => {
   };
 
   const handleRedirectionLogic = (shouldRedirect) => {
-    console.log(
-      "handleRedirectionLogic called with shouldRedirect:",
-      shouldRedirect
-    );
-
     setShowModal(false);
 
     if (shouldRedirect) {
@@ -291,6 +287,30 @@ const Payments = () => {
 
   return (
     <div className="container mx-auto p-4">
+      {selectedProducts.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {selectedProducts.map((product) => (
+            <div
+              key={product.id}
+              className="border rounded-md overflow-hidden bg-white m-2"
+            >
+              <div className="p-2">
+                <strong>{product.productName}</strong>
+                <p className="mt-2">Price: {product.price}</p>
+                <p>Quantity: {product.quantity}</p>
+                <p className="mb-2">SubTotal: {product.subtotal}</p>
+              </div>
+            </div>
+          ))}
+          <div className="border rounded-md overflow-hidden bg-white col-span-3 m-2">
+            <div className="p-4">
+              <strong>Total Price: </strong>
+              <span>{Number(calculateTotalPrice())}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h1 className="text-2xl font-bold mb-4">Payment Information</h1>
       <p className="mb-2">
         <em>Amount to pay:</em> <b>{calculateTotalPrice().toFixed(2)}</b>
@@ -336,7 +356,6 @@ const Payments = () => {
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
         onClick={handleSubmission}
-        // disabled={!isPaymentMatch}
       >
         Submit Sales Details
       </button>
