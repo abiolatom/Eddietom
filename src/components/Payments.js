@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
-import { useNavigate } from "react-router-dom";
-import DebtSales from "./DebtSales";
-import SalesDeposit from "./SalesDeposit";
+import { useNavigate, useLocation } from "react-router-dom";
+
+
 
 const Payments = () => {
+  
   const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
-
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
@@ -339,7 +339,7 @@ const Payments = () => {
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
         onClick={handleSubmission}
-        // disabled={!isPaymentMatch}
+        
       >
         Submit Sales Details
       </button>

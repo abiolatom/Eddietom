@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useProductContext } from "./ProductContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+  const navigate = useNavigate();
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const {
@@ -179,6 +181,7 @@ const AddProduct = () => {
 
     setSelectedProducts(updateDelProduct);
   };
+  const totalPrice = calculateTotalPrice();
 
   return (
     <div className="container mx-auto p-4">
@@ -305,6 +308,16 @@ const AddProduct = () => {
           </tbody>
         </table>
       )}
+
+      <button
+        className="bg-blue-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        onClick={() =>
+          navigate("/payments", { state: { selectedProducts, totalPrice } })
+        }
+        disabled={selectedProducts.length === 0}
+      >
+        Continue to Payment
+      </button>
     </div>
   );
 };
