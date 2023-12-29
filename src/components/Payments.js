@@ -1,7 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
+import { useNavigate } from "react-router-dom";
 
 const Payments = () => {
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [redirectMessage, setRedirectMessage] = useState("");
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const {
     selectedProducts,
@@ -126,7 +130,10 @@ const Payments = () => {
       </div>
     );
   };
-
+  const totalPayment = Object.values(amounts).reduce(
+    (acc, amount) => acc + parseFloat(amount) || 0,
+    0
+  );
   const paymentComparison = () => {
     const remainingAmount = calculateTotalPrice() - totalPayment;
     if (totalPayment === calculateTotalPrice()) {
@@ -141,10 +148,6 @@ const Payments = () => {
       )}`;
     }
   };
-  const totalPayment = Object.values(amounts).reduce(
-    (acc, amount) => acc + parseFloat(amount) || 0,
-    0
-  );
 
   const resetForm = () => {
     setCustomerDetails({
@@ -188,16 +191,69 @@ const Payments = () => {
     }
   }, [salesData, submissionSuccess]);
 
+  const isPaymentMatch = totalPayment === calculateTotalPrice();
+  const isPaymentExceeds = totalPayment > calculateTotalPrice();
+
+  const handleRedirect = () => {
+    const remainingAmount = calculateTotalPrice() - totalPayment;
+
+    if (isPaymentExceeds) {
+      setRedirectMessage(
+        `Total payment exceeds the required amount. Remaining amount: ${remainingAmount.toFixed(
+          2
+        )}. Do you want to redirect to the Deposit page?`
+      );
+    } else {
+      setRedirectMessage(
+        `Total payment is less than the required amount. Do you want to redirect to the DebtSales page?`
+      );
+    }
+  };
+
+  const handleRedirectionLogic = (shouldRedirect) => {
+    console.log(
+      "handleRedirectionLogic called with shouldRedirect:",
+      shouldRedirect
+    );
+
+    setShowModal(false);
+
+    if (shouldRedirect) {
+      if (isPaymentExceeds) {
+        navigate("/deposit");
+        console.log("Redirecting to Deposit page");
+      } else {
+        navigate("/DebtSales");
+        console.log("Redirecting to DebtSales page");
+      }
+    }
+  };
+
   const handleSubmission = async (e) => {
     e.preventDefault();
+
+    if (selectedProducts.length === 0) {
+      window.alert("Please select at least one product.");
+      return;
+    }
+
+    if (Object.keys(amounts).length === 0) {
+      window.alert("Please enter payment amounts.");
+      return;
+    }
+
+    if (!isPaymentMatch) {
+      handleRedirect();
+      return;
+    }
 
     const selectedProductsData = selectedProducts.map((product) => ({
       ...product,
       price: parseFloat(product.price),
-      quantity: parseInt(product.quantity, 10), // Assuming quantity is an integer
+      quantity: parseInt(product.quantity, 10),
     }));
-    const currentDateTime = new Date(); // Get the current date and time
-    const formattedDateTime = currentDateTime.toISOString(); // Convert to a string in ISO format
+    const currentDateTime = new Date();
+    const formattedDateTime = currentDateTime.toISOString();
 
     const newSaleData = {
       selectedProducts: selectedProductsData,
@@ -211,11 +267,12 @@ const Payments = () => {
         pos: parseFloat(amounts.pos),
       },
       totalPayment,
-      timestamp: formattedDateTime, // Add the timestamp to the newSaleData object
+      timestamp: formattedDateTime,
     };
 
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
+    window.alert("Sales data submitted successfully!");
   };
 
   return (
@@ -229,7 +286,7 @@ const Payments = () => {
       </p>
       <label className="block text-sm font-semibold mb-2">
         Select Payment Method
-      </label>{" "}
+      </label>
       {optionsRender()}
       <p className="mb-2">{paymentComparison()}</p>
       <br />
@@ -265,11 +322,21 @@ const Payments = () => {
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
         onClick={handleSubmission}
+        disabled={!isPaymentMatch}
       >
         Submit Sales Details
       </button>
-      {submissionSuccess && (
-        <div className="text-green-600 mt-4">Form submitted successfully!</div>
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>{redirectMessage}</p>
+            <button onClick={() => handleRedirectionLogic(false)}>
+              Cancel
+            </button>
+            <button onClick={handleRedirectionLogic(true)}>Continue</button>
+          </div>
+        </div>
       )}
     </div>
   );
