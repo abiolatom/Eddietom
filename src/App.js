@@ -7,9 +7,11 @@ import SalesDeposit from "./components/SalesDeposit";
 import Payments from "./components/Payments";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
+import { ProductProvider } from "./components/ProductContext";
 
 const App = () => {
   return (
+    <ProductProvider>
     <Router>
       <NavBar />
       <Routes>
@@ -20,7 +22,8 @@ const App = () => {
         <Route path="/salesdeposit" element={<SalesDeposit />} />
         <Route path="/payments" element={<Payments />} />
       </Routes>
-    </Router>
+      </Router>
+      </ProductProvider>
   );
 };
 

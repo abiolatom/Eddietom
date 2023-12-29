@@ -1,11 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
-import { useNavigate, useLocation } from "react-router-dom";
-
-
+import { useNavigate } from "react-router-dom";
 
 const Payments = () => {
-  
   const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -204,7 +201,7 @@ const Payments = () => {
         shouldRedirect: false,
       };
     } else if (totalPayment > calculateTotalPrice()) {
-      setRedirectPath("/SalesDeposit"); 
+      setRedirectPath("/SalesDeposit");
       return {
         message: `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
           2
@@ -212,7 +209,7 @@ const Payments = () => {
         shouldRedirect: true,
       };
     } else {
-      setRedirectPath("/DebtSales"); 
+      setRedirectPath("/DebtSales");
       return {
         message: `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
           2
@@ -339,7 +336,7 @@ const Payments = () => {
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
         onClick={handleSubmission}
-        
+        // disabled={!isPaymentMatch}
       >
         Submit Sales Details
       </button>

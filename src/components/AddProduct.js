@@ -311,9 +311,7 @@ const AddProduct = () => {
 
       <button
         className="bg-blue-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        onClick={() =>
-          navigate("/payments", { state: { selectedProducts, totalPrice } })
-        }
+        onClick={() => navigate("/payments")}
         disabled={selectedProducts.length === 0}
       >
         Continue to Payment
