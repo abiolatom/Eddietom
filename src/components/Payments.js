@@ -3,6 +3,8 @@ import { ProductContext } from "./ProductContext";
 import { useNavigate } from "react-router-dom";
 
 const Payments = () => {
+  const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
+
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
@@ -191,41 +193,30 @@ const Payments = () => {
     }
   }, [salesData, submissionSuccess]);
 
-  const isPaymentMatch = totalPayment === calculateTotalPrice();
-  const isPaymentExceeds = totalPayment > calculateTotalPrice();
-
-  const handleRedirect = () => {
+  const calculatePaymentStatus = () => {
     const remainingAmount = calculateTotalPrice() - totalPayment;
 
-    if (isPaymentExceeds) {
-      setRedirectMessage(
-        `Total payment exceeds the required amount. Remaining amount: ${remainingAmount.toFixed(
+    if (totalPayment === calculateTotalPrice()) {
+      return {
+        message: "Total payment matches required amount.",
+        shouldRedirect: false,
+      };
+    } else if (totalPayment > calculateTotalPrice()) {
+      setRedirectPath("/deposit"); // Set the redirect path in the state
+      return {
+        message: `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
           2
-        )}. Do you want to redirect to the Deposit page?`
-      );
+        )}`,
+        shouldRedirect: true,
+      };
     } else {
-      setRedirectMessage(
-        `Total payment is less than the required amount. Do you want to redirect to the DebtSales page?`
-      );
-    }
-  };
-
-  const handleRedirectionLogic = (shouldRedirect) => {
-    console.log(
-      "handleRedirectionLogic called with shouldRedirect:",
-      shouldRedirect
-    );
-
-    setShowModal(false);
-
-    if (shouldRedirect) {
-      if (isPaymentExceeds) {
-        navigate("/deposit");
-        console.log("Redirecting to Deposit page");
-      } else {
-        navigate("/DebtSales");
-        console.log("Redirecting to DebtSales page");
-      }
+      setRedirectPath("/DebtSales"); // Set the redirect path in the state
+      return {
+        message: `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
+          2
+        )}`,
+        shouldRedirect: true,
+      };
     }
   };
 
@@ -241,9 +232,9 @@ const Payments = () => {
       window.alert("Please enter payment amounts.");
       return;
     }
-
-    if (!isPaymentMatch) {
-      handleRedirect();
+    const paymentStatus = calculatePaymentStatus();
+    if (paymentStatus.shouldRedirect) {
+      handleRedirect(paymentStatus.message);
       return;
     }
 
@@ -273,6 +264,25 @@ const Payments = () => {
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
     window.alert("Sales data submitted successfully!");
+  };
+
+  const handleRedirect = (message) => {
+    setRedirectMessage(message);
+    setShowModal(true);
+  };
+
+  const handleRedirectionLogic = (shouldRedirect) => {
+    console.log(
+      "handleRedirectionLogic called with shouldRedirect:",
+      shouldRedirect
+    );
+
+    setShowModal(false);
+
+    if (shouldRedirect) {
+      navigate(redirectPath);
+      console.log("Redirecting to:", redirectPath);
+    }
   };
 
   return (
@@ -322,7 +332,7 @@ const Payments = () => {
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
         onClick={handleSubmission}
-        disabled={!isPaymentMatch}
+        // disabled={!isPaymentMatch}
       >
         Submit Sales Details
       </button>
