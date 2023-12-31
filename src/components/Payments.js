@@ -84,7 +84,6 @@ const Payments = () => {
       const selectedOption = { value, amounts: 0 };
       newSelectedOptions.push(selectedOption);
     }
-    console.log("Updated selectedOptions:", newSelectedOptions, amounts);
 
     setSelectedOptions(newSelectedOptions);
   };

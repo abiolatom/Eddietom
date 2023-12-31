@@ -1,26 +1,26 @@
 import { ProductContext } from "./ProductContext";
 import { useNavigate } from "react-router-dom";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 
 const DebtSales = () => {
   const navigate = useNavigate();
 
-  const {
-    selectedProducts,
-    setSelectedProducts,
-    calculateTotalPrice,
-    amounts,
-    setAmounts,
-  } = useContext(ProductContext);
-
-  const [cashPayment, setCashPayment] = useState(0);
-  const [bankPayment, setBankPayment] = useState(0);
-  const [bankName, setBankName] = useState('');
-  const [posPayment, setPosPayment] = useState(0);
-  const [balance, setBalance] = useState(0);
+  const { selectedProducts, calculateTotalPrice } = useContext(ProductContext);
+  const [installmentAmounts, setInstallmentAmounts] = useState(
+    Array.from({ length: 3 }, () => 0)
+  );
+  const [reason, setReason] = useState("");
+  const [cashPayment, setCashPayment] = useState("");
+  const [bankPayment, setBankPayment] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [posPayment, setPosPayment] = useState("");
   const [installments, setInstallments] = useState(1);
   const [dates, setDates] = useState([]);
-  const totalAmount = calculateTotalPrice();
+
+  const totalAmount =
+    Number(posPayment) + Number(bankPayment) + Number(cashPayment);
+
+  const balance = calculateTotalPrice() - totalAmount;
 
   function handleBankPaymentChange(event) {
     setBankPayment(event.target.value);
@@ -51,14 +51,13 @@ const DebtSales = () => {
       bankPayment,
       bankName,
       posPayment,
-     
+
       installments,
-     
     });
   };
 
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <h2>Debt Sales Form</h2>
       <button
         className="bg-blue-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-blue-600"
@@ -89,47 +88,90 @@ const DebtSales = () => {
           </div>
         </div>
       )}
-       <form onSubmit={handleSubmit}>
-      <div>
-        <label>Cash Payment:</label>
-        <input type="number" value={cashPayment} onChange={(e) => setCashPayment(e.target.value)} />
-      </div>
-      <div>
-        <label>Bank Payment:</label>
-        <input type="number" value={bankPayment} onChange={handleBankPaymentChange} />
-        {bankPayment > 0 && (
-          <input type="text" placeholder="Bank Name" value={bankName} onChange={handleBankNameChange} />
-        )}
-      </div>
-      <div>
-        <label>POS Payment:</label>
-        <input type="number" value={posPayment} onChange={handlePosPaymentChange} />
-      </div>
-      <div>
-        <label>Total Amount:</label>
-        <span>{totalAmount}</span>
-      </div>
-      <div>
-        <label>Balance:</label>
-        <input type="number" value={balance} readOnly />
-      </div>
-      <div>
-        <label>Installments:</label>
-        <select value={installments} onChange={handleInstallmentsChange}>
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-        </select>
-      </div>
-      {Array.from({ length: installments }).map((_, index) => (
-        <div key={index}>
-          <label>Date for Installment {index + 1}:</label>
-          <input type="date" value={dates[index] || ''} onChange={(e) => handleDateChange(index, e)} />
-          {/* You may want to add an input for the amount of each installment here */}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Cash Payment:</label>
+          <input
+            type="number"
+            value={cashPayment}
+            onChange={(e) => setCashPayment(e.target.value)}
+          />
         </div>
-      ))}
-      <button type="submit">Submit</button>
-    </form>
+        <div>
+          <label>Bank Payment:</label>
+          <input
+            type="number"
+            value={bankPayment}
+            onChange={handleBankPaymentChange}
+          />
+          {bankPayment > 0 && (
+            <input
+              type="text"
+              placeholder="Bank Name"
+              value={bankName}
+              onChange={handleBankNameChange}
+            />
+          )}
+        </div>
+        <div>
+          <label>POS Payment:</label>
+          <input
+            type="number"
+            value={posPayment}
+            onChange={handlePosPaymentChange}
+          />
+        </div>
+        <div>
+          <label>Total Amount:</label>
+          <input type="number" value={totalAmount} readOnly />
+        </div>
+        <div>
+          <label>Balance:</label>
+          <input type="number" value={balance} readOnly />
+        </div>
+        <div>
+          <label>Installments:</label>
+          <select value={installments} onChange={handleInstallmentsChange}>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+          </select>
+        </div>
+        {Array.from({ length: installments }).map((_, index) => (
+          <div key={index}>
+            <label>Date for Installment {index + 1}:</label>
+            <input
+              type="date"
+              value={dates[index] || ""}
+              required
+              onChange={(e) => handleDateChange(index, e)}
+            />
+            {installments > 1 && (
+              <>
+                <label>Amount for Installment {index + 1}:</label>
+                <input
+                  type="number"
+                  value={installmentAmounts[index]}
+                  onChange={(e) => {
+                    const newAmounts = [...installmentAmounts];
+                    newAmounts[index] = e.target.value;
+                    setInstallmentAmounts(newAmounts);
+                  }}
+                />
+              </>
+            )}
+          </div>
+        ))}
+        <div>
+          <label>Reason:</label>
+          <textarea
+            value={reason}
+            placeholder="State Reason for Debt Sales"
+            onChange={(e) => setReason(e.target.value)}
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };

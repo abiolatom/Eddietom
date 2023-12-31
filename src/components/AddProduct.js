@@ -33,7 +33,7 @@ const AddProduct = () => {
     try {
       const response = await axios.get("http://localhost:3001/products");
       const products = response.data;
-      //setSuggestions(products);
+      
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -66,7 +66,7 @@ const AddProduct = () => {
   const handleSuggestionClick = (selectedProduct) => {
     setProductName(selectedProduct.productName);
     setSearchText(selectedProduct.productName);
-    setSuggestions([]); // Clear suggestions array
+    setSuggestions([]); 
   };
 
   const handlePriceChange = (event) => {
@@ -148,7 +148,7 @@ const AddProduct = () => {
     updatedProduct.quantity = productQuantity;
     updatedProduct.subtotal = productSubtotal;
 
-    // Replace the existing product with the updated product
+    
 
     const updatedSelectedProducts = selectedProducts.map((product) => {
       if (product.id === selectedProduct.id) {

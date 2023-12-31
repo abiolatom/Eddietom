@@ -14,7 +14,7 @@ const SalesDeposit = () => {
   } = useContext(ProductContext);
 
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <h2>Sales Deposit Form</h2>
       <button
         className="bg-blue-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-blue-600"
