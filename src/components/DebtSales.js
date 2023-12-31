@@ -1,11 +1,10 @@
 import { ProductContext } from "./ProductContext";
 import React, { useContext, useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 const DebtSales = () => {
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-
+  const navigate = useNavigate();
   const {
-    navigate,
     selectedProducts,
     debtSalesData,
     setDebtSalesData,
