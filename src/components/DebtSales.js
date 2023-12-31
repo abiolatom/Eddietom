@@ -1,6 +1,6 @@
 import { ProductContext } from "./ProductContext";
 import { useNavigate } from "react-router-dom";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 const DebtSales = () => {
   const navigate = useNavigate();
@@ -50,9 +50,11 @@ const DebtSales = () => {
     newDates[index] = event.target.value;
     setDates(newDates);
   }
+
+  useEffect(() => {}, [debtSalesData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
     const selectedProductsData = selectedProducts.map((product) => ({
       ...product,
       price: parseFloat(product.price),
@@ -67,17 +69,16 @@ const DebtSales = () => {
         ...customerDetails,
         customerNumber: parseFloat(customerDetails.customerNumber),
       },
-      cashPayment,
-      bankPayment,
+      cashPayment: parseFloat(cashPayment),
+      bankPayment: parseFloat(bankPayment),
       bankName,
-      posPayment,
-      totalAmount,
+      posPayment: parseFloat(posPayment),
+      totalAmount: parseFloat(totalAmount),
       balance,
-      installments,
+      installments: parseFloat(installments),
       dates,
-      installmentAmounts,
+      installmentAmounts: parseFloat(installmentAmounts),
       reason,
-
       timestamp: formattedDateTime,
     };
 
