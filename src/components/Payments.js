@@ -7,20 +7,23 @@ const Payments = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
-  const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  
   const {
+    submissionSuccess,
+    setSubmissionSuccess,
     selectedProducts,
-    setSelectedProducts,
     calculateTotalPrice,
     selectedOptions,
     setSelectedOptions,
     customerDetails,
-    setCustomerDetails,
+    salesData,
+    setSalesData,
     handleCustomerDetailsChange,
     amounts,
     setAmounts,
+    resetForm,
   } = useContext(ProductContext);
-  const [salesData, setSalesData] = useState({});
+  
 
   const options = [
     { value: "cash", label: "Cash" },
@@ -131,17 +134,6 @@ const Payments = () => {
     }
   };
 
-  const resetForm = () => {
-    setCustomerDetails({
-      customerName: "",
-      customerNumber: "",
-    });
-    setSelectedOptions([]);
-    setAmounts({});
-    setSelectedProducts([]);
-    setSalesData({});
-    setSubmissionSuccess(false);
-  };
   useEffect(() => {
     const submitData = async () => {
       try {

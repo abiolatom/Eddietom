@@ -5,13 +5,14 @@ import React, { useContext, useState, useEffect } from "react";
 const DebtSales = () => {
   const navigate = useNavigate();
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-  const [debtSalesData, setDebtSalesData] = useState({});
+
   const {
     selectedProducts,
+    debtSalesData,
+    setDebtSalesData,
     calculateTotalPrice,
     customerDetails,
-    setCustomerDetails,
-
+    resetForm,
     handleCustomerDetailsChange,
   } = useContext(ProductContext);
   const [installmentAmounts, setInstallmentAmounts] = useState(
@@ -58,25 +59,18 @@ const DebtSales = () => {
     }
   };
 
-  const resetForm = () => {
-    setCustomerDetails({
-      customerName: "",
-      customerNumber: "",
-    });
-
-    setSubmissionSuccess(false);
-  };
   useEffect(() => {
     if (submissionSuccess) {
       window.alert("Debt Sales data submitted successfully!");
       resetForm();
+      navigate("/");
     }
   }, [debtSalesData, submissionSuccess]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (balance !== 0) {
-      alert('Please indicate how full payment is made.');
+      alert("Please indicate how full payment is made.");
       return;
     }
     const selectedProductsData = selectedProducts.map((product) => ({

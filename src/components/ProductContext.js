@@ -3,10 +3,13 @@ import React, { createContext, useContext, useState } from "react";
 export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const [debtSalesData, setDebtSalesData] = useState({});
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [amounts, setAmounts] = useState({});
+  const [salesData, setSalesData] = useState({});
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
     customerNumber: "",
@@ -36,7 +39,19 @@ export const ProductProvider = ({ children }) => {
       0
     );
   };
-
+  const resetForm = () => {
+    setCustomerDetails({
+      customerName: "",
+      customerNumber: "",
+    });
+    setSelectedOptions([]);
+    setAmounts({});
+    setSelectedProducts([]);
+    setSalesData({});
+    setAmounts({});
+    setDebtSalesData({});
+    setSubmissionSuccess(false);
+  };
   return (
     <ProductContext.Provider
       value={{
@@ -52,6 +67,7 @@ export const ProductProvider = ({ children }) => {
         setSelectedOptions,
         amounts,
         setAmounts,
+        resetForm,
       }}
     >
       {children}
