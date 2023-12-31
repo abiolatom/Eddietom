@@ -4,8 +4,15 @@ import React, { useContext, useState } from "react";
 
 const DebtSales = () => {
   const navigate = useNavigate();
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const [debtSalesData, setDebtSalesData] = useState({});
+  const {
+    selectedProducts,
+    calculateTotalPrice,
+    customerDetails,
 
-  const { selectedProducts, calculateTotalPrice } = useContext(ProductContext);
+    handleCustomerDetailsChange,
+  } = useContext(ProductContext);
   const [installmentAmounts, setInstallmentAmounts] = useState(
     Array.from({ length: 3 }, () => 0)
   );
@@ -46,14 +53,38 @@ const DebtSales = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form data:", {
+    const selectedProductsData = selectedProducts.map((product) => ({
+      ...product,
+      price: parseFloat(product.price),
+      quantity: parseInt(product.quantity, 10),
+    }));
+    const currentDateTime = new Date();
+    const formattedDateTime = currentDateTime.toISOString();
+
+    const newDebtSaleData = {
+      selectedProducts: selectedProductsData,
+      customerDetails: {
+        ...customerDetails,
+        customerNumber: parseFloat(customerDetails.customerNumber),
+      },
       cashPayment,
       bankPayment,
       bankName,
       posPayment,
-
+      totalAmount,
+      balance,
       installments,
-    });
+      dates,
+      installmentAmounts,
+      reason,
+
+      timestamp: formattedDateTime,
+    };
+
+    setSubmissionSuccess(true);
+    setDebtSalesData(newDebtSaleData);
+    console.log(debtSalesData);
+    // window.alert("Debt Sales data submitted successfully!");
   };
 
   return (
@@ -170,6 +201,37 @@ const DebtSales = () => {
             onChange={(e) => setReason(e.target.value)}
           />
         </div>
+
+        <fieldset className="border p-4 mb-4">
+          <legend className="text-lg font-semibold">Customer Details</legend>
+          <div className="mb-2">
+            <input
+              type="text"
+              id="customerName"
+              name="customerName"
+              value={customerDetails.customerName}
+              onChange={handleCustomerDetailsChange}
+              placeholder="Customer Name"
+              className="w-full p-2 border rounded-md"
+            />
+          </div>
+          <div>
+            <input
+              placeholder="Customer Number"
+              className="w-full p-2 border rounded-md"
+              type="tel"
+              id="customerNumber"
+              name="customerNumber"
+              value={customerDetails.customerNumber}
+              onChange={handleCustomerDetailsChange}
+            />
+            {isNaN(customerDetails.customerNumber) && (
+              <p className="text-red-500">
+                Please enter a valid numeric value.
+              </p>
+            )}
+          </div>
+        </fieldset>
         <button type="submit">Submit</button>
       </form>
     </div>

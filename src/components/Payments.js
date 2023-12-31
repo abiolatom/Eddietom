@@ -14,31 +14,13 @@ const Payments = () => {
     calculateTotalPrice,
     selectedOptions,
     setSelectedOptions,
+    customerDetails,
+    setCustomerDetails,
+    handleCustomerDetailsChange,
     amounts,
     setAmounts,
   } = useContext(ProductContext);
   const [salesData, setSalesData] = useState({});
-
-  const [customerDetails, setCustomerDetails] = useState({
-    customerName: "",
-    customerNumber: "",
-  });
-
-  const handleCustomerDetailsChange = (e) => {
-    const { name, value } = e.target;
-    let newValue = value;
-
-    if (name === "customerNumber") {
-      newValue = value.replace(/[^0-9]/g, "");
-
-      newValue = newValue.slice(0, 11);
-    }
-
-    setCustomerDetails((prevData) => ({
-      ...prevData,
-      [name]: newValue,
-    }));
-  };
 
   const options = [
     { value: "cash", label: "Cash" },
@@ -203,17 +185,17 @@ const Payments = () => {
     } else if (totalPayment > calculateTotalPrice()) {
       setRedirectPath("/SalesDeposit");
       return {
-        message: `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
+        message: `Total payment is more than required amount by: ${remainingAmount.toFixed(
           2
-        )}`,
+        )} Do you want to Navigate to Sales Deposit page`,
         shouldRedirect: true,
       };
     } else {
       setRedirectPath("/DebtSales");
       return {
-        message: `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
+        message: `Total payment is less than required amount by: ${remainingAmount.toFixed(
           2
-        )}`,
+        )} Do you want to Navigate to Debt Sales page?`,
         shouldRedirect: true,
       };
     }

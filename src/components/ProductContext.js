@@ -7,6 +7,28 @@ export const ProductProvider = ({ children }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [amounts, setAmounts] = useState({});
+  const [customerDetails, setCustomerDetails] = useState({
+    customerName: "",
+    customerNumber: "",
+    customerCategory: { reseller: "", endUser: "" },
+    customerAddress: "",
+  });
+
+  const handleCustomerDetailsChange = (e) => {
+    const { name, value } = e.target;
+    let newValue = value;
+
+    if (name === "customerNumber") {
+      newValue = value.replace(/[^0-9]/g, "");
+
+      newValue = newValue.slice(0, 11);
+    }
+
+    setCustomerDetails((prevData) => ({
+      ...prevData,
+      [name]: newValue,
+    }));
+  };
 
   const calculateTotalPrice = () => {
     return selectedProducts.reduce(
@@ -19,6 +41,9 @@ export const ProductProvider = ({ children }) => {
     <ProductContext.Provider
       value={{
         selectedProducts,
+        customerDetails,
+        handleCustomerDetailsChange,
+        setCustomerDetails,
         setSelectedProducts,
         selectedProduct,
         setSelectedProduct,
