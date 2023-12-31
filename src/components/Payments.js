@@ -1,15 +1,17 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
 
-
 const Payments = () => {
   const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
-  
+
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
-  
+
   const {
     navigate,
+    setBankPayment,
+    handleBankNameChange,
+    bankPayment,
     submissionSuccess,
     setSubmissionSuccess,
     selectedProducts,
@@ -24,12 +26,11 @@ const Payments = () => {
     setAmounts,
     resetForm,
   } = useContext(ProductContext);
-  
 
-  const options = [
-    { value: "cash", label: "Cash" },
-    { value: "transfer", label: "Bank Transfer" },
-    { value: "pos", label: "POS" },
+  const paymentOptions = [
+    { paymentOption: "cash", label: "Cash" },
+    { paymentOption: "bankPayment", label: "Bank Transfer" },
+    { paymentOption: "posPayment", label: "POS" },
   ];
 
   const handleAmountChange = (event, value) => {
@@ -51,14 +52,24 @@ const Payments = () => {
         setSelectedOptions(newSelectedOptions);
       }
     }
+
+    if (paymentOptions.paymentOption === "bankPayment") {
+      const newBankPayment = { ...bankPayment };
+      newBankPayment.amount = parseFloat(event.target.value);
+      setBankPayment(newBankPayment);
+    }
     setAmounts(newAmount);
   };
-
+  
   const handleOptionChange = (value) => {
     const newSelectedOptions = [...selectedOptions];
     const index = newSelectedOptions.findIndex(
       (option) => option.value === value
     );
+
+    if (paymentOptions.paymentOption === "bankPayment") {
+      setBankPayment({ amount: 0, bankName: "" }); // Reset bank payment details
+    }
 
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
@@ -77,7 +88,7 @@ const Payments = () => {
   const optionsRender = () => {
     return (
       <div className="mt-2">
-        {options.map((option) => {
+        {paymentOptions.map((option) => {
           const selectedOption = selectedOptions.find(
             (selectedOption) => selectedOption.value === option.value
           );
@@ -227,9 +238,9 @@ const Payments = () => {
         customerNumber: parseFloat(customerDetails.customerNumber),
       },
       amounts: {
-        cash: parseFloat(amounts.cash),
-        transfer: parseFloat(amounts.transfer),
-        pos: parseFloat(amounts.pos),
+        cashPayment: parseFloat(amounts.cashPayment),
+        bankPayment: parseFloat(amounts.bankPayment),
+        posPayment: parseFloat(amounts.posPayment),
       },
       totalPayment,
       timestamp: formattedDateTime,

@@ -5,6 +5,10 @@ export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const navigate = useNavigate();
+  const [cashPayment, setCashPayment] = useState("");
+  const [bankPayment, setBankPayment] = useState({ amount: 0, bankName: "" });
+  const [posPayment, setPosPayment] = useState("");
+
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [debtSalesData, setDebtSalesData] = useState({});
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -18,8 +22,10 @@ export const ProductProvider = ({ children }) => {
     customerCategory: { reseller: "", endUser: "" },
     customerAddress: "",
   });
-  
 
+  const handleBankNameChange = (event) => {
+    setBankPayment({ ...bankPayment, bankName: event.target.value });
+  };
   const handleCustomerDetailsChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
@@ -55,6 +61,7 @@ export const ProductProvider = ({ children }) => {
     setDebtSalesData({});
     setSubmissionSuccess(false);
   };
+
   return (
     <ProductContext.Provider
       value={{
@@ -66,6 +73,7 @@ export const ProductProvider = ({ children }) => {
         selectedProduct,
         setSelectedProduct,
         calculateTotalPrice,
+        handleBankNameChange,
         selectedOptions,
         setSelectedOptions,
         amounts,
