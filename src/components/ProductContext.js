@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const ProductContext = createContext();
 
@@ -16,6 +17,7 @@ export const ProductProvider = ({ children }) => {
     customerCategory: { reseller: "", endUser: "" },
     customerAddress: "",
   });
+  const navigate = useNavigate();
 
   const handleCustomerDetailsChange = (e) => {
     const { name, value } = e.target;

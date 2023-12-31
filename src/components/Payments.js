@@ -1,14 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
-import { useNavigate } from "react-router-dom";
+
 
 const Payments = () => {
   const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
-  const navigate = useNavigate();
+  
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
   
   const {
+    navigate,
     submissionSuccess,
     setSubmissionSuccess,
     selectedProducts,
