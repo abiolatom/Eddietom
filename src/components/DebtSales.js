@@ -10,6 +10,7 @@ const DebtSales = () => {
     selectedProducts,
     calculateTotalPrice,
     customerDetails,
+    setCustomerDetails,
 
     handleCustomerDetailsChange,
   } = useContext(ProductContext);
@@ -25,36 +26,59 @@ const DebtSales = () => {
   const [dates, setDates] = useState([]);
 
   const totalAmount =
-    Number(posPayment) + Number(bankPayment) + Number(cashPayment);
+    Number(posPayment) +
+    Number(bankPayment) +
+    Number(cashPayment) +
+    installmentAmounts.reduce((sum, amount) => sum + Number(amount), 0);
 
   const balance = calculateTotalPrice() - totalAmount;
 
   function handleBankPaymentChange(event) {
     setBankPayment(event.target.value);
   }
-
   function handleBankNameChange(event) {
     setBankName(event.target.value);
   }
-
   function handlePosPaymentChange(event) {
     setPosPayment(event.target.value);
   }
-
   function handleInstallmentsChange(event) {
     setInstallments(event.target.value);
   }
-
-  function handleDateChange(index, event) {
+  const handleDateChange = (index, event) => {
     const newDates = [...dates];
-    newDates[index] = event.target.value;
-    setDates(newDates);
-  }
+    const selectedDate = new Date(event.target.value);
+    const today = new Date();
 
-  useEffect(() => {}, [debtSalesData]);
+    if (selectedDate >= today) {
+      newDates[index] = event.target.value;
+      setDates(newDates);
+    } else {
+      alert("Please select a date after today.");
+    }
+  };
 
-  const handleSubmit = (e) => {
+  const resetForm = () => {
+    setCustomerDetails({
+      customerName: "",
+      customerNumber: "",
+    });
+
+    setSubmissionSuccess(false);
+  };
+  useEffect(() => {
+    if (submissionSuccess) {
+      window.alert("Debt Sales data submitted successfully!");
+      resetForm();
+    }
+  }, [debtSalesData, submissionSuccess]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (balance !== 0) {
+      alert('Please indicate how full payment is made.');
+      return;
+    }
     const selectedProductsData = selectedProducts.map((product) => ({
       ...product,
       price: parseFloat(product.price),
@@ -81,11 +105,27 @@ const DebtSales = () => {
       reason,
       timestamp: formattedDateTime,
     };
+    try {
+      const response = await fetch("http://localhost:3001/debtsales", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newDebtSaleData),
+      });
 
-    setSubmissionSuccess(true);
+      if (response.ok) {
+        setSubmissionSuccess(true);
+      } else {
+        const errorData = await response.json();
+        console.error("Backend error:", errorData);
+      }
+    } catch (error) {
+      console.error("Error during data submission:", error.message);
+    }
+
     setDebtSalesData(newDebtSaleData);
     console.log(debtSalesData);
-    // window.alert("Debt Sales data submitted successfully!");
   };
 
   return (
