@@ -3,7 +3,7 @@ import { ProductContext } from "./ProductContext";
 import { useNavigate } from "react-router-dom";
 
 const Payments = () => {
-  const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
+  const [redirectPath, setRedirectPath] = useState("");
   const navigate = useNavigate();
   const [salesData, setSalesData] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -26,7 +26,7 @@ const Payments = () => {
   useEffect(() => {
     const submitData = async () => {
       try {
-        console.log("Submitting Data:", salesData); // Add this line
+        console.log("Submitting Data:", salesData);
 
         const response = await fetch("http://localhost:3001/sales", {
           method: "POST",

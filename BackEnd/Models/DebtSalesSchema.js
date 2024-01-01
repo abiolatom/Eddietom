@@ -7,12 +7,12 @@ const debtSalesSchema = new mongoose.Schema({
       productName: String,
       price: Number,
       quantity: Number,
-      subtotal: Number, // Assuming this is calculated
+      subtotal: Number, 
     },
   ],
   customerDetails: {
     customerNumber: Number,
-    // Add other customer details as needed
+    customerName: String,
   },
   cashPayment: Number,
   bankPayment: Number,
@@ -21,12 +21,12 @@ const debtSalesSchema = new mongoose.Schema({
   totalAmount: Number,
   balance: Number,
   installments: Number,
-  dates: [Date], // Assuming this stores installment dates
-  installmentAmounts: [Number], // Assuming this stores installment amounts
+  dates: [Date],
+  installmentAmounts: [Number],
   reason: String,
   timestamp: {
     type: Date,
-    default: Date.now, // Set default to current time
+    default: Date.now,
   },
 });
 

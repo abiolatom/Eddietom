@@ -38,23 +38,11 @@ module.exports = (db) => {
     }
   });
 
-  /*
-  router.post("/", async (req, res) => {
-    try {
-      const newExpense = { ...req.body };
-      const result = await db.collection("expenses").insertOne(newExpense);
-      res.status(201).json(result.ops[0]);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Could not add the expense" });
-    }
-  });
-*/
-  // PUT (update) an existing expense
+  
   router.put("/:id", async (req, res) => {
     try {
       const expenseId = req.params.id;
-      const updatedExpense = req.body; // Assuming the request body contains the updated expense data
+      const updatedExpense = req.body; 
       const result = await db
         .collection("expenses")
         .updateOne({ _id: expenseId }, { $set: updatedExpense });
@@ -70,7 +58,6 @@ module.exports = (db) => {
     }
   });
 
-  // DELETE an expense
   router.delete("/:id", async (req, res) => {
     try {
       const expenseId = req.params.id;
