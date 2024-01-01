@@ -32,15 +32,6 @@ const DebtSales = () => {
 
   const balance = calculateTotalPrice() - totalAmount;
 
-  function handleBankPaymentChange(event) {
-    setBankPayment(event.target.value);
-  }
-  function handleBankNameChange(event) {
-    setBankName(event.target.value);
-  }
-  function handlePosPaymentChange(event) {
-    setPosPayment(event.target.value);
-  }
   function handleInstallmentsChange(event) {
     setInstallments(event.target.value);
   }
@@ -152,120 +143,92 @@ const DebtSales = () => {
           </div>
         </div>
       )}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Cash Payment:</label>
-          <input
-            type="number"
-            value={cashPayment}
-            onChange={(e) => setCashPayment(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Bank Payment:</label>
-          <input
-            type="number"
-            value={bankPayment}
-            onChange={handleBankPaymentChange}
-          />
-          {bankPayment > 0 && (
-            <input
-              type="text"
-              placeholder="Bank Name"
-              value={bankName}
-              onChange={handleBankNameChange}
-            />
-          )}
-        </div>
-        <div>
-          <label>POS Payment:</label>
-          <input
-            type="number"
-            value={posPayment}
-            onChange={handlePosPaymentChange}
-          />
-        </div>
-        <div>
-          <label>Total Amount:</label>
-          <input type="number" value={totalAmount} readOnly />
-        </div>
-        <div>
-          <label>Balance:</label>
-          <input type="number" value={balance} readOnly />
-        </div>
-        <div>
-          <label>Installments:</label>
-          <select value={installments} onChange={handleInstallmentsChange}>
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-          </select>
-        </div>
-        {Array.from({ length: installments }).map((_, index) => (
-          <div key={index}>
-            <label>Date for Installment {index + 1}:</label>
-            <input
-              type="date"
-              value={dates[index] || ""}
-              required
-              onChange={(e) => handleDateChange(index, e)}
-            />
-            {installments > 1 && (
-              <>
-                <label>Amount for Installment {index + 1}:</label>
-                <input
-                  type="number"
-                  value={installmentAmounts[index]}
-                  onChange={(e) => {
-                    const newAmounts = [...installmentAmounts];
-                    newAmounts[index] = e.target.value;
-                    setInstallmentAmounts(newAmounts);
-                  }}
-                />
-              </>
-            )}
-          </div>
-        ))}
-        <div>
-          <label>Reason:</label>
-          <textarea
-            value={reason}
-            placeholder="State Reason for Debt Sales"
-            onChange={(e) => setReason(e.target.value)}
-          />
-        </div>
+      <fieldset>{optionsRender()}</fieldset>
 
-        <fieldset className="border p-4 mb-4">
-          <legend className="text-lg font-semibold">Customer Details</legend>
-          <div className="mb-2">
-            <input
-              type="text"
-              id="customerName"
-              name="customerName"
-              value={customerDetails.customerName}
-              onChange={handleCustomerDetailsChange}
-              placeholder="Customer Name"
-              className="w-full p-2 border rounded-md"
-            />
+      <form onSubmit={handleSubmit}>
+        <fieldset>
+          <div>
+            <label>Total Amount:</label>
+            <input type="number" value={totalAmount} readOnly />
           </div>
           <div>
-            <input
-              placeholder="Customer Number"
-              className="w-full p-2 border rounded-md"
-              type="tel"
-              id="customerNumber"
-              name="customerNumber"
-              value={customerDetails.customerNumber}
-              onChange={handleCustomerDetailsChange}
-            />
-            {isNaN(customerDetails.customerNumber) && (
-              <p className="text-red-500">
-                Please enter a valid numeric value.
-              </p>
-            )}
+            <label>Balance:</label>
+            <input type="number" value={balance} readOnly />
           </div>
+          <div>
+            <label>Installments:</label>
+            <select value={installments} onChange={handleInstallmentsChange}>
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={3}>3</option>
+            </select>
+          </div>
+          {Array.from({ length: installments }).map((_, index) => (
+            <div key={index}>
+              <label>Date for Installment {index + 1}:</label>
+              <input
+                type="date"
+                value={dates[index] || ""}
+                required
+                onChange={(e) => handleDateChange(index, e)}
+              />
+              {installments > 1 && (
+                <>
+                  <label>Amount for Installment {index + 1}:</label>
+                  <input
+                    type="number"
+                    value={installmentAmounts[index]}
+                    onChange={(e) => {
+                      const newAmounts = [...installmentAmounts];
+                      newAmounts[index] = e.target.value;
+                      setInstallmentAmounts(newAmounts);
+                    }}
+                  />
+                </>
+              )}
+            </div>
+          ))}
+          <div>
+            <label>Reason:</label>
+            <textarea
+              value={reason}
+              placeholder="State Reason for Debt Sales"
+              onChange={(e) => setReason(e.target.value)}
+            />
+          </div>
+
+          <fieldset className="border p-4 mb-4">
+            <legend className="text-lg font-semibold">Customer Details</legend>
+            <div className="mb-2">
+              <input
+                type="text"
+                id="customerName"
+                name="customerName"
+                value={customerDetails.customerName}
+                onChange={handleCustomerDetailsChange}
+                placeholder="Customer Name"
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <input
+                placeholder="Customer Number"
+                className="w-full p-2 border rounded-md"
+                type="tel"
+                id="customerNumber"
+                name="customerNumber"
+                value={customerDetails.customerNumber}
+                onChange={handleCustomerDetailsChange}
+              />
+              {isNaN(customerDetails.customerNumber) && (
+                <p className="text-red-500">
+                  Please enter a valid numeric value.
+                </p>
+              )}
+            </div>
+          </fieldset>
+          <button type="submit">Submit</button>
         </fieldset>
-        <button type="submit">Submit</button>
       </form>
     </div>
   );
