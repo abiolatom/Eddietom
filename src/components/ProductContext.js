@@ -4,17 +4,15 @@ export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
   const paymentOptions = [
-    { paymentOption: "cash", label: "Cash" },
+    { paymentOption: "cashPayment", label: "Cash" },
     { paymentOption: "bankPayment", label: "Bank Transfer" },
     { paymentOption: "posPayment", label: "POS" },
   ];
 
   const bankOptions = ["First Bank", "MoniePoint", "Others"];
-  const [cashPayment, setCashPayment] = useState("");
   const [bankPayment, setBankPayment] = useState({ amount: 0, bankName: "" });
-  const [posPayment, setPosPayment] = useState("");
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-  const [debtSalesData, setDebtSalesData] = useState({});
+  
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -23,7 +21,7 @@ export const ProductProvider = ({ children }) => {
     bankPayment: { amount: 0, bankName: "" },
     posPayment: { amount: 0 },
   });
-  
+
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
     customerNumber: "",
@@ -84,9 +82,9 @@ export const ProductProvider = ({ children }) => {
     setSelectedOptions([]);
     setAmounts({});
     setSelectedProducts([]);
-    
+
     setAmounts({});
-    setDebtSalesData({});
+    
     setSubmissionSuccess(false);
   };
   const handleAmountChange = (event, paymentOption) => {
@@ -220,6 +218,7 @@ export const ProductProvider = ({ children }) => {
         setSelectedOptions,
         amounts,
         totalPayment,
+        paymentOptions,
         setAmounts,
         resetForm,
       }}

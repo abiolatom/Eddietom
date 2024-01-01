@@ -10,6 +10,7 @@ const Payments = () => {
   const [redirectMessage, setRedirectMessage] = useState("");
   const {
     optionsRender,
+    paymentOptions,
     paymentComparison,
     totalPayment,
     submissionSuccess,
@@ -107,17 +108,25 @@ const Payments = () => {
     const currentDateTime = new Date();
     const formattedDateTime = currentDateTime.toISOString();
 
+    const amountsForBackend = {};
+    for (const option of paymentOptions) {
+      const amount = amounts[option.paymentOption];
+      if (amount) {
+        amountsForBackend[option.paymentOption] = parseFloat(amount.amount);
+
+        if (option.paymentOption === "bankPayment") {
+          amountsForBackend.bankName = amounts.bankPayment.bankName; // Add bankName
+        }
+      }
+    }
+
     const newSaleData = {
       selectedProducts: selectedProductsData,
       customerDetails: {
         ...customerDetails,
         customerNumber: parseFloat(customerDetails.customerNumber),
       },
-      amounts: {
-        cashPayment: parseFloat(amounts.cashPayment),
-        bankPayment: parseFloat(amounts.bankPayment),
-        posPayment: parseFloat(amounts.posPayment),
-      },
+      amounts: amountsForBackend,
       totalPayment,
       timestamp: formattedDateTime,
     };
