@@ -7,6 +7,7 @@ const DebtSales = () => {
   const navigate = useNavigate();
   const {
     selectedProducts,
+    optionsRender,
     calculateTotalPrice,
     customerDetails,
     resetForm,
