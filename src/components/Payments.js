@@ -7,49 +7,21 @@ const Payments = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
-  const bankOptions = ["First Bank", "MoniePoint", "Others"];
   const {
-    setBankPayment,
-    handleBankNameChange,
     optionsRender,
-    bankPayment,
+    paymentComparison,
+    totalPayment,
     submissionSuccess,
     setSubmissionSuccess,
     selectedProducts,
     calculateTotalPrice,
-    selectedOptions,
-    setSelectedOptions,
     customerDetails,
     salesData,
     setSalesData,
     handleCustomerDetailsChange,
     amounts,
-    setAmounts,
     resetForm,
   } = useContext(ProductContext);
-
-
-  
-
-  
-  const totalPayment = Object.values(amounts).reduce(
-    (acc, amount) => acc + parseFloat(amount) || 0,
-    0
-  );
-  const paymentComparison = () => {
-    const remainingAmount = calculateTotalPrice() - totalPayment;
-    if (totalPayment === calculateTotalPrice()) {
-      return "Total payment matches required amount.";
-    } else if (totalPayment > calculateTotalPrice()) {
-      return `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
-        2
-      )}`;
-    } else {
-      return `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
-        2
-      )}`;
-    }
-  };
 
   useEffect(() => {
     const submitData = async () => {

@@ -13,13 +13,16 @@ export const ProductProvider = ({ children }) => {
   const [cashPayment, setCashPayment] = useState("");
   const [bankPayment, setBankPayment] = useState({ amount: 0, bankName: "" });
   const [posPayment, setPosPayment] = useState("");
-
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [debtSalesData, setDebtSalesData] = useState({});
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [amounts, setAmounts] = useState({});
+  const [amounts, setAmounts] = useState({
+    cashPayment: { amount: 0 },
+    bankPayment: { amount: 0, bankName: "" },
+    posPayment: { amount: 0 },
+  });
   const [salesData, setSalesData] = useState({});
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
@@ -53,6 +56,25 @@ export const ProductProvider = ({ children }) => {
       0
     );
   };
+
+  const totalPayment = Object.values(amounts).reduce(
+    (acc, amount) => acc + parseFloat(amount) || 0,
+    0
+  );
+  const paymentComparison = () => {
+    const remainingAmount = calculateTotalPrice() - totalPayment;
+    if (totalPayment === calculateTotalPrice()) {
+      return "Total payment matches required amount.";
+    } else if (totalPayment > calculateTotalPrice()) {
+      return `Total payment is more than required amount. Remaining amount: ${remainingAmount.toFixed(
+        2
+      )}`;
+    } else {
+      return `Total payment is less than required amount. Remaining amount: ${remainingAmount.toFixed(
+        2
+      )}`;
+    }
+  };
   const resetForm = () => {
     setCustomerDetails({
       customerName: "",
@@ -66,32 +88,36 @@ export const ProductProvider = ({ children }) => {
     setDebtSalesData({});
     setSubmissionSuccess(false);
   };
-  const handleAmountChange = (event, value) => {
-    const newAmount = { ...amounts };
-    newAmount[value] = event.target.value;
+  const handleAmountChange = (event, paymentOption) => {
+    const newAmounts = { ...amounts };
+    if (!newAmounts[paymentOption]) {
+      newAmounts[paymentOption] = {}; // Create the object if it doesn't exist
+    }
+    newAmounts[paymentOption].amount = parseFloat(event.target.value);
 
-    if (
-      selectedOptions.some((option) => option.value === value) &&
-      event.target.value &&
-      parseFloat(event.target.value) > 0
-    ) {
-      const newSelectedOptions = [...selectedOptions];
-      const index = newSelectedOptions.findIndex(
-        (option) => option.value === value
+    // Update selectedOptions only if the amount is valid and non-zero
+    if (newAmounts[paymentOption].amount > 0) {
+      const existingOptionIndex = selectedOptions.findIndex(
+        (option) => option.value === paymentOption
       );
-
-      if (index !== -1) {
-        newSelectedOptions[index].amounts = parseFloat(event.target.value);
-        setSelectedOptions(newSelectedOptions);
+      if (existingOptionIndex === -1) {
+        selectedOptions.push({
+          value: paymentOption,
+          amounts: newAmounts[paymentOption].amount,
+        });
+      } else {
+        selectedOptions[existingOptionIndex].amounts =
+          newAmounts[paymentOption].amount;
       }
+    } else {
+      // Remove the option if the amount is zero
+      const newSelectedOptions = selectedOptions.filter(
+        (option) => option.value !== paymentOption
+      );
+      setSelectedOptions(newSelectedOptions);
     }
 
-    if (paymentOptions.paymentOption === "bankPayment") {
-      const newBankPayment = { ...bankPayment };
-      newBankPayment.amount = parseFloat(event.target.value);
-      setBankPayment(newBankPayment);
-    }
-    setAmounts(newAmount);
+    setAmounts(newAmounts);
   };
 
   const handleOptionChange = (value) => {
@@ -101,7 +127,7 @@ export const ProductProvider = ({ children }) => {
     );
 
     if (paymentOptions.paymentOption === "bankPayment") {
-      setBankPayment({ amount: 0, bankName: "" }); // Reset bank payment details
+      setBankPayment({ amount: 0, bankName: "" });
     }
 
     if (index !== -1) {
@@ -121,62 +147,53 @@ export const ProductProvider = ({ children }) => {
   const optionsRender = () => {
     return (
       <div className="mt-2">
-        {paymentOptions.map((option) => {
-          const selectedOption = selectedOptions.find(
-            (selectedOption) => selectedOption.value === option.value
-          );
-          const isChecked = !!selectedOption;
-          const paymentInput = isChecked ? (
+        {paymentOptions.map((option) => (
+          <div key={option.paymentOption} className="flex items-center mb-2">
             <input
-              id="checkedOptionValue"
-              type="number"
-              name="checkedOptionValue"
-              placeholder={`Enter amount paid by ${option.label}`}
-              value={amounts[option.value] || ""}
-              onChange={(e) => handleAmountChange(e, option.value)}
-              className="w-full p-2 border rounded-md mt-1"
+              type="checkbox"
+              checked={selectedOptions.some(
+                (o) => o.value === option.paymentOption
+              )}
+              onChange={() => handleOptionChange(option.paymentOption)}
+              value={option.paymentOption}
+              className="mr-2"
             />
-          ) : null;
-          return (
-            <div key={option.paymentOption} className="flex items-center mb-2">
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={() => handleOptionChange(option.value)}
-                value={option.value}
-                className="mr-2"
-              />
-              <label className="mr-3">{option.label} </label>
-              {paymentInput}
-              {isChecked && (
-                <span className="text-gray-600">
-                  (Paid:
-                  {amounts[option.value] || 0})
-                </span>
-              )}
-
-              {isChecked && option.paymentOption === "bankPayment" && (
-                <div className="ml-4">
-                  <select
-                    value={bankPayment.bankName}
-                    onChange={(e) =>
-                      setBankPayment({
-                        ...bankPayment,
-                        bankName: e.target.value,
-                      })
-                    }
-                  >
-                    {bankOptions.map((bank) => (
-                      <option key={bank} value={bank}>
-                        {bank}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-          );
-        })}
+            <label className="mr-3">{option.label}</label>
+            {selectedOptions.some((o) => o.value === option.paymentOption) && (
+              <div className="ml-4">
+                <input
+                  type="number"
+                  placeholder={`Enter amount paid by ${option.label}`}
+                  value={amounts[option.paymentOption]?.amount || ""}
+                  onChange={(e) => handleAmountChange(e, option.paymentOption)}
+                  className="w-full p-2 border rounded-md mt-1"
+                />
+                {option.paymentOption === "bankPayment" && (
+                  <div className="mt-2">
+                    <select
+                      value={amounts[option.paymentOption].bankName}
+                      onChange={(e) =>
+                        setAmounts({
+                          ...amounts,
+                          [option.paymentOption]: {
+                            ...amounts[option.paymentOption],
+                            bankName: e.target.value,
+                          },
+                        })
+                      }
+                    >
+                      {bankOptions.map((bank) => (
+                        <option key={bank} value={bank}>
+                          {bank}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     );
   };
@@ -186,6 +203,7 @@ export const ProductProvider = ({ children }) => {
       value={{
         selectedProducts,
         customerDetails,
+        paymentComparison,
         handleCustomerDetailsChange,
         setCustomerDetails,
         setSelectedProducts,
@@ -197,6 +215,7 @@ export const ProductProvider = ({ children }) => {
         selectedOptions,
         setSelectedOptions,
         amounts,
+        totalPayment,
         setAmounts,
         resetForm,
       }}
