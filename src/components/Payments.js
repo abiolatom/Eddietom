@@ -57,7 +57,7 @@ const Payments = () => {
 
   const calculatePaymentStatus = () => {
     const remainingAmount = calculateTotalPrice() - totalPayment;
-
+console.log(remainingAmount)
     if (totalPayment === calculateTotalPrice()) {
       return {
         message: "Total payment matches required amount.",

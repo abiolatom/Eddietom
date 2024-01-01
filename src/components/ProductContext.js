@@ -58,9 +58,10 @@ export const ProductProvider = ({ children }) => {
   };
 
   const totalPayment = Object.values(amounts).reduce(
-    (acc, amount) => acc + parseFloat(amount) || 0,
+    (acc, paymentOption) => acc + parseFloat(paymentOption.amount) || 0,
     0
   );
+
   const paymentComparison = () => {
     const remainingAmount = calculateTotalPrice() - totalPayment;
     if (totalPayment === calculateTotalPrice()) {
@@ -91,11 +92,13 @@ export const ProductProvider = ({ children }) => {
   const handleAmountChange = (event, paymentOption) => {
     const newAmounts = { ...amounts };
     if (!newAmounts[paymentOption]) {
-      newAmounts[paymentOption] = {}; // Create the object if it doesn't exist
+      newAmounts[paymentOption] = {};
+    }
+    if (paymentOption === "bankPayment") {
+      newAmounts[paymentOption].bankName = "";
     }
     newAmounts[paymentOption].amount = parseFloat(event.target.value);
 
-    // Update selectedOptions only if the amount is valid and non-zero
     if (newAmounts[paymentOption].amount > 0) {
       const existingOptionIndex = selectedOptions.findIndex(
         (option) => option.value === paymentOption
@@ -126,15 +129,14 @@ export const ProductProvider = ({ children }) => {
       (option) => option.value === value
     );
 
-    if (paymentOptions.paymentOption === "bankPayment") {
+    if (value === "bankPayment") {
       setBankPayment({ amount: 0, bankName: "" });
     }
 
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
       const newAmounts = { ...amounts };
-      delete newAmounts[value];
-
+      newAmounts[value] = {}; // Initialize the amounts object for the removed option
       setAmounts(newAmounts);
     } else {
       const selectedOption = { value, amounts: 0 };
@@ -171,7 +173,7 @@ export const ProductProvider = ({ children }) => {
                 {option.paymentOption === "bankPayment" && (
                   <div className="mt-2">
                     <select
-                      value={amounts[option.paymentOption].bankName}
+                      value={amounts[option.paymentOption]?.bankName}
                       onChange={(e) =>
                         setAmounts({
                           ...amounts,
@@ -203,6 +205,8 @@ export const ProductProvider = ({ children }) => {
       value={{
         selectedProducts,
         customerDetails,
+        submissionSuccess,
+        setSubmissionSuccess,
         paymentComparison,
         handleCustomerDetailsChange,
         setCustomerDetails,
