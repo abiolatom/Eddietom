@@ -23,7 +23,7 @@ export const ProductProvider = ({ children }) => {
     bankPayment: { amount: 0, bankName: "" },
     posPayment: { amount: 0 },
   });
-  const [salesData, setSalesData] = useState({});
+  
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
     customerNumber: "",
@@ -84,7 +84,7 @@ export const ProductProvider = ({ children }) => {
     setSelectedOptions([]);
     setAmounts({});
     setSelectedProducts([]);
-    setSalesData({});
+    
     setAmounts({});
     setDebtSalesData({});
     setSubmissionSuccess(false);

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Payments = () => {
   const [redirectPath, setRedirectPath] = useState(""); // New state to store redirect path
   const navigate = useNavigate();
+  const [salesData, setSalesData] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [redirectMessage, setRedirectMessage] = useState("");
   const {
@@ -16,8 +17,6 @@ const Payments = () => {
     selectedProducts,
     calculateTotalPrice,
     customerDetails,
-    salesData,
-    setSalesData,
     handleCustomerDetailsChange,
     amounts,
     resetForm,
@@ -57,7 +56,7 @@ const Payments = () => {
 
   const calculatePaymentStatus = () => {
     const remainingAmount = calculateTotalPrice() - totalPayment;
-console.log(remainingAmount)
+    console.log(remainingAmount);
     if (totalPayment === calculateTotalPrice()) {
       return {
         message: "Total payment matches required amount.",
