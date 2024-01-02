@@ -115,7 +115,7 @@ const Payments = () => {
         amountsForBackend[option.paymentOption] = parseFloat(amount.amount);
 
         if (option.paymentOption === "bankPayment") {
-          amountsForBackend.bankName = amounts.bankPayment.bankName; // Add bankName
+          amountsForBackend.bankName = amounts.bankPayment.bankName;
         }
       }
     }
@@ -131,6 +131,7 @@ const Payments = () => {
       timestamp: formattedDateTime,
     };
 
+    console.log("Amounts for Backend:", amountsForBackend);
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
     window.alert("Sales data submitted successfully!");

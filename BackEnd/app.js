@@ -5,8 +5,9 @@ const { connectToDb, getDb } = require("./db");
 const productRoute = require("./Routes/productRoute");
 const expenseRoute = require("./Routes/expenseRoute");
 const salesRoute = require("./Routes/salesRoute");
-const cors = require("cors");
 const debtSalesRoute = require("./Routes/debtSalesRoute");
+
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());

@@ -7,27 +7,24 @@ const DebtSales = () => {
   const navigate = useNavigate();
   const {
     selectedProducts,
+    totalPayment,
     optionsRender,
     calculateTotalPrice,
     customerDetails,
     resetForm,
+    amounts,
+    paymentOptions,
     handleCustomerDetailsChange,
   } = useContext(ProductContext);
   const [installmentAmounts, setInstallmentAmounts] = useState(
     Array.from({ length: 3 }, () => 0)
   );
   const [reason, setReason] = useState("");
-  const [cashPayment, setCashPayment] = useState("");
-  const [bankPayment, setBankPayment] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [posPayment, setPosPayment] = useState("");
   const [installments, setInstallments] = useState(1);
   const [dates, setDates] = useState([]);
 
   const totalAmount =
-    Number(posPayment) +
-    Number(bankPayment) +
-    Number(cashPayment) +
+    totalPayment +
     installmentAmounts.reduce((sum, amount) => sum + Number(amount), 0);
 
   const balance = calculateTotalPrice() - totalAmount;
@@ -58,8 +55,17 @@ const DebtSales = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (balance !== 0) {
+
+    if (installments > 1 && balance !== 0) {
       alert("Please indicate how full payment is made.");
+      return;
+    }
+    if (!customerDetails.customerName || !customerDetails.customerNumber) {
+      alert("Please fill in customer details.");
+      return;
+    }
+    if (installments === 1 && (!dates[0] || dates[0] === "")) {
+      alert("Please select a date for the installment.");
       return;
     }
     const selectedProductsData = selectedProducts.map((product) => ({
@@ -70,21 +76,33 @@ const DebtSales = () => {
     const currentDateTime = new Date();
     const formattedDateTime = currentDateTime.toISOString();
 
+    const amountsForBackend = {};
+    for (const option of paymentOptions) {
+      const amount = amounts[option.paymentOption];
+      if (amount) {
+        amountsForBackend[option.paymentOption] = parseFloat(amount.amount);
+
+        if (option.paymentOption === "bankPayment") {
+          amountsForBackend.bankName = amounts.bankPayment.bankName;
+        }
+      }
+    }
+
     const newDebtSaleData = {
       selectedProducts: selectedProductsData,
       customerDetails: {
         ...customerDetails,
         customerNumber: parseFloat(customerDetails.customerNumber),
       },
-      cashPayment: parseFloat(cashPayment),
-      bankPayment: parseFloat(bankPayment),
-      bankName,
-      posPayment: parseFloat(posPayment),
-      totalAmount: parseFloat(totalAmount),
-      balance,
-      installments: parseFloat(installments),
-      dates,
-      installmentAmounts: parseFloat(installmentAmounts),
+      paymentMethod: {
+        amounts: amountsForBackend,
+        totalAmount: parseFloat(totalAmount),
+        balance,
+        installments: parseFloat(installments),
+        dates,
+        installmentAmounts: parseFloat(installmentAmounts),
+      },
+
       reason,
       timestamp: formattedDateTime,
     };
@@ -106,7 +124,7 @@ const DebtSales = () => {
     } catch (error) {
       console.error("Error during data submission:", error.message);
     }
-
+    console.log("Amounts for Backend:", amountsForBackend);
     setDebtSalesData(newDebtSaleData);
     console.log(debtSalesData);
   };

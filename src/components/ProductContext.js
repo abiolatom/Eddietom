@@ -12,13 +12,13 @@ export const ProductProvider = ({ children }) => {
   const bankOptions = ["First Bank", "MoniePoint", "Others"];
   const [bankPayment, setBankPayment] = useState({ amount: 0, bankName: "" });
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-  
+
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [amounts, setAmounts] = useState({
     cashPayment: { amount: 0 },
-    bankPayment: { amount: 0, bankName: "" },
+    bankPayment: { amount: 0, bankName: "First Bank" },
     posPayment: { amount: 0 },
   });
 
@@ -82,9 +82,7 @@ export const ProductProvider = ({ children }) => {
     setSelectedOptions([]);
     setAmounts({});
     setSelectedProducts([]);
-
     setAmounts({});
-    
     setSubmissionSuccess(false);
   };
   const handleAmountChange = (event, paymentOption) => {
@@ -111,7 +109,7 @@ export const ProductProvider = ({ children }) => {
           newAmounts[paymentOption].amount;
       }
     } else {
-      // Remove the option if the amount is zero
+     
       const newSelectedOptions = selectedOptions.filter(
         (option) => option.value !== paymentOption
       );
