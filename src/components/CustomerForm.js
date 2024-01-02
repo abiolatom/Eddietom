@@ -52,35 +52,35 @@ const CustomerForm = () => {
 
   const checkForDuplicateCustomer = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/customerdata/checkduplicate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customerName: customerDetails.customerName,
-          customerNumber: customerDetails.customerNumber,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:3001/customerdata/checkduplicate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerName: customerDetails.customerName,
+            customerNumber: customerDetails.customerNumber,
+          }),
+        }
+      );
       const isDuplicate = await response.json();
       return isDuplicate;
     } catch (error) {
-      console.error('Error checking for duplicates:', error);
-      return false; // Assume no duplicates if error occurs
+      console.error("Error checking for duplicates:", error);
+      return false;
     }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Check for duplicates before submission
+
     const isDuplicate = await checkForDuplicateCustomer();
     if (isDuplicate) {
-      // Display an error message
-      alert('Customer already exists!');
+      alert("Customer already exists!");
       return;
     }
-  
-    // Proceed with submission if no duplicates found
+
     try {
       const response = await fetch("http://localhost:3001/customerdata", {
         method: "POST",
