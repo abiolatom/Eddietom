@@ -8,6 +8,7 @@ const DebtSales = () => {
   const {
     selectedProducts,
     totalPayment,
+    selectedOptions,
     optionsRender,
     calculateTotalPrice,
     customerDetails,
@@ -66,6 +67,21 @@ const DebtSales = () => {
     }
     if (installments === 1 && (!dates[0] || dates[0] === "")) {
       alert("Please select a date for the installment.");
+      return;
+    }
+
+    // Add validation for bankPayment
+    const bankPaymentOption = paymentOptions.find(
+      (option) => option.paymentOption === "bankPayment"
+    );
+
+    if (
+      selectedOptions.some(
+        (o) => o.value === bankPaymentOption.paymentOption
+      ) &&
+      !amounts[bankPaymentOption.paymentOption]?.bankName
+    ) {
+      window.alert("Please select a bank for bank transfer.");
       return;
     }
     const selectedProductsData = selectedProducts.map((product) => ({
@@ -131,13 +147,13 @@ const DebtSales = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2>Debt Sales Form</h2>
-      <button
-        className="bg-blue-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        onClick={() => navigate("/")}
-      >
-        Modify Products
-      </button>
+    <h2 className="text-3xl font-bold mb-4">Debt Sales Form</h2>
+    <button
+      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+      onClick={() => navigate("/")}
+    >
+      Modify Products
+    </button>
       {selectedProducts.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {selectedProducts.map((product) => (

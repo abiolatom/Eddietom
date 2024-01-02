@@ -18,7 +18,7 @@ export const ProductProvider = ({ children }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [amounts, setAmounts] = useState({
     cashPayment: { amount: 0 },
-    bankPayment: { amount: 0, bankName: "First Bank" },
+    bankPayment: { amount: 0, bankName: "" },
     posPayment: { amount: 0 },
   });
 
@@ -29,8 +29,15 @@ export const ProductProvider = ({ children }) => {
     customerAddress: "",
   });
 
-  const handleBankNameChange = (event) => {
-    setBankPayment({ ...bankPayment, bankName: event.target.value });
+  const handleBankNameChange = (event, paymentOption) => {
+    const { value } = event.target;
+    setAmounts({
+      ...amounts,
+      [paymentOption]: {
+        ...amounts[paymentOption],
+        bankName: value === "defaultBank" ? "" : value,
+      },
+    });
   };
   const handleCustomerDetailsChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +116,6 @@ export const ProductProvider = ({ children }) => {
           newAmounts[paymentOption].amount;
       }
     } else {
-     
       const newSelectedOptions = selectedOptions.filter(
         (option) => option.value !== paymentOption
       );
@@ -169,17 +175,16 @@ export const ProductProvider = ({ children }) => {
                 {option.paymentOption === "bankPayment" && (
                   <div className="mt-2">
                     <select
-                      value={amounts[option.paymentOption]?.bankName}
+                      value={
+                        amounts[option.paymentOption]?.bankName || "defaultBank"
+                      }
                       onChange={(e) =>
-                        setAmounts({
-                          ...amounts,
-                          [option.paymentOption]: {
-                            ...amounts[option.paymentOption],
-                            bankName: e.target.value,
-                          },
-                        })
+                        handleBankNameChange(e, option.paymentOption)
                       }
                     >
+                      <option value="defaultBank" disabled>
+                        Select Bank
+                      </option>
                       {bankOptions.map((bank) => (
                         <option key={bank} value={bank}>
                           {bank}
@@ -195,7 +200,6 @@ export const ProductProvider = ({ children }) => {
       </div>
     );
   };
-
   return (
     <ProductContext.Provider
       value={{

@@ -10,6 +10,7 @@ const Payments = () => {
   const [redirectMessage, setRedirectMessage] = useState("");
   const {
     optionsRender,
+    selectedOptions,
     paymentOptions,
     paymentComparison,
     totalPayment,
@@ -94,6 +95,19 @@ const Payments = () => {
       window.alert("Please enter payment amounts.");
       return;
     }
+
+    // Add validation for bankPayment
+  const bankPaymentOption = paymentOptions.find(
+    (option) => option.paymentOption === "bankPayment"
+  );
+
+  if (
+    selectedOptions.some((o) => o.value === bankPaymentOption.paymentOption) &&
+    !amounts[bankPaymentOption.paymentOption]?.bankName
+  ) {
+    window.alert("Please select a bank for bank transfer.");
+    return;
+  }
     const paymentStatus = calculatePaymentStatus();
     if (paymentStatus.shouldRedirect) {
       handleRedirect(paymentStatus.message);
