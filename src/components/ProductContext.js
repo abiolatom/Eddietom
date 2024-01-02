@@ -151,52 +151,61 @@ export const ProductProvider = ({ children }) => {
   const optionsRender = () => {
     return (
       <div className="mt-2">
-        {paymentOptions.map((option) => (
-          <div key={option.paymentOption} className="flex items-center mb-2">
-            <input
-              type="checkbox"
-              checked={selectedOptions.some(
-                (o) => o.value === option.paymentOption
-              )}
-              onChange={() => handleOptionChange(option.paymentOption)}
-              value={option.paymentOption}
-              className="mr-2"
-            />
-            <label className="mr-3">{option.label}</label>
-            {selectedOptions.some((o) => o.value === option.paymentOption) && (
-              <div className="ml-4">
-                <input
-                  type="number"
-                  placeholder={`Enter amount paid by ${option.label}`}
-                  value={amounts[option.paymentOption]?.amount || ""}
-                  onChange={(e) => handleAmountChange(e, option.paymentOption)}
-                  className="w-full p-2 border rounded-md mt-1"
-                />
-                {option.paymentOption === "bankPayment" && (
-                  <div className="mt-2">
-                    <select
-                      value={
-                        amounts[option.paymentOption]?.bankName || "defaultBank"
-                      }
-                      onChange={(e) =>
-                        handleBankNameChange(e, option.paymentOption)
-                      }
-                    >
-                      <option value="defaultBank" disabled>
-                        Select Bank
-                      </option>
-                      {bankOptions.map((bank) => (
-                        <option key={bank} value={bank}>
-                          {bank}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+        <fieldset className="border p-4 mb-4">
+          <legend className="text-lg font-semibold">Payment Method</legend>
+
+          {paymentOptions.map((option) => (
+            <div key={option.paymentOption} className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                checked={selectedOptions.some(
+                  (o) => o.value === option.paymentOption
                 )}
-              </div>
-            )}
-          </div>
-        ))}
+                onChange={() => handleOptionChange(option.paymentOption)}
+                value={option.paymentOption}
+                className="mr-2"
+              />
+              <label className="mr-3">{option.label}</label>
+              {selectedOptions.some(
+                (o) => o.value === option.paymentOption
+              ) && (
+                <div className="ml-4">
+                  <input
+                    type="number"
+                    placeholder={`Enter amount paid by ${option.label}`}
+                    value={amounts[option.paymentOption]?.amount || ""}
+                    onChange={(e) =>
+                      handleAmountChange(e, option.paymentOption)
+                    }
+                    className="w-full p-2 border rounded-md mt-1"
+                  />
+                  {option.paymentOption === "bankPayment" && (
+                    <div className="mt-2">
+                      <select
+                        value={
+                          amounts[option.paymentOption]?.bankName ||
+                          "defaultBank"
+                        }
+                        onChange={(e) =>
+                          handleBankNameChange(e, option.paymentOption)
+                        }
+                      >
+                        <option value="defaultBank" disabled>
+                          Select Bank
+                        </option>
+                        {bankOptions.map((bank) => (
+                          <option key={bank} value={bank}>
+                            {bank}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </fieldset>
       </div>
     );
   };

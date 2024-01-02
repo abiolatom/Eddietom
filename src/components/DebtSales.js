@@ -147,13 +147,16 @@ const DebtSales = () => {
 
   return (
     <div className="container mx-auto p-4">
-    <h2 className="text-3xl font-bold mb-4">Debt Sales Form</h2>
-    <button
-      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-      onClick={() => navigate("/")}
-    >
-      Modify Products
-    </button>
+      <div className="flex justify-between mb-4">
+        <h2 className="text-3xl font-bold mb-4">Debt Sales Form</h2>
+
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          onClick={() => navigate("/")}
+        >
+          Modify Products
+        </button>
+      </div>
       {selectedProducts.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {selectedProducts.map((product) => (
@@ -177,39 +180,67 @@ const DebtSales = () => {
           </div>
         </div>
       )}
-      <fieldset>{optionsRender()}</fieldset>
+      <fieldset className="mt-4">{optionsRender()}</fieldset>
 
-      <form onSubmit={handleSubmit}>
-        <fieldset>
-          <div>
-            <label>Total Amount:</label>
-            <input type="number" value={totalAmount} readOnly />
+      <form className="mt-4" onSubmit={handleSubmit}>
+        <fieldset className="mt-4">
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600">
+              Paid Amount:
+            </label>
+            <input
+              className="w-full p-2 border rounded-md"
+              type="number"
+              value={totalAmount}
+              readOnly
+            />
           </div>
-          <div>
-            <label>Balance:</label>
-            <input type="number" value={balance} readOnly />
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600">
+              Amount to Balance:
+            </label>
+            <input
+              className="w-full p-2 border rounded-md"
+              type="number"
+              value={balance}
+              readOnly
+            />
           </div>
-          <div>
-            <label>Installments:</label>
-            <select value={installments} onChange={handleInstallmentsChange}>
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600 mr-2">
+              Installments:
+            </label>
+            <select
+              className="w-full p-2 border rounded-md"
+              value={installments}
+              onChange={handleInstallmentsChange}
+            >
               <option value={1}>1</option>
               <option value={2}>2</option>
               <option value={3}>3</option>
             </select>
           </div>
           {Array.from({ length: installments }).map((_, index) => (
-            <div key={index}>
-              <label>Date for Installment {index + 1}:</label>
-              <input
-                type="date"
-                value={dates[index] || ""}
-                required
-                onChange={(e) => handleDateChange(index, e)}
-              />
+            <div className="flex flex-col mb-4" key={index}>
+              <div className="flex items-center">
+                <label className="block text-sm font-medium text-gray-600">
+                  Payment Date for {index + 1} Installment :
+                </label>
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded-md"
+                  value={dates[index] || ""}
+                  required
+                  onChange={(e) => handleDateChange(index, e)}
+                />
+              </div>
               {installments > 1 && (
-                <>
-                  <label>Amount for Installment {index + 1}:</label>
+                <div className="flex items-center mb-4">
+                  <label className="block text-sm font-medium text-gray-600 mr-2">
+                    Amount for {index + 1} Installment :
+                  </label>
                   <input
+                    className="w-full p-2 border rounded-md my-2"
                     type="number"
                     value={installmentAmounts[index]}
                     onChange={(e) => {
@@ -218,14 +249,17 @@ const DebtSales = () => {
                       setInstallmentAmounts(newAmounts);
                     }}
                   />
-                </>
+                </div>
               )}
             </div>
           ))}
-          <div>
-            <label>Reason:</label>
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600 mr-2">
+              Reason:
+            </label>
             <textarea
               value={reason}
+              className="w-full p-2 border rounded-md"
               placeholder="State Reason for Debt Sales"
               onChange={(e) => setReason(e.target.value)}
             />
@@ -261,7 +295,12 @@ const DebtSales = () => {
               )}
             </div>
           </fieldset>
-          <button type="submit">Submit</button>
+          <button
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            type="submit"
+          >
+            Submit
+          </button>
         </fieldset>
       </form>
     </div>
