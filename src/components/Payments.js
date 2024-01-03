@@ -210,11 +210,11 @@ const Payments = () => {
       <p className="mb-2">{paymentComparison()}</p>
       <br />
       <fieldset className="border p-4 mb-4">
-            <CustomerSearch />
-            <legend className="text-lg font-semibold">Customer Details</legend>
+        <CustomerSearch />
+        <legend className="text-lg font-semibold">Customer Details</legend>
 
-            <CustomerNameAndNumber />
-          </fieldset>
+        <CustomerNameAndNumber />
+      </fieldset>
       <br />
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"

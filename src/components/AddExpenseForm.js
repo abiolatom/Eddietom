@@ -1,12 +1,17 @@
 // components/ExpenseForm.js
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ProductContext } from "./ProductContext";
 
 const ExpenseForm = () => {
-  const [expenseFormData, setExpenseFormData] = useState({
-    expenseItem: "",
-    amount: "",
-    reason: "",
-  });
+  const {
+    totalPayment,
+    amounts,
+    paymentOptions,
+    optionsRender,
+    selectedOptions,
+  } = useContext(ProductContext);
+
+  const [expenseFormData, setExpenseFormData] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +24,46 @@ const ExpenseForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (Object.keys(amounts).length === 0) {
+      window.alert("Please enter payment amounts.");
+      return;
+    }
+
+    const bankPaymentOption = paymentOptions.find(
+      (option) => option.paymentOption === "bankPayment"
+    );
+
+    if (
+      selectedOptions.some(
+        (o) => o.value === bankPaymentOption.paymentOption
+      ) &&
+      !amounts[bankPaymentOption.paymentOption]?.bankName
+    ) {
+      window.alert("Please select a bank for bank transfer.");
+      return;
+    }
+
+    const currentDateTime = new Date();
+    const formattedDateTime = currentDateTime.toISOString();
+
+    const amountsForBackend = {};
+    for (const option of paymentOptions) {
+      const amount = amounts[option.paymentOption];
+      if (amount) {
+        amountsForBackend[option.paymentOption] = parseFloat(amount.amount);
+
+        if (option.paymentOption === "bankPayment") {
+          amountsForBackend.bankName = amounts.bankPayment.bankName;
+        }
+      }
+    }
+
     const newExpense = {
-      ...expenseFormData,
+      expenseItem: expenseFormData.expenseItem,
+      expenseAmount: amountsForBackend,
+      reason: expenseFormData.reason,
+      totalPayment,
+      timestamp: formattedDateTime,
     };
 
     fetch("http://localhost:3001/expenses", {
@@ -67,22 +110,7 @@ const ExpenseForm = () => {
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="amount" className="block text-gray-700 font-bold">
-            Amount
-          </label>
-          <input
-            type="number"
-            id="amount"
-            name="amount"
-            className="w-full border p-2 rounded-md"
-            //className="w-full border p-2 rounded-md appearance-none focus:outline-none focus:border-blue-500"
-            value={expenseFormData.amount}
-            onChange={handleChange}
-            required
-            placeholder="Amount?"
-          />
-        </div>
+        <div className="mb-4">{optionsRender()}</div>
         <div className="mb-4">
           <label htmlFor="reason" className="block text-gray-700 font-bold">
             Reason
