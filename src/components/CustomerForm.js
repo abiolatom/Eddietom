@@ -75,7 +75,7 @@ const CustomerSearch = () => {
       />
       <ul className="list-group">
         {matches.map((match) => (
-          <li key={match.id} className="list-group-item">
+          <li key={match._id} className="list-group-item">
             {match.customerName} - {match.customerNumber}
             <button onClick={() => handleMatchSelection(match)}>Select</button>
           </li>
@@ -160,7 +160,7 @@ const CustomerForm = () => {
               type="text"
               id="customerCity"
               name="customerCity"
-              value={customerDetails.customercity}
+              value={customerDetails.customerCity}
               onChange={handleCustomerDetailsChange}
             />
           </div>
