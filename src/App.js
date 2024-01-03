@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import { ProductProvider } from "./components/ProductContext";
 import CustomerForm from "./components/CustomerForm";
-
+import AddIncomeForm from "./components/AddIncomesForm";
 const App = () => {
   return (
     <ProductProvider>
@@ -19,6 +19,7 @@ const App = () => {
           <Route path="/" element={<AddProduct />} />
           <Route path="/productform" element={<ProductForm />} />
           <Route path="/addexpenseform" element={<AddExpenseForm />} />
+          <Route path="/addincomeform" element={<AddIncomeForm />} />
           <Route path="/debtsales" element={<DebtSales />} />
           <Route path="/salesdeposit" element={<SalesDeposit />} />
           <Route path="/payments" element={<Payments />} />
