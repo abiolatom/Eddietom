@@ -16,11 +16,7 @@ export const ProductProvider = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [amounts, setAmounts] = useState({
-    cashPayment: { amount: 0 },
-    bankPayment: { amount: 0, bankName: "" },
-    posPayment: { amount: 0 },
-  });
+  const [amounts, setAmounts] = useState({});
 
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
@@ -139,7 +135,7 @@ export const ProductProvider = ({ children }) => {
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
       const newAmounts = { ...amounts };
-      newAmounts[value] = {}; 
+      newAmounts[value] = {};
       setAmounts(newAmounts);
     } else {
       const selectedOption = { value, amounts: 0 };

@@ -40,7 +40,6 @@ const Payments = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        console.log("Raw Response:", response);
         const data = await response.json();
         console.log("Sales Data added successfully:", data);
         resetForm();
@@ -57,7 +56,7 @@ const Payments = () => {
 
   const calculatePaymentStatus = () => {
     const remainingAmount = calculateTotalPrice() - totalPayment;
-    console.log(remainingAmount);
+
     if (totalPayment === calculateTotalPrice()) {
       return {
         message: "Total payment matches required amount.",
@@ -89,7 +88,7 @@ const Payments = () => {
       window.alert("Please select at least one product.");
       return;
     }
-
+    console.log("Amounts:", amounts);
     if (Object.keys(amounts).length === 0) {
       window.alert("Please enter payment amounts.");
       return;
@@ -145,7 +144,7 @@ const Payments = () => {
       timestamp: formattedDateTime,
     };
 
-    console.log("Amounts for Backend:", amountsForBackend);
+    // console.log("Amounts for Backend:", amountsForBackend);
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
     window.alert("Sales data submitted successfully!");

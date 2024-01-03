@@ -10,6 +10,7 @@ const ExpenseForm = () => {
     optionsRender,
     selectedOptions,
   } = useContext(ProductContext);
+ 
 
   const [expenseFormData, setExpenseFormData] = useState({});
 
@@ -29,6 +30,7 @@ const ExpenseForm = () => {
       return;
     }
 
+   
     const bankPaymentOption = paymentOptions.find(
       (option) => option.paymentOption === "bankPayment"
     );
@@ -83,7 +85,7 @@ const ExpenseForm = () => {
 
     setExpenseFormData({
       expenseItem: "",
-      amount: "",
+      amounts: {},
       reason: "",
     });
   };
