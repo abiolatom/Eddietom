@@ -56,6 +56,15 @@ const DebtSales = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (selectedProducts.length === 0) {
+      window.alert("Please select at least one product.");
+      return;
+    }
+
+    if (Object.keys(amounts).length === 0) {
+      window.alert("Please enter payment amounts.");
+      return;
+    }
 
     if (installments > 1 && balance !== 0) {
       alert("Please indicate how full payment is made.");
@@ -106,7 +115,7 @@ const DebtSales = () => {
     const newDebtSaleData = {
       selectedProducts: selectedProductsData,
       customerDetails: {
-        ...customerDetails,
+        customerName: customerDetails.customerName,
         customerNumber: parseFloat(customerDetails.customerNumber),
       },
       paymentMethod: {

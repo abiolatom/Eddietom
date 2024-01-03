@@ -88,7 +88,7 @@ const Payments = () => {
       window.alert("Please select at least one product.");
       return;
     }
-    console.log("Amounts:", amounts);
+
     if (Object.keys(amounts).length === 0) {
       window.alert("Please enter payment amounts.");
       return;
@@ -104,7 +104,7 @@ const Payments = () => {
       ) &&
       !amounts[bankPaymentOption.paymentOption]?.bankName
     ) {
-      window.alert("Please select a bank for bank transfer.");
+      alert("Please select a bank for bank transfer.");
       return;
     }
     const paymentStatus = calculatePaymentStatus();
