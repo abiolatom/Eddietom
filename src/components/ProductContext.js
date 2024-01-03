@@ -149,6 +149,34 @@ export const ProductProvider = ({ children }) => {
     setSelectedOptions(newSelectedOptions);
   };
 
+  /*const selectedProductsRender = () => {
+    return (
+      {selectedProducts.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {selectedProducts.map((product) => (
+            <div
+              key={product.id}
+              className="border rounded-md overflow-hidden bg-white m-2"
+            >
+              <div className="p-2">
+                <strong>{product.productName}</strong>
+                <p className="mt-2">Price: {product.price}</p>
+                <p>Quantity: {product.quantity}</p>
+                <p className="mb-2">SubTotal: {product.subtotal}</p>
+              </div>
+            </div>
+          ))}
+          <div className="border rounded-md overflow-hidden bg-white col-span-3 m-2">
+            <div className="p-4">
+              <strong>Total Price: </strong>
+              <span>{Number(calculateTotalPrice())}</span>
+            </div>
+          </div>
+        </div>
+      )}
+    )
+  }*/
+
   const optionsRender = () => {
     return (
       <div className="mt-2">
