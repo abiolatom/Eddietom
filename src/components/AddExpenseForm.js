@@ -1,6 +1,7 @@
-// components/ExpenseForm.js
 import React, { useContext, useState } from "react";
 import { ProductContext } from "./ProductContext";
+
+import { useNavigate } from "react-router-dom";
 
 const ExpenseForm = () => {
   const {
@@ -10,8 +11,12 @@ const ExpenseForm = () => {
     optionsRender,
     selectedOptions,
   } = useContext(ProductContext);
-
-  const [expenseFormData, setExpenseFormData] = useState({});
+  const navigate = useNavigate();
+  const [expenseFormData, setExpenseFormData] = useState({
+    expenseItem: "",
+    amounts: {},
+    reason: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,17 +33,10 @@ const ExpenseForm = () => {
       window.alert("Please enter payment amounts.");
       return;
     }
-
-    const amountsNotEmpty =
-      amounts.cashPayment !== "" ||
-      amounts.bankPayment !== "" ||
-      amounts.posPayment !== "";
-
-    if (!amountsNotEmpty) {
-      window.alert("Please enter expense amounts.");
+    if (totalPayment === 0) {
+      window.alert("Fill in the requisite Expense Amount!");
       return;
     }
-
     console.log(amounts);
     const bankPaymentOption = paymentOptions.find(
       (option) => option.paymentOption === "bankPayment"
@@ -87,6 +85,8 @@ const ExpenseForm = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Expense added successfully:", data);
+        window.alert("Expense added successfully!");
+        navigate("/");
       })
       .catch((error) => {
         console.error("Error adding expense:", error);

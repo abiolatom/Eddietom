@@ -91,28 +91,24 @@ export const ProductProvider = ({ children }) => {
   };
   const handleAmountChange = (event, paymentOption) => {
     const newAmounts = { ...amounts };
+
     if (!newAmounts[paymentOption]) {
       newAmounts[paymentOption] = {};
     }
+
     if (paymentOption === "bankPayment") {
       newAmounts[paymentOption].bankName = "";
     }
+
     newAmounts[paymentOption].amount = parseFloat(event.target.value);
 
     if (newAmounts[paymentOption].amount > 0) {
-      const existingOptionIndex = selectedOptions.findIndex(
-        (option) => option.value === paymentOption
-      );
-      if (existingOptionIndex === -1) {
-        selectedOptions.push({
-          value: paymentOption,
-          amounts: newAmounts[paymentOption].amount,
-        });
-      } else {
-        selectedOptions[existingOptionIndex].amounts =
-          newAmounts[paymentOption].amount;
-      }
+      // ... other code ...
     } else {
+      // Delete the payment option entry if amount is 0
+      delete newAmounts[paymentOption];
+
+      // Remove from selectedOptions if amount is 0
       const newSelectedOptions = selectedOptions.filter(
         (option) => option.value !== paymentOption
       );
@@ -134,12 +130,20 @@ export const ProductProvider = ({ children }) => {
 
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
-      const newAmounts = { ...amounts };
-      newAmounts[value] = {};
-      setAmounts(newAmounts);
+
+      // Clear amounts if no options are selected
+      if (newSelectedOptions.length === 0) {
+        setAmounts({});
+      } else {
+        // Update amounts with remaining options
+        const newAmounts = { ...amounts };
+        newAmounts[value] = {};
+        setAmounts(newAmounts);
+      }
     } else {
       const selectedOption = { value, amounts: 0 };
       newSelectedOptions.push(selectedOption);
+      setAmounts({ ...amounts, [value]: {} }); // Add new option to amounts
     }
 
     setSelectedOptions(newSelectedOptions);
