@@ -10,7 +10,6 @@ const ExpenseForm = () => {
     optionsRender,
     selectedOptions,
   } = useContext(ProductContext);
- 
 
   const [expenseFormData, setExpenseFormData] = useState({});
 
@@ -30,7 +29,17 @@ const ExpenseForm = () => {
       return;
     }
 
-   
+    const amountsNotEmpty =
+      amounts.cashPayment !== "" ||
+      amounts.bankPayment !== "" ||
+      amounts.posPayment !== "";
+
+    if (!amountsNotEmpty) {
+      window.alert("Please enter expense amounts.");
+      return;
+    }
+
+    console.log(amounts);
     const bankPaymentOption = paymentOptions.find(
       (option) => option.paymentOption === "bankPayment"
     );
@@ -82,12 +91,6 @@ const ExpenseForm = () => {
       .catch((error) => {
         console.error("Error adding expense:", error);
       });
-
-    setExpenseFormData({
-      expenseItem: "",
-      amounts: {},
-      reason: "",
-    });
   };
 
   return (

@@ -6,6 +6,7 @@ const productRoute = require("./Routes/productRoute");
 const expenseRoute = require("./Routes/expenseRoute");
 const salesRoute = require("./Routes/salesRoute");
 const debtSalesRoute = require("./Routes/debtSalesRoute");
+const customerRoute = require("./Routes/customerRoute");
 
 const cors = require("cors");
 const app = express();
@@ -21,6 +22,7 @@ connectToDb((err) => {
     app.use("/expenses", expenseRoute(db));
     app.use("/sales", salesRoute(db));
     app.use("/debtsales", debtSalesRoute(db));
+    app.use("/customerdata", customerRoute(db));
 
     app.listen(PORT, () => {
       console.log(`app listening on ${PORT}`);
