@@ -1,6 +1,7 @@
 import { ProductContext } from "./ProductContext";
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { CustomerSearch, CustomerNameAndNumber } from "./CustomerForm";
 const DebtSales = () => {
   const [debtSalesData, setDebtSalesData] = useState({});
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
@@ -15,7 +16,6 @@ const DebtSales = () => {
     resetForm,
     amounts,
     paymentOptions,
-    handleCustomerDetailsChange,
   } = useContext(ProductContext);
   const [installmentAmounts, setInstallmentAmounts] = useState(
     Array.from({ length: 3 }, () => 0)
@@ -70,7 +70,6 @@ const DebtSales = () => {
       return;
     }
 
-    // Add validation for bankPayment
     const bankPaymentOption = paymentOptions.find(
       (option) => option.paymentOption === "bankPayment"
     );
@@ -266,34 +265,10 @@ const DebtSales = () => {
           </div>
 
           <fieldset className="border p-4 mb-4">
+            <CustomerSearch />
             <legend className="text-lg font-semibold">Customer Details</legend>
-            <div className="mb-2">
-              <input
-                type="text"
-                id="customerName"
-                name="customerName"
-                value={customerDetails.customerName}
-                onChange={handleCustomerDetailsChange}
-                placeholder="Customer Name"
-                className="w-full p-2 border rounded-md"
-              />
-            </div>
-            <div>
-              <input
-                placeholder="Customer Number"
-                className="w-full p-2 border rounded-md"
-                type="tel"
-                id="customerNumber"
-                name="customerNumber"
-                value={customerDetails.customerNumber}
-                onChange={handleCustomerDetailsChange}
-              />
-              {isNaN(customerDetails.customerNumber) && (
-                <p className="text-red-500">
-                  Please enter a valid numeric value.
-                </p>
-              )}
-            </div>
+
+            <CustomerNameAndNumber />
           </fieldset>
           <button
             className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"

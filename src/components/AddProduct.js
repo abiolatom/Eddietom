@@ -179,6 +179,13 @@ const AddProduct = () => {
     setSelectedProducts(updateDelProduct);
   };
 
+  const handleClick = () => {
+    if (selectedProducts.length === 0) {
+      alert("Please add at least one Product");
+    } else {
+      navigate("/payments");
+    }
+  };
   return (
     <div className="container mx-auto p-4">
       <form
@@ -307,8 +314,7 @@ const AddProduct = () => {
 
       <button
         className="bg-blue-500 mt-2 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        onClick={() => navigate("/payments")}
-        disabled={selectedProducts.length === 0}
+        onClick={handleClick}
       >
         Continue to Payment
       </button>

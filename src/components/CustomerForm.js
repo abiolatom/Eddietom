@@ -1,18 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { ProductContext } from "./ProductContext";
 
-const CustomerForm = () => {
-  const [customerDetails, setCustomerDetails] = useState({
-    customerName: "",
-    customerNumber: "",
-    customerAddress: "",
-    customerCity: "",
-    customerCategory: "",
-  });
+const CustomerNameAndNumber = () => {
+  const { customerDetails, handleCustomerDetailsChange } =
+    useContext(ProductContext);
+
+  return (
+    <div>
+      <div className="mb-2">
+        <input
+          type="text"
+          id="customerName"
+          name="customerName"
+          value={customerDetails.customerName}
+          onChange={handleCustomerDetailsChange}
+          placeholder="Enter Customer Name"
+          className="w-full p-2 border rounded-md"
+        />
+      </div>
+      <div className="mb-2">
+        <input
+          placeholder="Enter Customer Phone Number"
+          className="w-full p-2 border rounded-md"
+          type="tel"
+          id="customerNumber"
+          name="customerNumber"
+          value={customerDetails.customerNumber}
+          onChange={handleCustomerDetailsChange}
+        />
+        {isNaN(customerDetails.customerNumber) && (
+          <p className="text-red-500">Please enter a valid numeric value.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const CustomerSearch = () => {
+  const { setCustomerDetails } = useContext(ProductContext);
   const [matches, setMatches] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
   const handleSearchInputChange = (e) => {
     setSearchQuery(e.target.value);
-    // Trigger search function to fetch matches
     fetchCustomerMatches(searchQuery);
   };
   const fetchCustomerMatches = async (query) => {
@@ -21,7 +51,6 @@ const CustomerForm = () => {
         `http://localhost:3001/customerdata?searchQuery=${query}`
       );
       const matches = await response.json();
-      // Update state with matches
       setMatches(matches);
     } catch (error) {
       console.error("Error fetching matches:", error);
@@ -30,26 +59,35 @@ const CustomerForm = () => {
 
   const handleMatchSelection = (match) => {
     setCustomerDetails(match);
-    // Clear search query and matches
     setSearchQuery("");
     setMatches([]);
   };
-  const handleCustomerDetailsChange = (e) => {
-    const { name, value } = e.target;
-    let newValue = value;
 
-    if (name === "customerNumber") {
-      newValue = value.replace(/[^0-9]/g, "");
+  return (
+    <div className="mb-4">
+      <input
+        type="text"
+        id="customerSearch"
+        name="customerSearch"
+        placeholder="Search by name or number"
+        className="w-full p-2 border rounded-md"
+        onChange={handleSearchInputChange}
+      />
+      <ul className="list-group">
+        {matches.map((match) => (
+          <li key={match.id} className="list-group-item">
+            {match.customerName} - {match.customerNumber}
+            <button onClick={() => handleMatchSelection(match)}>Select</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-      newValue = newValue.slice(0, 11);
-    }
-
-    setCustomerDetails((prevData) => ({
-      ...prevData,
-      [name]: newValue,
-    }));
-  };
-
+const CustomerForm = () => {
+  const { customerDetails, handleCustomerDetailsChange } =
+    useContext(ProductContext);
   const checkForDuplicateCustomer = async () => {
     try {
       const response = await fetch(
@@ -98,57 +136,11 @@ const CustomerForm = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-4">
-        <input
-          type="text"
-          id="customerSearch"
-          name="customerSearch"
-          placeholder="Search by name or number"
-          className="w-full p-2 border rounded-md"
-          onChange={handleSearchInputChange}
-        />
-        <ul className="list-group">
-          {matches.map((match) => (
-            <li key={match.id} className="list-group-item">
-              {match.customerName} - {match.customerNumber}
-              <button onClick={() => handleMatchSelection(match)}>
-                Select
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
+      <CustomerSearch />
       <form onSubmit={handleSubmit}>
         <fieldset className="border p-4 mb-4">
           <legend className="text-lg font-semibold">Customer Details</legend>
-          <div className="mb-2">
-            <input
-              type="text"
-              id="customerName"
-              name="customerName"
-              value={customerDetails.customerName}
-              onChange={handleCustomerDetailsChange}
-              placeholder="Enter Customer Name"
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-          <div className="mb-2">
-            <input
-              placeholder="Enter Customer Phone Number"
-              className="w-full p-2 border rounded-md"
-              type="tel"
-              id="customerNumber"
-              name="customerNumber"
-              value={customerDetails.customerNumber}
-              onChange={handleCustomerDetailsChange}
-            />
-            {isNaN(customerDetails.customerNumber) && (
-              <p className="text-red-500">
-                Please enter a valid numeric value.
-              </p>
-            )}
-          </div>
+          <CustomerNameAndNumber />
           <div className="mb-2">
             <input
               placeholder="Enter Customer Address"
@@ -167,7 +159,7 @@ const CustomerForm = () => {
               className="w-full p-2 border rounded-md"
               type="text"
               id="customerCity"
-              name="customercity"
+              name="customerCity"
               value={customerDetails.customercity}
               onChange={handleCustomerDetailsChange}
             />
@@ -194,5 +186,5 @@ const CustomerForm = () => {
     </div>
   );
 };
-
+export { CustomerSearch, CustomerNameAndNumber };
 export default CustomerForm;

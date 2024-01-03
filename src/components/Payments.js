@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./ProductContext";
 import { useNavigate } from "react-router-dom";
-
+import { CustomerSearch, CustomerNameAndNumber } from "./CustomerForm";
 const Payments = () => {
   const [redirectPath, setRedirectPath] = useState("");
   const navigate = useNavigate();
@@ -19,7 +19,6 @@ const Payments = () => {
     selectedProducts,
     calculateTotalPrice,
     customerDetails,
-    handleCustomerDetailsChange,
     amounts,
     resetForm,
   } = useContext(ProductContext);
@@ -96,18 +95,19 @@ const Payments = () => {
       return;
     }
 
-    // Add validation for bankPayment
-  const bankPaymentOption = paymentOptions.find(
-    (option) => option.paymentOption === "bankPayment"
-  );
+    const bankPaymentOption = paymentOptions.find(
+      (option) => option.paymentOption === "bankPayment"
+    );
 
-  if (
-    selectedOptions.some((o) => o.value === bankPaymentOption.paymentOption) &&
-    !amounts[bankPaymentOption.paymentOption]?.bankName
-  ) {
-    window.alert("Please select a bank for bank transfer.");
-    return;
-  }
+    if (
+      selectedOptions.some(
+        (o) => o.value === bankPaymentOption.paymentOption
+      ) &&
+      !amounts[bankPaymentOption.paymentOption]?.bankName
+    ) {
+      window.alert("Please select a bank for bank transfer.");
+      return;
+    }
     const paymentStatus = calculatePaymentStatus();
     if (paymentStatus.shouldRedirect) {
       handleRedirect(paymentStatus.message);
@@ -137,7 +137,7 @@ const Payments = () => {
     const newSaleData = {
       selectedProducts: selectedProductsData,
       customerDetails: {
-        ...customerDetails,
+        customerName: customerDetails.customerName,
         customerNumber: parseFloat(customerDetails.customerNumber),
       },
       amounts: amountsForBackend,
@@ -209,34 +209,8 @@ const Payments = () => {
       {optionsRender()}
       <p className="mb-2">{paymentComparison()}</p>
       <br />
-      <fieldset className="border p-4 mb-4">
-        <legend className="text-lg font-semibold">Customer Details</legend>
-        <div className="mb-2">
-          <input
-            type="text"
-            id="customerName"
-            name="customerName"
-            value={customerDetails.customerName}
-            onChange={handleCustomerDetailsChange}
-            placeholder="Customer Name"
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
-        <div>
-          <input
-            placeholder="Customer Number"
-            className="w-full p-2 border rounded-md"
-            type="tel"
-            id="customerNumber"
-            name="customerNumber"
-            value={customerDetails.customerNumber}
-            onChange={handleCustomerDetailsChange}
-          />
-          {isNaN(customerDetails.customerNumber) && (
-            <p className="text-red-500">Please enter a valid numeric value.</p>
-          )}
-        </div>
-      </fieldset>
+      <CustomerSearch />
+      <CustomerNameAndNumber />
       <br />
       <button
         className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"

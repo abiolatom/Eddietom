@@ -25,8 +25,9 @@ export const ProductProvider = ({ children }) => {
   const [customerDetails, setCustomerDetails] = useState({
     customerName: "",
     customerNumber: "",
-    customerCategory: { reseller: "", endUser: "" },
     customerAddress: "",
+    customerCity: "",
+    customerCategory: { reseller: "", endUser: "" },
   });
 
   const handleBankNameChange = (event, paymentOption) => {
@@ -138,7 +139,7 @@ export const ProductProvider = ({ children }) => {
     if (index !== -1) {
       newSelectedOptions.splice(index, 1);
       const newAmounts = { ...amounts };
-      newAmounts[value] = {}; // Initialize the amounts object for the removed option
+      newAmounts[value] = {}; 
       setAmounts(newAmounts);
     } else {
       const selectedOption = { value, amounts: 0 };
@@ -214,11 +215,11 @@ export const ProductProvider = ({ children }) => {
       value={{
         selectedProducts,
         customerDetails,
+        setCustomerDetails,
         submissionSuccess,
         setSubmissionSuccess,
         paymentComparison,
         handleCustomerDetailsChange,
-        setCustomerDetails,
         setSelectedProducts,
         selectedProduct,
         optionsRender,
