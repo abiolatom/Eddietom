@@ -42,14 +42,15 @@ const SalesDeposit = () => {
     const newDates = [...dates];
     const selectedDate = new Date(event.target.value);
     const today = new Date();
-
-    if (selectedDate >= today) {
+  
+    if (selectedDate >= today || selectedDate.toDateString() === today.toDateString()) {
       newDates[index] = event.target.value;
       setDates(newDates);
     } else {
-      alert("Please select a date after today.");
+      alert("Please select a date on or after today.");
     }
   };
+  
 
   useEffect(() => {
     if (submissionSuccess) {
@@ -200,7 +201,106 @@ const SalesDeposit = () => {
         </div>
       )}
 
-<fieldset className="mt-4">{optionsRender()}</fieldset>
+      <fieldset className="mt-4">{optionsRender()}</fieldset>
+      <form className="mt-4" onSubmit={handleSubmit}>
+        <fieldset className="mt-4">
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600">
+              Paid Amount:
+            </label>
+            <input
+              className="w-full p-2 border rounded-md"
+              type="number"
+              value={totalAmount}
+              readOnly
+            />
+          </div>
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600">
+              Amount to Balance:
+            </label>
+            <input
+              className="w-full p-2 border rounded-md"
+              type="number"
+              value={balance}
+              readOnly
+            />
+          </div>
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600 mr-2">
+              Installments:
+            </label>
+            <select
+              className="w-full p-2 border rounded-md"
+              value={installments}
+              onChange={handleInstallmentsChange}
+            >
+              {[1, 2, 3].map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+          {Array.from({ length: installments }).map((_, index) => (
+            <div className="flex flex-col mb-4" key={index}>
+              <div className="flex items-center">
+                <label className="block text-sm font-medium text-gray-600">
+                  Payment Date for {index + 1} Installment :
+                </label>
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded-md"
+                  value={dates[index] || ""}
+                  required
+                  onChange={(e) => handleDateChange(index, e)}
+                />
+              </div>
+              {installments > 1 && (
+                <div className="flex items-center mb-4">
+                  <label className="block text-sm font-medium text-gray-600 mr-2">
+                    Amount for {index + 1} Installment :
+                  </label>
+                  <input
+                    className="w-full p-2 border rounded-md my-2"
+                    type="number"
+                    value={installmentAmounts[index]}
+                    onChange={(e) => {
+                      const newAmounts = [...installmentAmounts];
+                      newAmounts[index] = e.target.value;
+                      setInstallmentAmounts(newAmounts);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+          <div className="flex items-center mb-4">
+            <label className="block text-sm font-medium text-gray-600 mr-2">
+              Reason:
+            </label>
+            <textarea
+              value={reason}
+              className="w-full p-2 border rounded-md"
+              placeholder="State Reason for Debt Sales"
+              onChange={(e) => setReason(e.target.value)}
+            />
+          </div>
+
+          <fieldset className="border p-4 mb-4">
+            <CustomerSearch />
+            <legend className="text-lg font-semibold">Customer Details</legend>
+
+            <CustomerNameAndNumber />
+          </fieldset>
+          <button
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            type="submit"
+          >
+            Submit
+          </button>
+        </fieldset>
+      </form>
     </div>
   );
 };

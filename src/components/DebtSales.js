@@ -38,11 +38,14 @@ const DebtSales = () => {
     const selectedDate = new Date(event.target.value);
     const today = new Date();
 
-    if (selectedDate >= today) {
+    if (
+      selectedDate >= today ||
+      selectedDate.toDateString() === today.toDateString()
+    ) {
       newDates[index] = event.target.value;
       setDates(newDates);
     } else {
-      alert("Please select a date after today.");
+      alert("Please select a date on or after today.");
     }
   };
 

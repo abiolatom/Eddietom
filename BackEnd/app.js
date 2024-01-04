@@ -7,8 +7,10 @@ const expenseRoute = require("./Routes/expenseRoute");
 const salesRoute = require("./Routes/salesRoute");
 const debtSalesRoute = require("./Routes/debtSalesRoute");
 const customerRoute = require("./Routes/customerRoute");
+const incomesRoute = require("./Routes/incomesRoute");
 
 const cors = require("cors");
+
 const app = express();
 
 app.use(express.json());
@@ -20,6 +22,7 @@ connectToDb((err) => {
 
     app.use("/products", productRoute(db));
     app.use("/expenses", expenseRoute(db));
+    app.use("/incomes", incomesRoute(db));
     app.use("/sales", salesRoute(db));
     app.use("/debtsales", debtSalesRoute(db));
     app.use("/customerdata", customerRoute(db));
