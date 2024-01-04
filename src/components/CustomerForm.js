@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { ProductContext } from "./ProductContext";
 
 const CustomerNameAndNumber = () => {
@@ -37,6 +37,7 @@ const CustomerNameAndNumber = () => {
 };
 
 const CustomerSearch = () => {
+  const currentQuery = useRef(null);
   const { setCustomerDetails } = useContext(ProductContext);
   const [matches, setMatches] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,8 +46,8 @@ const CustomerSearch = () => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    // Check if the input is not empty before fetching matches
-    if (query.trim() !== "") {
+   if (query.trim() !== "") {
+      currentQuery.current = query; 
       await fetchCustomerMatches(query);
     } else {
       setMatches([]);
