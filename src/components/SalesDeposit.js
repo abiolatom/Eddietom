@@ -6,6 +6,11 @@ import { CustomerSearch, CustomerNameAndNumber } from "./CustomerForm";
 const SalesDeposit = () => {
   const [depositData, setDepositData] = useState({});
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const [balanceQuantities, setBalanceQuantities] = useState({});
+  const [pickUpQuantities, setPickUpQuantities] = useState(
+    Array.from({ length: 3 }, () => 0)
+  );
+
   const navigate = useNavigate();
 
   const {
@@ -24,34 +29,52 @@ const SalesDeposit = () => {
     Array.from({ length: 3 }, () => 0)
   );
 
-  const [reason, setReason] = useState("");
+  const [notes, setNotes] = useState("");
   const [installments, setInstallments] = useState(1);
   const [dates, setDates] = useState([]);
 
-  const totalAmount =
-    totalPayment +
-    installmentAmounts.reduce((sum, amount) => sum + Number(amount), 0);
+  const calculateBalanceQuantities = () => {
+    const quants = {};
+    selectedProducts.forEach((product) => {
+      quants[product.id] =
+        Number(product.quantity) -
+        pickUpQuantities.reduce((sum, quantity) => sum + Number(quantity), 0);
+    });
+    setBalanceQuantities(quants);
+  };
 
-  const balance = calculateTotalPrice() - totalAmount;
+    // Recalculate balance quantities when pickUpQuantities change
+  const handlePickUpQuantityChange = (index, event) => {
+    const newPickUpQuantities = [...pickUpQuantities];
+    newPickUpQuantities[index] = Number(event.target.value);
+    setPickUpQuantities(newPickUpQuantities);
+    calculateBalanceQuantities();
+  };
+  useEffect(() => {
+    calculateBalanceQuantities();
+ }, [selectedProducts, pickUpQuantities]);
 
-  function handleInstallmentsChange(event) {
-    setInstallments(event.target.value);
-  }
+
+ 
 
   const handleDateChange = (index, event) => {
     const newDates = [...dates];
     const selectedDate = new Date(event.target.value);
     const today = new Date();
-  
-    if (selectedDate >= today || selectedDate.toDateString() === today.toDateString()) {
+
+    if (
+      selectedDate >= today ||
+      selectedDate.toDateString() === today.toDateString()
+    ) {
       newDates[index] = event.target.value;
       setDates(newDates);
     } else {
       alert("Please select a date on or after today.");
     }
   };
-  
-
+  function handleInstallmentsChange(event) {
+    setInstallments(event.target.value);
+  }
   useEffect(() => {
     if (submissionSuccess) {
       window.alert("Sales Deposit data submitted successfully!");
@@ -70,11 +93,6 @@ const SalesDeposit = () => {
 
     if (Object.keys(amounts).length === 0) {
       window.alert("Please enter payment amounts.");
-      return;
-    }
-
-    if (installments > 1 && balance !== 0) {
-      alert("Please indicate how full payment is made.");
       return;
     }
 
@@ -131,13 +149,12 @@ const SalesDeposit = () => {
       },
       paymentMethod: {
         amounts: amountsForBackend,
-        totalAmount: parseFloat(totalAmount),
-        balance,
+
         installments: parseFloat(installments),
         dates,
         installmentAmounts: parseFloat(installmentAmounts),
       },
-      reason,
+      notes,
       timestamp: formattedDateTime,
     };
 
@@ -202,33 +219,12 @@ const SalesDeposit = () => {
       )}
 
       <fieldset className="mt-4">{optionsRender()}</fieldset>
+      <fieldset className="mt-4">Total Payment: {totalPayment}</fieldset>
       <form className="mt-4" onSubmit={handleSubmit}>
         <fieldset className="mt-4">
           <div className="flex items-center mb-4">
-            <label className="block text-sm font-medium text-gray-600">
-              Paid Amount:
-            </label>
-            <input
-              className="w-full p-2 border rounded-md"
-              type="number"
-              value={totalAmount}
-              readOnly
-            />
-          </div>
-          <div className="flex items-center mb-4">
-            <label className="block text-sm font-medium text-gray-600">
-              Amount to Balance:
-            </label>
-            <input
-              className="w-full p-2 border rounded-md"
-              type="number"
-              value={balance}
-              readOnly
-            />
-          </div>
-          <div className="flex items-center mb-4">
             <label className="block text-sm font-medium text-gray-600 mr-2">
-              Installments:
+              Pick Up Installments:
             </label>
             <select
               className="w-full p-2 border rounded-md"
@@ -246,7 +242,7 @@ const SalesDeposit = () => {
             <div className="flex flex-col mb-4" key={index}>
               <div className="flex items-center">
                 <label className="block text-sm font-medium text-gray-600">
-                  Payment Date for {index + 1} Installment :
+                  Pick Up Date for {index + 1} Installment :
                 </label>
                 <input
                   type="date"
@@ -259,17 +255,15 @@ const SalesDeposit = () => {
               {installments > 1 && (
                 <div className="flex items-center mb-4">
                   <label className="block text-sm font-medium text-gray-600 mr-2">
-                    Amount for {index + 1} Installment :
+                    Quantity picked up in {index + 1} Installment :
                   </label>
                   <input
                     className="w-full p-2 border rounded-md my-2"
                     type="number"
-                    value={installmentAmounts[index]}
-                    onChange={(e) => {
-                      const newAmounts = [...installmentAmounts];
-                      newAmounts[index] = e.target.value;
-                      setInstallmentAmounts(newAmounts);
-                    }}
+                    value={pickUpQuantities[index]}
+                    onChange={(event) =>
+                      handlePickUpQuantityChange(index, event)
+                    }
                   />
                 </div>
               )}
@@ -277,13 +271,13 @@ const SalesDeposit = () => {
           ))}
           <div className="flex items-center mb-4">
             <label className="block text-sm font-medium text-gray-600 mr-2">
-              Reason:
+              Notes:
             </label>
             <textarea
-              value={reason}
+              value={notes}
               className="w-full p-2 border rounded-md"
-              placeholder="State Reason for Debt Sales"
-              onChange={(e) => setReason(e.target.value)}
+              placeholder="Other notes about Deposit Sales"
+              onChange={(e) => setNotes(e.target.value)}
             />
           </div>
 
