@@ -41,10 +41,18 @@ const CustomerSearch = () => {
   const [matches, setMatches] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearchInputChange = (e) => {
-    setSearchQuery(e.target.value);
-    fetchCustomerMatches(searchQuery);
+  const handleSearchInputChange = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    // Check if the input is not empty before fetching matches
+    if (query.trim() !== "") {
+      await fetchCustomerMatches(query);
+    } else {
+      setMatches([]);
+    }
   };
+
   const fetchCustomerMatches = async (query) => {
     try {
       const response = await fetch(
@@ -70,14 +78,26 @@ const CustomerSearch = () => {
         id="customerSearch"
         name="customerSearch"
         placeholder="Search by name or number"
-        className="w-full p-2 border rounded-md"
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
         onChange={handleSearchInputChange}
       />
-      <ul className="list-group">
+      <ul className="list-group mt-2">
         {matches.map((match) => (
-          <li key={match._id} className="list-group-item">
-            {match.customerName} - {match.customerNumber}
-            <button onClick={() => handleMatchSelection(match)}>Select</button>
+          <li
+            key={match._id}
+            className="list-group-item flex justify-between items-center bg-white p-3 mb-1 rounded-md shadow-md hover:shadow-lg"
+          >
+            <div>
+              <p className="text-lg font-semibold">
+                {match.customerName} - {match.customerNumber}
+              </p>
+            </div>
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+              onClick={() => handleMatchSelection(match)}
+            >
+              Select
+            </button>
           </li>
         ))}
       </ul>
