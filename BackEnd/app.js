@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const PORT = process.env.PORT;
 const { connectToDb, getDb } = require("./db");
+
 const productRoute = require("./Routes/productRoute");
 const expenseRoute = require("./Routes/expenseRoute");
 const salesRoute = require("./Routes/salesRoute");
