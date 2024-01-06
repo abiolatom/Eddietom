@@ -1,15 +1,16 @@
-const { MongoClient } = require("mongodb");
-
+const mongoose = require("mongoose");
 require("dotenv").config();
 
 const MONGO_URI = process.env.DATABASE_URL;
+
 let dbConnection;
 
 module.exports = {
   connectToDb: (cb) => {
-    MongoClient.connect(MONGO_URI)
-      .then((client) => {
-        dbConnection = client.db();
+    mongoose
+      .connect(MONGO_URI)
+      .then(() => {
+        dbConnection = mongoose.connection;
         return cb();
       })
       .catch((err) => {
