@@ -1,49 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const SalesPage = () => {
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
+    // Assuming you have a function to fetch data from the backend API
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/sales');
+        const response = await fetch(
+          "http://localhost:your-api-port/your-api-endpoint"
+        );
         const data = await response.json();
         setSalesData(data);
       } catch (error) {
-        console.error('Error fetching sales data:', error);
+        console.error("Error fetching sales data:", error);
       }
     };
 
     fetchData();
   }, []);
 
+  // Function to group sales data by selected products
+  const groupSalesByProducts = () => {
+    const groupedSales = {};
+
+    salesData.forEach((sale) => {
+      sale.selectedProducts.forEach((product) => {
+        const productId = product.id;
+        if (!groupedSales[productId]) {
+          groupedSales[productId] = {
+            productName: product.productName,
+            totalQuantity: 0,
+          };
+        }
+        groupedSales[productId].totalQuantity += product.quantity;
+      });
+    });
+
+    return Object.values(groupedSales);
+  };
+
+  const groupedSalesData = groupSalesByProducts();
+
   return (
     <div>
       <h1>Sales Page</h1>
-      {salesData.map((sale) => (
-        <div key={sale._id}>
-          <h2>Customer: {sale.customerDetails.customerName}</h2>
-          <p>Total Payment: {sale.totalPayment}</p>
-
-          <h3>Selected Products:</h3>
-          <ul>
-            {sale.selectedProducts.map((product) => (
-              <li key={product.id}>
-                {product.productName} - Quantity: {product.quantity} - Subtotal: {product.subtotal}
-              </li>
-            ))}
-          </ul>
-
-          <h3>Amounts:</h3>
-          {sale.amounts.bankPayment && (
-            <div>
-              <p>Bank Payment: {sale.amounts.bankPayment}</p>
-              <p>Bank Name: {sale.amounts.bankName}</p>
-            </div>
-          )}
-          {sale.amounts.posPayment && <p>POS Payment: {sale.amounts.posPayment}</p>}
-          {sale.amounts.cashPayment && <p>Cash Payment: {sale.amounts.cashPayment}</p>}
-
+      {groupedSalesData.map((product) => (
+        <div key={product.productId}>
+          <h2>Product: {product.productName}</h2>
+          <p>Total Quantity Sold: {product.totalQuantity}</p>
           <hr />
         </div>
       ))}
