@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 module.exports = (db) => {
-  router.get("/salesReport", async (req, res) => {
+  router.get("/", async (req, res) => {
     try {
-      const salesReport = await generateSalesReport();
+      const salesReport = await generateSalesReport(db);
       res.json(salesReport);
     } catch (error) {
       console.error(error);
@@ -12,19 +12,11 @@ module.exports = (db) => {
     }
   });
 
-  async function generateSalesReport() {
-    const salesReport = await db.sales.aggregate([
+  async function generateSalesReport(db) {
+    const combinedSalesData = await db.sales.aggregate([
       {
         $lookup: {
-          from: "salesDeposit",
-          localField: "_id",
-          foreignField: "salesId",
-          as: "salesDepositData",
-        },
-      },
-      {
-        $lookup: {
-          from: "Debtsales",
+          from: "debtsales",
           localField: "_id",
           foreignField: "salesId",
           as: "debtSalesData",
@@ -42,8 +34,6 @@ module.exports = (db) => {
           totalQuantity: { $sum: "$selectedProducts.quantity" },
           totalPrice: { $sum: "$selectedProducts.subtotal" },
           totalPayment: { $sum: "$totalPayment" },
-          // paymentStatus: { $first: "$amounts" }, // Modify this based on your payment status logic
-          // pickupStatus: { $first: "$pickupStatus" }, // Modify this based on your pick-up status logic
         },
       },
       {
@@ -58,8 +48,6 @@ module.exports = (db) => {
             },
           },
           totalPayment: { $sum: "$totalPayment" },
-          // paymentStatus: { $first: "$paymentStatus" },
-          // pickupStatus: { $first: "$pickupStatus" },
         },
       },
       {
@@ -68,7 +56,7 @@ module.exports = (db) => {
         },
       },
     ]);
-    return salesReport;
+    return combinedSalesData;
   }
 
   return router;

@@ -12,15 +12,16 @@ const incomesRoute = require("./Routes/incomesRoute");
 const salesDataRoute = require("./Routes/salesDataRoute");
 
 const cors = require("cors");
-
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-connectToDb((err) => {
-  if (!err) {
+app.listen(PORT, async () => {
+  try {
+    await connectToDb();
     const db = getDb();
+    // console.log(db);
 
     app.use("/products", productRoute(db));
     app.use("/expenses", expenseRoute(db));
@@ -29,12 +30,10 @@ connectToDb((err) => {
     app.use("/debtsales", debtSalesRoute(db));
     app.use("/customerdata", customerRoute(db));
     app.use("/salesdata", salesDataRoute(db));
-
-    app.listen(PORT, () => {
-      console.log(`app listening on ${PORT}`);
-      console.log("Connected to database");
-    });
+  } catch (err) {
+    console.error(err);
   }
 });
+
 
 module.exports = app;
