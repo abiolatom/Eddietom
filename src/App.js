@@ -10,6 +10,7 @@ import NavBar from "./components/NavBar";
 import { ProductProvider } from "./components/ProductContext";
 import CustomerForm from "./components/CustomerForm";
 import AddIncomeForm from "./components/AddIncomesForm";
+import SalesPage from "./ReportPages/SalesPage";
 const App = () => {
   return (
     <ProductProvider>
@@ -24,6 +25,8 @@ const App = () => {
           <Route path="/salesdeposit" element={<SalesDeposit />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/customerform" element={<CustomerForm />} />
+          <Route path="/salespage" element={<SalesPage />} />
+
         </Routes>
       </Router>
     </ProductProvider>
