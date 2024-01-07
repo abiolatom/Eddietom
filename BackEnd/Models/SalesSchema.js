@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
 const saleSchema = new mongoose.Schema({
-  customerDetails: {
-    customerName: { type: String, required: false },
-    customerNumber: { type: Number, required: false },
-  },
-
   selectedProducts: [
     {
       id: { type: String, required: true },
@@ -19,10 +14,15 @@ const saleSchema = new mongoose.Schema({
     {
       value: { type: String, required: true },
       amounts: { type: Number, required: true },
-      },
+    },
   ],
 
   totalPayment: { type: Number, required: false },
+  customerDetails: {
+    customerName: { type: String, required: false },
+    customerNumber: { type: Number, required: false },
+  },
+
   timestamp: {
     type: Date,
     default: Date.now,

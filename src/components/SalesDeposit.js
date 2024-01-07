@@ -43,7 +43,6 @@ const SalesDeposit = () => {
     setBalanceQuantities(quants);
   };
 
-    // Recalculate balance quantities when pickUpQuantities change
   const handlePickUpQuantityChange = (index, event) => {
     const newPickUpQuantities = [...pickUpQuantities];
     newPickUpQuantities[index] = Number(event.target.value);
@@ -149,7 +148,6 @@ const SalesDeposit = () => {
       },
       paymentMethod: {
         amounts: amountsForBackend,
-
         installments: parseFloat(installments),
         dates,
         installmentAmounts: parseFloat(installmentAmounts),
