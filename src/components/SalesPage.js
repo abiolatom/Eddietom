@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePickerComponent from "./DatePicker";
+import DateOptionsDropdown from "./DateOptionsDropDown";
+import ReportTotals from "./ReportTotals";
 import {
   format,
   subDays,
   startOfYesterday,
   startOfWeek,
   startOfMonth,
+  isSameMonth,
 } from "date-fns";
 
 const SalesPage = () => {
   const [salesData, setSalesData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDateOption, setSelectedDateOption] = useState("selectedDate");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +30,15 @@ const SalesPage = () => {
     fetchData();
   }, []);
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setSelectedDateOption("selectedDate");
+  };
+
+  const handleDateOptionChange = (option) => {
+    setSelectedDateOption(option);
+  };
+
   const calculateTotalsForDay = (day) => {
     let totalQuantityByProduct = {};
     let totalPayments = {
@@ -36,7 +48,13 @@ const SalesPage = () => {
     };
 
     salesData.forEach((sale) => {
-      if (sale.time.startsWith(day)) {
+      const saleDay = format(new Date(sale.timestamp), "yyyy-MM-dd");
+
+      if (
+        (selectedDateOption === "thisMonth" &&
+          isSameMonth(new Date(sale.timestamp), selectedDate)) ||
+        saleDay === day
+      ) {
         sale.selectedProducts.forEach((product) => {
           const productName = product.productName;
           if (!totalQuantityByProduct[productName]) {
@@ -56,30 +74,58 @@ const SalesPage = () => {
     return { totalQuantityByProduct, totalPayments };
   };
 
-  // Example: Calculate totals for a specific day (change the date accordingly)
-  const currentDate = "2024-01-30";
-  const { totalQuantityByProduct, totalPayments } =
-    calculateTotalsForDay(currentDate);
+  const calculateTotals = () => {
+    const today = format(new Date(), "yyyy-MM-dd");
+
+    switch (selectedDateOption) {
+      case "today":
+        return calculateTotalsForDay(today);
+      case "yesterday":
+        return calculateTotalsForDay(format(startOfYesterday(), "yyyy-MM-dd"));
+      case "last2days":
+        return calculateTotalsForDay(
+          format(subDays(new Date(), 1), "yyyy-MM-dd")
+        );
+      case "lastWeek":
+        return calculateTotalsForDay(
+          format(startOfWeek(subDays(new Date(), 7)), "yyyy-MM-dd")
+        );
+      case "thisMonth":
+        return calculateTotalsForDay(
+          format(startOfMonth(selectedDate), "yyyy-MM-dd")
+        );
+      case "lastMonth":
+        return calculateTotalsForDay(
+          format(startOfMonth(subDays(selectedDate, 30)), "yyyy-MM-dd")
+        );
+      case "selectedDate":
+      default:
+        return calculateTotalsForDay(format(selectedDate, "yyyy-MM-dd"));
+    }
+  };
+
+  const { totalQuantityByProduct, totalPayments } = calculateTotals();
 
   return (
     <div>
-      <h1>Sales Page for {currentDate}</h1>
+      <h1>Sales Page</h1>
 
-      <h2>Total Quantity Sold by Product:</h2>
-      <ul>
-        {Object.entries(totalQuantityByProduct).map(
-          ([productName, quantity]) => (
-            <li key={productName}>
-              {productName}: {quantity}
-            </li>
-          )
-        )}
-      </ul>
+      <DateOptionsDropdown
+        selectedDateOption={selectedDateOption}
+        handleDateOptionChange={handleDateOptionChange}
+      />
 
-      <h2>Total Payments:</h2>
-      <p>Cash Payment: {totalPayments.cashPayment}</p>
-      <p>Bank Payment: {totalPayments.bankPayment}</p>
-      <p>POS Payment: {totalPayments.posPayment}</p>
+      {selectedDateOption === "selectedDate" && (
+        <DatePickerComponent
+          selectedDateOption={selectedDate}
+          handleDateChange={handleDateChange}
+        />
+      )}
+
+      <ReportTotals
+        totalQuantityByProduct={totalQuantityByProduct}
+        totalPayments={totalPayments}
+      />
     </div>
   );
 };
