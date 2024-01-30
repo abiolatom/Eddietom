@@ -10,7 +10,9 @@ import NavBar from "./components/NavBar";
 import { ProductProvider } from "./components/ProductContext";
 import CustomerForm from "./components/CustomerForm";
 import AddIncomeForm from "./components/AddIncomesForm";
-import SalesPage from "./ReportPages/SalesPage";
+import SalesPage from "./components/SalesPage";
+
+
 const App = () => {
   return (
     <ProductProvider>
