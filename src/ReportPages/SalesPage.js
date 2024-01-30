@@ -4,12 +4,9 @@ const SalesPage = () => {
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
-    // Assuming you have a function to fetch data from the backend API
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/sales"
-        );
+        const response = await fetch("http://localhost:3001/sales");
         const data = await response.json();
         setSalesData(data);
       } catch (error) {
@@ -20,38 +17,59 @@ const SalesPage = () => {
     fetchData();
   }, []);
 
-  // Function to group sales data by selected products
-  const groupSalesByProducts = () => {
-    const groupedSales = {};
+  const calculateTotalsForDay = (day) => {
+    let totalQuantityByProduct = {};
+    let totalPayments = {
+      cashPayment: 0,
+      bankPayment: 0,
+      posPayment: 0,
+    };
 
     salesData.forEach((sale) => {
-      sale.selectedProducts.forEach((product) => {
-        const productId = product.id;
-        if (!groupedSales[productId]) {
-          groupedSales[productId] = {
-            productName: product.productName,
-            totalQuantity: 0,
-          };
-        }
-        groupedSales[productId].totalQuantity += product.quantity;
-      });
+      if (sale.time.startsWith(day)) {
+        sale.selectedProducts.forEach((product) => {
+          const productName = product.productName;
+          if (!totalQuantityByProduct[productName]) {
+            totalQuantityByProduct[productName] = 0;
+          }
+          totalQuantityByProduct[productName] += product.quantity;
+        });
+
+        sale.amounts.forEach((amount) => {
+          totalPayments.cashPayment += amount.cashPayment || 0;
+          totalPayments.bankPayment += amount.bankPayment || 0;
+          totalPayments.posPayment += amount.posPayment || 0;
+        });
+      }
     });
 
-    return Object.values(groupedSales);
+    return { totalQuantityByProduct, totalPayments };
   };
 
-  const groupedSalesData = groupSalesByProducts();
+  // Example: Calculate totals for a specific day (change the date accordingly)
+  const currentDate = "2024-01-30";
+  const { totalQuantityByProduct, totalPayments } =
+    calculateTotalsForDay(currentDate);
 
   return (
     <div>
-      <h1>Sales Page</h1>
-      {groupedSalesData.map((product) => (
-        <div key={product.productId}>
-          <h2>Product: {product.productName}</h2>
-          <p>Total Quantity Sold: {product.totalQuantity}</p>
-          <hr />
-        </div>
-      ))}
+      <h1>Sales Page for {currentDate}</h1>
+
+      <h2>Total Quantity Sold by Product:</h2>
+      <ul>
+        {Object.entries(totalQuantityByProduct).map(
+          ([productName, quantity]) => (
+            <li key={productName}>
+              {productName}: {quantity}
+            </li>
+          )
+        )}
+      </ul>
+
+      <h2>Total Payments:</h2>
+      <p>Cash Payment: {totalPayments.cashPayment}</p>
+      <p>Bank Payment: {totalPayments.bankPayment}</p>
+      <p>POS Payment: {totalPayments.posPayment}</p>
     </div>
   );
 };
