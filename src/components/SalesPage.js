@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePickerComponent from "./DatePickerComponent";
 import DateOptionsDropdown from "./DateOptionsDropDown";
 import ReportTotals from "./ReportTotals";
 import {
@@ -31,11 +30,6 @@ const SalesPage = () => {
 
     fetchData();
   }, []);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setSelectedDateOption("selectedDate");
-  };
 
   const handleDateOptionChange = (option) => {
     setSelectedDateOption(option);
@@ -109,19 +103,19 @@ const SalesPage = () => {
   const { totalQuantityByProduct, totalPayments } = calculateTotals();
 
   return (
-    <div>
-      <h1>Sales Page</h1>
+    <div className="container mx-auto p-4">
+    <h1 className="text-3xl font-bold mb-4">Sales Page</h1>
 
-      <DateOptionsDropdown
-        selectedDateOption={selectedDateOption}
-        handleDateOptionChange={handleDateOptionChange}
-      />
+    <DateOptionsDropdown
+      selectedDateOption={selectedDateOption}
+      handleDateOptionChange={handleDateOptionChange}
+    />
 
-      <ReportTotals
-        totalQuantityByProduct={totalQuantityByProduct}
-        totalPayments={totalPayments}
-      />
-    </div>
+    <ReportTotals
+      totalQuantityByProduct={totalQuantityByProduct}
+      totalPayments={totalPayments}
+    />
+  </div>
   );
 };
 

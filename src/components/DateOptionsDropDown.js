@@ -1,13 +1,11 @@
 import React from "react";
 
-const DateOptionsDropdown = ({
-  selectedDateOption,
-  handleDateOptionChange,
-}) => {
+const DateOptionsDropdown = ({ selectedDateOption, handleDateOptionChange }) => {
   return (
-    <div>
-      <label>Select Date Option: </label>
+    <div className="mt-4">
+      <label className="block text-sm font-medium text-gray-600 mb-2">Select Date Option:</label>
       <select
+        className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
         value={selectedDateOption}
         onChange={(e) => handleDateOptionChange(e.target.value)}
       >
