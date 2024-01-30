@@ -26,3 +26,11 @@ Next to do includes:
 # Sourcing Product names from back end
 
 # Finally, submiting sales details to BackEnd
+
+Successful
+
+## Next stage (Jan 2024)
+
+1. Rendering sales data as report in front end
+2. Displaying remaining data on product search suggestion
+3. Sold out products from back end are not to be rendered in front end product bar suggestion

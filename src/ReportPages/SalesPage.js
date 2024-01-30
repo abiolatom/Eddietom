@@ -8,7 +8,7 @@ const SalesPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:your-api-port/your-api-endpoint"
+          "http://localhost:3001/sales"
         );
         const data = await response.json();
         setSalesData(data);
