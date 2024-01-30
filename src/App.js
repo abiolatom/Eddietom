@@ -11,7 +11,7 @@ import { ProductProvider } from "./components/ProductContext";
 import CustomerForm from "./components/CustomerForm";
 import AddIncomeForm from "./components/AddIncomesForm";
 import SalesPage from "./components/SalesPage";
-
+import SalesReportPage from "./components/SalesReportPage";
 
 const App = () => {
   return (
@@ -28,7 +28,7 @@ const App = () => {
           <Route path="/payments" element={<Payments />} />
           <Route path="/customerform" element={<CustomerForm />} />
           <Route path="/salespage" element={<SalesPage />} />
-
+          <Route path="/salesreportpage" element={<SalesReportPage />} />
         </Routes>
       </Router>
     </ProductProvider>

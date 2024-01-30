@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 import DatePickerComponent from "./DatePickerComponent";
 import DateOptionsDropdown from "./DateOptionsDropDown";
@@ -12,9 +14,9 @@ import {
   isSameMonth,
 } from "date-fns";
 
-const SalesPage = () => {
+const SalesReportPage = () => {
   const [salesData, setSalesData] = useState([]);
-
+  const [calendarDate, setCalendarDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedDateOption, setSelectedDateOption] = useState("selectedDate");
 
@@ -31,6 +33,11 @@ const SalesPage = () => {
 
     fetchData();
   }, []);
+    
+  const handleCalendarDateChange = (date) => {
+    console.log("Selected Calendar Date: ", date);
+    setCalendarDate(date);
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -115,14 +122,18 @@ const SalesPage = () => {
       <DateOptionsDropdown
         selectedDateOption={selectedDateOption}
         handleDateOptionChange={handleDateOptionChange}
-      />
-
-      {selectedDateOption === "selectedDate" && (
-        <DatePickerComponent
-          selectedDateOption={selectedDate}
-          handleDateChange={handleDateChange}
-        />
-      )}
+          />
+          
+          {selectedDateOption === "selectedDate" && (
+  <>
+    <DatePicker
+      selected={calendarDate}
+      onChange={handleCalendarDateChange}
+      dateFormat="yyyy-MM-dd"
+    />
+    <br />
+  </>
+)}
 
       <ReportTotals
         totalQuantityByProduct={totalQuantityByProduct}
@@ -132,4 +143,4 @@ const SalesPage = () => {
   );
 };
 
-export default SalesPage;
+export default SalesReportPage;
