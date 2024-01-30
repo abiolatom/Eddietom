@@ -117,13 +117,6 @@ const SalesPage = () => {
         handleDateOptionChange={handleDateOptionChange}
       />
 
-      {selectedDateOption === "selectedDate" && (
-        <DatePickerComponent
-          selectedDateOption={selectedDate}
-          handleDateChange={handleDateChange}
-        />
-      )}
-
       <ReportTotals
         totalQuantityByProduct={totalQuantityByProduct}
         totalPayments={totalPayments}

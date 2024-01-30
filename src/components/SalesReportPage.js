@@ -33,19 +33,9 @@ const SalesReportPage = () => {
 
     fetchData();
   }, []);
-    
+
   const handleCalendarDateChange = (date) => {
-    console.log("Selected Calendar Date: ", date);
     setCalendarDate(date);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setSelectedDateOption("selectedDate");
-  };
-
-  const handleDateOptionChange = (option) => {
-    setSelectedDateOption(option);
   };
 
   const calculateTotalsForDay = (day) => {
@@ -109,7 +99,7 @@ const SalesReportPage = () => {
         );
       case "selectedDate":
       default:
-        return calculateTotalsForDay(format(selectedDate, "yyyy-MM-dd"));
+        return calculateTotalsForDay(format(calendarDate, "yyyy-MM-dd"));
     }
   };
 
@@ -117,23 +107,18 @@ const SalesReportPage = () => {
 
   return (
     <div>
-      <h1>Sales Page</h1>
+      <h1>Sales Report Page</h1>
 
-      <DateOptionsDropdown
-        selectedDateOption={selectedDateOption}
-        handleDateOptionChange={handleDateOptionChange}
+      {selectedDateOption === "selectedDate" && (
+        <>
+          <DatePicker
+            selected={calendarDate}
+            onChange={handleCalendarDateChange}
+            dateFormat="yyyy-MM-dd"
           />
-          
-          {selectedDateOption === "selectedDate" && (
-  <>
-    <DatePicker
-      selected={calendarDate}
-      onChange={handleCalendarDateChange}
-      dateFormat="yyyy-MM-dd"
-    />
-    <br />
-  </>
-)}
+          <br />
+        </>
+      )}
 
       <ReportTotals
         totalQuantityByProduct={totalQuantityByProduct}
