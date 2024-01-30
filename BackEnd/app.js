@@ -21,7 +21,6 @@ app.listen(PORT, async () => {
   try {
     await connectToDb();
     const db = getDb();
-    // console.log(db);
 
     app.use("/products", productRoute(db));
     app.use("/expenses", expenseRoute(db));
@@ -34,6 +33,5 @@ app.listen(PORT, async () => {
     console.error(err);
   }
 });
-
 
 module.exports = app;

@@ -1,17 +1,11 @@
-const { ObjectId } = require('mongodb');
 const express = require("express");
 const router = express.Router();
+const Income = require("../Models/IncomesSchema");
 
-module.exports = (db) => {
+module.exports = () => {
   router.get("/", async (req, res) => {
     try {
-      let incomes = [];
-      await db
-        .collection("incomes")
-        .find()
-        .sort({ incomeSource: 1 })
-        .forEach((income) => incomes.push(income));
-
+      const incomes = await Income.find().sort({ incomeSource: 1 });
       res.status(200).json(incomes);
     } catch (error) {
       console.log(error);
@@ -20,57 +14,58 @@ module.exports = (db) => {
   });
 
   router.get("/:id", async (req, res) => {
-    const { id } = req.params.id;
-    const income = await db.collection("incomes").findOne({ _id: ObjectId(id) });
-    return res.status(200).json(income);
+    const { id } = req.params;
+    try {
+      const income = await Income.findById(id);
+      return res.status(200).json(income);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   router.post("/", async (req, res) => {
     const newIncome = { ...req.body };
-    if (typeof newIncome === "object") {
-      const insertedIncomes = await db
-        .collection("incomes")
-        .insertOne(newIncome);
-      return res.status(200).json(insertedIncomes);
-    } else {
-      console.error("newIncome is not a valid MongoDB collection object");
+    try {
+      const insertedIncome = await Income.create(newIncome);
+      return res.status(200).json(insertedIncome);
+    } catch (error) {
+      console.error("Error inserting new income:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
   router.put("/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-      const incomeId = req.params.id;
-      const updatedIncome = req.body; 
-      const result = await db
-        .collection("incomes")
-        .updateOne({ _id: ObjectId(incomeId) }, { $set: updatedIncome });
-
-      if (result.modifiedCount === 1) {
-        res.status(200).json({ message: "Income updated successfully" });
-      } else {
-        res.status(404).json({ error: "Income not found" });
+      const updatedIncome = await Income.findByIdAndUpdate(
+        id,
+        { $set: req.body },
+        { new: true }
+      );
+      if (!updatedIncome) {
+        return res.status(404).json({ error: "Income not found" });
       }
+      return res.status(200).json(updatedIncome);
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Could not update the income" });
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
   router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-      const incomeId = req.params.id;
-      const result = await db
-        .collection("incomes")
-        .deleteOne({ _id: ObjectId(incomeId) });
-
-      if (result.deletedCount === 1) {
-        res.status(200).json({ message: "Income deleted successfully" });
-      } else {
-        res.status(404).json({ error: "Income not found" });
+      const deletedIncome = await Income.findByIdAndDelete(id);
+      if (!deletedIncome) {
+        return res.status(404).json({ error: "Income not found" });
       }
+      return res
+        .status(200)
+        .json({ message: "Income deleted successfully", deletedIncome });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Could not delete the income" });
+      console.error("Error deleting income:", error);
+      return res.status(500).json({ error: "Internal server error" });
     }
   });
 

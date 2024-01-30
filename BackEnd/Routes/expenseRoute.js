@@ -1,18 +1,11 @@
-const { ObjectId } = require('mongodb');
 const express = require("express");
 const router = express.Router();
+const Expense = require("../Models/ExpensesSchema"); 
 
-module.exports = (db) => {
+module.exports = () => {
   router.get("/", async (req, res) => {
     try {
-      let expenses = [];
-      await db
-
-        .collection("expenses")
-        .find()
-        .sort({ expenseItem: 1 })
-        .forEach((expense) => expenses.push(expense));
-
+      const expenses = await Expense.find().sort({ expenseItem: 1 });
       res.status(200).json(expenses);
     } catch (error) {
       console.log(error);
@@ -21,58 +14,58 @@ module.exports = (db) => {
   });
 
   router.get("/:id", async (req, res) => {
-    const { id } = req.params.id;
-    const expense = await db.collection("expenses").findOne({ _id: ObjectId(id) });
-    return res.status(200).json(expense);
+    const { id } = req.params;
+    try {
+      const expense = await Expense.findById(id);
+      return res.status(200).json(expense);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   router.post("/", async (req, res) => {
     const newExpense = { ...req.body };
-    if (typeof newExpense === "object") {
-      const insertedExpenses = await db
-        .collection("expenses")
-        .insertOne(newExpense);
-      return res.status(200).json(insertedExpenses);
-    } else {
-      console.error("newProduct is not a valid MongoDB collection object");
+    try {
+      const insertedExpense = await Expense.create(newExpense);
+      return res.status(200).json(insertedExpense);
+    } catch (error) {
+      console.error("Error inserting new expense:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
-  
   router.put("/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-      const expenseId = req.params.id;
-      const updatedExpense = req.body; 
-      const result = await db
-        .collection("expenses")
-        .updateOne({ _id: expenseId }, { $set: updatedExpense });
-
-      if (result.modifiedCount === 1) {
-        res.status(200).json({ message: "Expense updated successfully" });
-      } else {
-        res.status(404).json({ error: "Expense not found" });
+      const updatedExpense = await Expense.findByIdAndUpdate(
+        id,
+        { $set: req.body },
+        { new: true }
+      );
+      if (!updatedExpense) {
+        return res.status(404).json({ error: "Expense not found" });
       }
+      return res.status(200).json(updatedExpense);
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Could not update the expense" });
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
   router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-      const expenseId = req.params.id;
-      const result = await db
-        .collection("expenses")
-        .deleteOne({ _id: expenseId });
-
-      if (result.deletedCount === 1) {
-        res.status(200).json({ message: "Expense deleted successfully" });
-      } else {
-        res.status(404).json({ error: "Expense not found" });
+      const deletedExpense = await Expense.findByIdAndDelete(id);
+      if (!deletedExpense) {
+        return res.status(404).json({ error: "Expense not found" });
       }
+      return res
+        .status(200)
+        .json({ message: "Expense deleted successfully", deletedExpense });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Could not delete the expense" });
+      console.error('Error deleting expense:', error);
+      return res.status(500).json({ error: "Internal server error" });
     }
   });
 

@@ -25,10 +25,6 @@ const debtSalesSchema = new mongoose.Schema(
     dates: [Date],
     installmentAmounts: [Number],
     reason: String,
-    timestamp: {
-      type: Date,
-      default: Date.now,
-    },
   },
   { timestamps: true }
 );

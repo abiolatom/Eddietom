@@ -7,7 +7,7 @@ const customerSchema = new mongoose.Schema(
       required: true,
     },
     customerNumber: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
     },
