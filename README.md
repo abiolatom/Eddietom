@@ -31,6 +31,11 @@ Successful
 
 ## Next stage (Jan 2024)
 
-1. Rendering sales data as report in front end
+1. Rendering sales data as report in front end (DONE)
 2. Displaying remaining data on product search suggestion
+
 3. Sold out products from back end are not to be rendered in front end product bar suggestion
+
+4. Rendering debtSales data as report in front end 
+5. complete Deposit sales
+6. Split payment/Amount component across board

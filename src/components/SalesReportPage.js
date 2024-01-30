@@ -106,25 +106,29 @@ const SalesReportPage = () => {
   const { totalQuantityByProduct, totalPayments } = calculateTotals();
 
   return (
-    <div>
-      <h1>Sales Report Page</h1>
+   
+    <div className="container mx-auto p-4">
+    <h1 className="text-3xl font-bold mb-4">Sales Report Page</h1>
 
-      {selectedDateOption === "selectedDate" && (
-        <>
+    {selectedDateOption === "selectedDate" && (
+      <>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600 mb-2">Select Date:</label>
           <DatePicker
             selected={calendarDate}
             onChange={handleCalendarDateChange}
             dateFormat="yyyy-MM-dd"
+            className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
-          <br />
-        </>
-      )}
+        </div>
+      </>
+    )}
 
-      <ReportTotals
-        totalQuantityByProduct={totalQuantityByProduct}
-        totalPayments={totalPayments}
-      />
-    </div>
+    <ReportTotals
+      totalQuantityByProduct={totalQuantityByProduct}
+      totalPayments={totalPayments}
+    />
+  </div>
   );
 };
 
