@@ -194,10 +194,10 @@ const PaymentMethod = () => {
     const selectedProductsData = selectedProducts.map((product) => ({
       ...product,
       price: parseFloat(product.price),
-      quantity: parseInt(product.quantity, 10), // Assuming quantity is an integer
+      quantity: parseInt(product.quantity, 10), 
     }));
-    const currentDateTime = new Date(); // Get the current date and time
-    const formattedDateTime = currentDateTime.toISOString(); // Convert to a string in ISO format
+    const currentDateTime = new Date(); 
+    const formattedDateTime = currentDateTime.toISOString(); 
 
     const newSaleData = {
       selectedProducts: selectedProductsData,
@@ -211,7 +211,7 @@ const PaymentMethod = () => {
         pos: parseFloat(amounts.pos),
       },
       totalPayment,
-      timestamp: formattedDateTime, // Add the timestamp to the newSaleData object
+      timestamp: formattedDateTime, 
     };
 
     setSubmissionSuccess(true);
