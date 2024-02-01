@@ -13,8 +13,8 @@ const saleSchema = new mongoose.Schema(
     ],
     amounts: [
       {
-        value: { type: String, required: true },
-        amounts: { type: Number, required: true },
+        value: { type: String, required: false },
+        amounts: { type: Number, required: false },
       },
     ],
 
