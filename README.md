@@ -36,6 +36,15 @@ Successful
 
 3. Sold out products from back end are not to be rendered in front end product bar suggestion
 
-4. Rendering debtSales data as report in front end 
+4. Rendering debtSales data as report in front end
 5. complete Deposit sales
 6. Split payment/Amount component across board
+
+   01.02.2024
+
+Lots of bugs in the code that requires some revamp. Now, I have to decide how to fix, especially, if to proceed with other aspect of the project now as stated above, or to:
+
+1. Allocate time to convert the project into a NEXTjs application
+2. And also deploy typescript
+3. while this might be a good option that would also help me to further break down some of my too large components. I am concern about the time required to implement it at the expense of progress on this project.
+4. This also should not neglect the fact that I need to be able to showcase a completed project to my name.
