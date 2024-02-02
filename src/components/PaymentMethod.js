@@ -194,10 +194,10 @@ const PaymentMethod = () => {
     const selectedProductsData = selectedProducts.map((product) => ({
       ...product,
       price: parseFloat(product.price),
-      quantity: parseInt(product.quantity, 10), 
+      quantity: parseInt(product.quantity, 10),
     }));
-    const currentDateTime = new Date(); 
-    const formattedDateTime = currentDateTime.toISOString(); 
+    const currentDateTime = new Date();
+    const formattedDateTime = currentDateTime.toISOString();
 
     const newSaleData = {
       selectedProducts: selectedProductsData,
@@ -211,7 +211,7 @@ const PaymentMethod = () => {
         pos: parseFloat(amounts.pos),
       },
       totalPayment,
-      timestamp: formattedDateTime, 
+      timestamp: formattedDateTime,
     };
 
     setSubmissionSuccess(true);
@@ -220,7 +220,6 @@ const PaymentMethod = () => {
 
   return (
     <div className="container mx-auto p-4">
-      
       <h1 className="text-2xl font-bold mb-4">Payment Information</h1>
       <p className="mb-2">
         <em>Amount to pay:</em> <b>{calculateTotalPrice().toFixed(2)}</b>

@@ -144,7 +144,6 @@ const Payments = () => {
       timestamp: formattedDateTime,
     };
 
-    // console.log("Amounts for Backend:", amountsForBackend);
     setSubmissionSuccess(true);
     setSalesData(newSaleData);
     window.alert("Sales data submitted successfully!");

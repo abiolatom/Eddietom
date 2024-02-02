@@ -5,16 +5,29 @@ const saleSchema = new mongoose.Schema(
     selectedProducts: [
       {
         id: { type: String, required: true },
-        name: { type: String, required: true },
+        productName: { type: String, required: true },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },
         subtotal: { type: Number, required: true },
       },
     ],
-    amounts: [
+    paymentMethod: [
       {
-        value: { type: String, required: false },
-        amounts: { type: Number, required: false },
+        method: {
+          type: String,
+          enum: ["cashPayment", "bankPayment", "posPayment"],
+          required: true,
+        },
+        value: {
+          type: Number,
+          required: true,
+        },
+        bankName: {
+          type: String,
+          required: function () {
+            return this.method === "bankPayment";
+          },
+        },
       },
     ],
 
